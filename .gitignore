@@ -1,0 +1,14 @@
+tools/rea/
+evidence/*
+!evidence/README.md
+node_modules/
+dist/
+.browser-profile/
+.env*
+.DS_Store
+tools/runtime/
+test-results/
+tools/browsers/
+
+release/
+playwright-report/

@@ -1,0 +1,11 @@
+import type {Step} from './model';
+import {clamp} from './model';
+type Props={step:Step;duration:number;onPatch:(value:Partial<Step>)=>void;onSeek:(time:number)=>void;onBoundary:()=>void};
+export function ClipTimeline({step,duration,onPatch,onSeek,onBoundary}:Props){
+ function change(kind:'start'|'end',value:number){onPatch(kind==='start'?{clipStart:clamp(value,0,step.clipEnd-.05)}:{clipEnd:clamp(value,step.clipStart+.05,duration)});}
+ function handle(kind:'start'|'end'){
+  const value=kind==='start'?step.clipStart:step.clipEnd;
+  return <button type="button" className={`trim-handle ${kind}`} role="slider" aria-label={kind==='start'?'Trim start':'Trim end'} aria-valuemin={kind==='start'?0:step.clipStart+.05} aria-valuemax={kind==='start'?step.clipEnd-.05:duration} aria-valuenow={value} aria-valuetext={`${value.toFixed(2)} seconds`} style={{left:`${value/duration*100}%`}} onPointerDown={e=>{e.stopPropagation();onBoundary();e.currentTarget.setPointerCapture(e.pointerId);}} onPointerMove={e=>{if(!e.currentTarget.hasPointerCapture(e.pointerId))return;const box=e.currentTarget.parentElement!.getBoundingClientRect();change(kind,(e.clientX-box.left)/box.width*duration);}} onPointerUp={e=>{e.currentTarget.releasePointerCapture(e.pointerId);onBoundary();}} onPointerCancel={onBoundary} onKeyDown={e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();change(kind,e.key==='Home'?0:e.key==='End'?duration:value+(e.key==='ArrowLeft'?-1:1)*(e.shiftKey?.5:.05));}}}>Ⅱ</button>;
+ }
+ return <div className="visual-timeline"><div className="time-ruler"><span>0s</span><span>{(duration/2).toFixed(1)}s</span><span>{duration.toFixed(1)}s</span></div><div className="clip-track" onPointerDown={e=>{if(e.target!==e.currentTarget)return;const box=e.currentTarget.getBoundingClientRect();onSeek(clamp((e.clientX-box.left)/box.width)*duration);}}><div className="clip-range" style={{left:`${step.clipStart/duration*100}%`,width:`${(step.clipEnd-step.clipStart)/duration*100}%`}}/><span className="clip-range-label">Selected clip · {(step.clipEnd-step.clipStart).toFixed(2)}s</span>{handle('start')}{handle('end')}</div><p className="field-note">Drag either edge to trim. Arrow keys adjust by 0.05s; Shift + arrow adjusts by 0.5s.</p></div>;
+}
