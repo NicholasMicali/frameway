@@ -13,6 +13,10 @@ npm run build
 
 The build creates `dist/`. Generated files and dependencies are intentionally not committed.
 
+The same npm commands work on macOS and Windows (including PowerShell). Install Node.js 24 first; the optional `.sh` helper scripts are for Unix shells and are not required. Windows has not yet been manually verified.
+
+Your projects and recordings are saved in your own browser's IndexedDB, outside the Git repository. Cloning this source does not include the author's projects. The sample walkthrough uses generated demo content. If saving personal exports inside the repository, use `exports/` or `recordings/`; both are ignored, along with video files and the default walkthrough export filenames. Renamed HTML exports or extracted project folders should also stay in those ignored directories.
+
 ### Recommended: Chrome extension
 
 The extension records a tab's video and clicks, then creates screenshot/video steps automatically.

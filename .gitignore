@@ -12,3 +12,13 @@ tools/browsers/
 
 release/
 playwright-report/
+
+# Personal recordings and exports (browser projects live outside this repo).
+recordings/
+exports/
+*.webm
+*.mp4
+*.mov
+*.frameway.zip
+walkthrough*.html
+walkthrough-embed*.zip
