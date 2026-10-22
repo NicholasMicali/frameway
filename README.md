@@ -77,6 +77,8 @@ No managed hosting service is included. A localhost URL only works on your compu
 
 ## Develop and test
 
+Trying the beta? Follow the [tester guide and feedback template](docs/BETA-TESTING.md). The [TODO list](TODO.md) tracks release readiness, Windows enterprise validation, reliability work, and candidate features.
+
 ```sh
 npm run build
 npm test

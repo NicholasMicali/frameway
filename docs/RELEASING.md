@@ -1,6 +1,6 @@
 # Release preparation
 
-The first beta is 0.1.0. There is no remote or release until the owner chooses a destination and explicitly publishes it.
+The first beta is 0.1.0. Source is published at [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). Publishing a packaged release is a separate step; track validation in [TODO.md](../TODO.md).
 
 1. Choose repository visibility and license. No open-source license has been granted by this repository yet; `private: true` prevents npm publication, not GitHub visibility.
 2. Review the prospective commit files (`git ls-files --cached --others --exclude-standard`). Keep recordings, private research captures, profiles, `.env` files, dependencies, and build artifacts out of Git.
