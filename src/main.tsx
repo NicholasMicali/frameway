@@ -28,6 +28,7 @@ import { LogoUpload } from './LogoUpload';
 import { prepareLogo } from './branding';
 import { automaticZoom, areaZoomVars } from './area-zoom';
 import './area-zoom.css';
+import { zoomOut } from './zoom-out';
 import { Icon } from './Icon';
 import { ClipTimeline } from './Timeline';
 import { ScreenRecorder } from './ScreenRecorder';
@@ -57,6 +58,15 @@ function Thumb({ step, logo }: { step: Step; logo?: string }) {
 }
 function App() {
   const [recording, setRecording] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [visit, setVisit] = useState(0);
+  const exitAnimation = useRef<ReturnType<typeof zoomOut>>(undefined);
+  useEffect(() => {
+    return () => {
+      exitAnimation.current?.cancel();
+      exitAnimation.current = undefined;
+    };
+  }, []);
   const [projects, setProjects] = useState<Project[]>([]),
     [project, setProject] = useState<Project>(),
     [selected, setSelected] = useState(''),
@@ -323,22 +333,48 @@ function App() {
       video.current?.pause();
     };
   }, [selected, preview, videoURL]);
+  useEffect(() => {
+    exitAnimation.current?.cancel();
+    exitAnimation.current = undefined;
+    setLeaving(false);
+  }, [selected, preview, project?.id, visit]);
+  function navigate(id: string, direction: 'forward' | 'back' | 'restart' = 'forward') {
+    if (exitAnimation.current || playing) return;
+    const commit = () => {
+      setVisit((value) => value + 1);
+      if (direction === 'forward') history.current.push(selected);
+      if (direction === 'back') history.current.pop();
+      if (direction === 'restart') history.current = [];
+      select(id);
+    };
+    const animation = preview && stage.current ? zoomOut(stage.current) : undefined;
+    if (!animation) {
+      commit();
+      return;
+    }
+    exitAnimation.current = animation;
+    setLeaving(true);
+    const token = generation.current;
+    void animation.finished.then(() => {
+      if (exitAnimation.current !== animation || generation.current !== token) return;
+      commit();
+      // Keep the final frame until React commits the destination and cleans up.
+    });
+  }
   function advance() {
     if (!project || !step) return;
     const id = nextId(project, step);
     if (id) {
-      history.current.push(step.id);
-      select(id);
+      navigate(id);
     }
   }
   function back() {
-    const id = history.current.pop();
-    if (id) select(id);
+    const id = history.current.at(-1);
+    if (id) navigate(id, 'back');
   }
   function restart() {
     if (project) {
-      history.current = [];
-      select(project.steps[0].id);
+      navigate(project.steps[0].id, 'restart');
     }
   }
   function drag(e: React.PointerEvent, kind: 'anchor' | 'card') {
@@ -896,7 +932,7 @@ function App() {
                   }
                 >
                   <img
-                    key={`${selected}:${preview}`}
+                    key={`${selected}:${preview}:${visit}`}
                     style={zooming ? (areaZoomVars(step) as React.CSSProperties) : undefined}
                     hidden={step?.kind === 'title'}
                     className={`still ${zooming ? 'area-zoom-image' : ''}`}
@@ -941,8 +977,9 @@ function App() {
                     <>
                       {step.style !== 'callout' && (
                         <button
-                          key={`${selected}:${preview}`}
+                          key={`${selected}:${preview}:${visit}`}
                           aria-label="Hotspot"
+                          disabled={leaving}
                           className={`hotspot ${zooming ? 'area-zoom-hotspot' : ''} ${step.style === 'area' ? 'area-hotspot' : ''}`}
                           style={{
                             ...(zooming ? areaZoomVars(step) : {}),
@@ -991,6 +1028,7 @@ function App() {
                           {preview ? (
                             <button
                               className="card-next"
+                              disabled={leaving}
                               onClick={() => (nextId(project, step) ? advance() : restart())}
                             >
                               {nextId(project, step) ? 'Continue' : 'Replay'} <span>→</span>
@@ -1013,7 +1051,7 @@ function App() {
                 </div>
               </div>
               <div className="player-bar">
-                <button onClick={restart} disabled={!preview || playing}>
+                <button onClick={restart} disabled={!preview || playing || leaving}>
                   ↺ Restart
                 </button>
                 <nav className="progress-dots" aria-label="Walkthrough steps">
@@ -1024,11 +1062,10 @@ function App() {
                       title={`Step ${i + 1}: ${s.title}`}
                       aria-current={s.id === selected ? 'step' : undefined}
                       className={s.id === selected ? 'current' : ''}
-                      disabled={!preview || playing}
+                      disabled={!preview || playing || leaving}
                       onClick={() => {
-                        if (!preview || playing || s.id === selected) return;
-                        history.current.push(selected);
-                        select(s.id);
+                        if (!preview || playing || leaving || s.id === selected) return;
+                        navigate(s.id);
                       }}
                     >
                       <span />
@@ -1036,12 +1073,15 @@ function App() {
                   ))}
                 </nav>
                 <div>
-                  <button onClick={back} disabled={!preview || !history.current.length || playing}>
+                  <button
+                    onClick={back}
+                    disabled={!preview || !history.current.length || playing || leaving}
+                  >
                     ← Back
                   </button>
                   <button
                     className="primary"
-                    disabled={!preview || playing}
+                    disabled={!preview || playing || leaving}
                     onClick={() => step && (nextId(project, step) ? advance() : restart())}
                   >
                     {step && nextId(project, step) ? 'Next step' : 'Replay'} →
