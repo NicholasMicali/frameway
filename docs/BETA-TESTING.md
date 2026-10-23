@@ -11,7 +11,7 @@ Use [the README](../README.md) to build and install the Chrome extension. The go
 5. Export a project backup and import it again. Download standalone HTML and open it offline. If relevant, try the embed ZIP on a test site.
 6. Note the most confusing moment, anything that failed, and the one improvement that would make this useful in your daily work.
 
-Windows enterprise testers should also work through the [Windows checklist](../TODO.md#windows-enterprise-validation--awaiting-owner-testing). A policy restriction is a useful finding; there is no need to bypass it.
+Windows enterprise testers should also work through the [Windows checklist](../TODO.md#windows-enterprise-validation--owner-feedback-received). A policy restriction is a useful finding; there is no need to bypass it.
 
 ## Report a bug or request
 
@@ -39,10 +39,19 @@ For alignment problems, include browser zoom, display scaling, and monitor setup
 
 Share only sanitized screenshots or logs. Do not attach credentials, customer data, internal URLs, or real enterprise recordings to public issues. Playback trims do not remove the underlying recording from exports. Store local test artifacts outside the checkout or in ignored `recordings/` and `exports/` directories.
 
-## Findings awaiting testing
+## Backup and import
 
-No Windows enterprise findings have been reported yet. Record environment-specific results rather than treating one successful machine as support for every managed environment.
+1. Open your project, then select **Export / Download → Export project ↗**. Save the `.frameway.zip` file somewhere outside browser storage. Keep it zipped.
+2. Select **Import** in the Frameway header and choose that ZIP. This creates a separate editable project; it does not overwrite the original.
+3. Preview the imported copy and check its video, screenshots, title, callouts, branding, and step order. Make an edit and reload to confirm it saves.
+4. To test recovery across an extension update or another computer, export before updating, then import the same ZIP into the destination installation. You can also use a separate Chrome profile for a clean recovery test.
 
-| Environment / version        | Scenario                            | Result         | Issue / follow-up          |
-| ---------------------------- | ----------------------------------- | -------------- | -------------------------- |
-| Windows enterprise — pending | Full record → edit → share workflow | Not yet tested | Owner will report findings |
+**Download HTML** and **Export embed** create viewer-facing playback exports. Use **Export project** for an editable backup. The extension and localhost editor have separate libraries; project ZIPs transfer work between them.
+
+## Reported findings
+
+The owner reports successful Windows use and delivery of standalone HTML to other people. Exact Windows/Chrome versions, managed-policy configuration, and sharing channel were not supplied. This does not establish the remaining detailed Windows checklist items.
+
+| Environment / version          | Scenario                                          | Result                | Follow-up                                                                                                 |
+| ------------------------------ | ------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------- |
+| Windows — versions unspecified | Use Frameway and send exported HTML to recipients | Owner reports success | Verify editable backup/import; ZIP delivery and specific enterprise policy constraints remain unconfirmed |

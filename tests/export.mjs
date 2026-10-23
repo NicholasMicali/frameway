@@ -51,10 +51,16 @@ try {
     await editor.locator('.export-menu summary').click();
     const promise = editor.waitForEvent('download');
     await editor.getByRole('button', { name, exact: true }).click();
-    await (await promise).saveAs(path.join(directory, file));
+    const result = await promise;
+    const base = 'Demo --script--script-window.injected=true--script-';
+    const suffix =
+      name === 'Download HTML' ? '.html' : name === 'Export embed' ? '.zip' : '.frameway.zip';
+    assert.equal(result.suggestedFilename(), base + suffix);
+    await result.saveAs(path.join(directory, file));
   }
   await download('Download HTML', 'portable.html');
   await download('Export embed', 'embed.zip');
+  await download('Export project ↗', 'backup.zip');
   const files = unzipSync(new Uint8Array(await readFile(path.join(directory, 'embed.zip'))));
   for (const [name, bytes] of Object.entries(files)) {
     await mkdir(path.dirname(path.join(directory, name)), { recursive: true });
