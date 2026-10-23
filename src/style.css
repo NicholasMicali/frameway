@@ -96,14 +96,12 @@ header {
   place-items: center;
   font-size: 29px;
 }
-.lab {
+.app-version {
   font-size: 9px;
   letter-spacing: 1px;
   color: var(--accent);
-  border: 1px solid var(--accent-soft);
-  padding: 3px 5px;
-  border-radius: 4px;
-  margin-left: 3px;
+  margin-left: 0;
+  font-weight: 500;
 }
 .breadcrumb {
   color: #96949f;
@@ -392,7 +390,7 @@ header {
 .callout p {
   font-size: 11px;
   line-height: 1.65;
-  color: var(--accent);
+  color: #111;
   margin: 0 0 13px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -445,21 +443,37 @@ header {
 }
 .progress-dots {
   display: flex;
-  gap: 5px;
-  max-width: 30%;
-  overflow: hidden;
+  align-items: center;
+  gap: 2px;
+  max-width: 40%;
+  overflow-x: auto;
+  padding: 4px;
 }
-.progress-dots span {
-  width: 5px;
-  height: 5px;
+.progress-dots button {
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--accent-border);
+  width: 24px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 5px;
 }
-.progress-dots .current {
-  width: 18px;
-  border-radius: 3px;
-  background: var(--accent);
+.progress-dots button span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #a9bbca;
+}
+.progress-dots button.current span {
+  width: 16px;
+  border-radius: 4px;
+  background: #337ab7;
+}
+.progress-dots button:hover:not(:disabled) {
+  background: #eaf2ff;
 }
 .primary {
   background: var(--accent);
@@ -596,29 +610,6 @@ textarea {
   border-color: #f0dfe4;
   font-size: 10px;
 }
-.local-card {
-  display: flex;
-  gap: 12px;
-  background: var(--accent-soft);
-  border: 1px solid var(--accent-soft);
-  border-radius: 8px;
-  padding: 14px;
-  margin-top: 30px;
-  color: var(--accent-border);
-}
-.local-card > span {
-  font-size: 23px;
-}
-.local-card strong {
-  font-size: 10px;
-  color: var(--accent);
-}
-.local-card p {
-  font-size: 9px;
-  line-height: 1.6;
-  color: var(--accent-border);
-  margin: 5px 0 0;
-}
 .review-note {
   font-size: 10px;
   color: #9e8761;
@@ -650,16 +641,6 @@ textarea {
 }
 .preview .card-next {
   font-size: 12px;
-}
-footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 30px;
-  border-top: 1px solid var(--accent-soft);
-  font-size: 9px;
-  color: var(--accent-border);
-  letter-spacing: 0.4px;
-  background: var(--accent-soft);
 }
 .welcome {
   min-height: calc(100vh - 116px);
@@ -1194,9 +1175,6 @@ input[type='checkbox'] {
 body,
 .app,
 .toolbar,
-footer {
-  background: #fff;
-}
 .canvas-area {
   background: #f8fafc;
 }
@@ -1211,9 +1189,6 @@ footer {
 .project-title,
 h1 {
   color: #263445;
-}
-.local-card {
-  background: #f8fafc;
 }
 .section-heading,
 .subtitle,
@@ -1545,7 +1520,6 @@ h1 {
   }
   .editor-app > header,
   .editor-app > .toolbar,
-  .editor-app > footer,
   .editor-app > .banner {
     flex-shrink: 0;
   }
@@ -1654,4 +1628,130 @@ h1 {
 }
 .stage .card-next {
   color: var(--accent-text, #fff);
+}
+
+/* Compact project controls and title-slide assets. */
+.project-settings {
+  position: relative;
+}
+.project-settings summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  list-style: none;
+  cursor: pointer;
+  border: 1px solid #d7e7f3;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #334155;
+  background: #fff;
+}
+.project-settings summary::-webkit-details-marker {
+  display: none;
+}
+.project-settings summary:focus-visible {
+  outline: 3px solid #aecbf2;
+  outline-offset: 2px;
+}
+.project-settings-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 15;
+  display: grid;
+  gap: 16px;
+  width: 280px;
+  max-width: calc(100vw - 32px);
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #d7e7f3;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px #0002;
+}
+.project-settings-panel strong {
+  font-size: 12px;
+}
+.project-settings-panel p {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+.project-settings .theme-picker {
+  justify-content: space-between;
+}
+.project-settings .theme-picker select {
+  display: block;
+}
+.logo-upload .field-label {
+  display: block;
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.logo-upload-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.logo-upload-actions img {
+  width: 40px;
+  height: 36px;
+  object-fit: contain;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 3px;
+}
+.logo-upload-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  font-size: 11px;
+}
+.logo-upload .field-note {
+  margin: 10px 0 18px;
+}
+.inspector input[hidden] {
+  display: none;
+}
+.project-select {
+  position: relative;
+  display: inline-grid;
+  min-width: 0;
+  max-width: min(320px, 100%);
+  flex-shrink: 1;
+  font-size: 12px;
+}
+.project-select-measure {
+  grid-area: 1/1;
+  visibility: hidden;
+  white-space: pre;
+  overflow: hidden;
+  padding: 8px 32px 8px 10px;
+  min-width: 0;
+}
+.breadcrumb .project-select select {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  grid-area: 1/1;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  font: inherit;
+  padding: 8px 24px 8px 10px;
+}
+@media (max-width: 800px) {
+  .project-settings-panel {
+    left: 0;
+    right: auto;
+  }
+  .breadcrumb .project-select {
+    flex: 0 1 auto;
+  }
 }

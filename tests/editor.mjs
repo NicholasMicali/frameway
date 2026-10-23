@@ -61,6 +61,7 @@ try {
   const studioAccent = await page
     .locator('.app')
     .evaluate((e) => getComputedStyle(e).getPropertyValue('--accent'));
+  await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Color theme').selectOption('forest');
   assert.equal(
     await page.locator('.app').evaluate((e) => getComputedStyle(e).getPropertyValue('--accent')),
@@ -101,6 +102,7 @@ try {
   await viewer.getByRole('heading', { name: 'Give your project a home' }).waitFor();
   await page.waitForTimeout(500);
   await page.reload();
+  await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Color theme').waitFor();
   assert.equal(await page.getByLabel('Color theme').inputValue(), 'forest');
   assert.deepEqual(errors, []);

@@ -76,7 +76,8 @@ try {
     '0s',
   );
   await viewer.screenshot({ path: 'test-results/area-zoom-export.png' });
-  await viewer.getByRole('button', { name: 'Continue →', exact: true }).last().click();
+  // Jump to another image so Back tests zoom reset without skipping a playing clip.
+  await viewer.getByRole('button', { name: /^Go to step 5:/ }).click();
   assert.equal(await viewer.locator('.area-zoom-image').count(), 0);
   await viewer.getByRole('button', { name: '← Back', exact: true }).click();
   assert.equal(await viewer.locator('.area-zoom-image').count(), 1);

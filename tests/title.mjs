@@ -36,6 +36,7 @@ try {
     buffer: Buffer.from(logoBase64, 'base64'),
   });
   await page.locator('.stage .title-logo').waitFor();
+  await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Color theme').selectOption('custom');
   await page.getByLabel('Custom theme color').fill('#ffd500');
   assert.equal(

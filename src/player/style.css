@@ -93,6 +93,7 @@ button:disabled {
   overflow-wrap: anywhere;
 }
 .card p {
+  color: #111;
   font-size: 14px;
   line-height: 1.55;
   white-space: pre-wrap;
@@ -188,4 +189,43 @@ body {
 }
 .card .primary {
   color: var(--accent-text, #fff);
+}
+
+.progress {
+  min-width: 0;
+}
+.step-dots {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 4px;
+  margin-top: 4px;
+}
+.step-dots button {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 5px;
+}
+.step-dots button span {
+  width: 6px;
+  height: 6px;
+  background: #a9bbca;
+  border-radius: 50%;
+}
+.step-dots button.current span {
+  width: 16px;
+  background: #337ab7;
+  border-radius: 4px;
+}
+.step-dots button:hover:not(:disabled) {
+  background: #eaf2ff;
 }
