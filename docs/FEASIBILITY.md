@@ -16,12 +16,12 @@ REA cannot recover server source or guarantee original names from minified bundl
 
 ## Proposed first version
 
-| Area | Include | Defer |
-| --- | --- | --- |
-| Capture | Chrome MV3 extension; explicit start/stop; one active tab; continuous tab video; timestamped clicks; extracted still frames; manual frame correction | Desktop apps, mobile, cross-origin iframe interaction, multi-tab flows |
-| Editor | Step thumbnails; select/reorder/delete; screenshot canvas; editable card title/body; movable hotspot/card; next-step target; simple clip in/out controls; preview | Rich text, multitrack video editing, audio, pan/zoom, AI writing |
-| Player | Still with accessible hotspot/button → transition video → next still; next/back/restart; responsive media and overlays | Analytics, accounts, billing, hosted publishing |
-| Storage | Extension-origin IndexedDB for images and metadata; versioned manifest plus binary image/video assets in a project archive | Cloud services, teams, conflict resolution |
+| Area    | Include                                                                                                                                                           | Defer                                                                  |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Capture | Chrome MV3 extension; explicit start/stop; one active tab; continuous tab video; timestamped clicks; extracted still frames; manual frame correction              | Desktop apps, mobile, cross-origin iframe interaction, multi-tab flows |
+| Editor  | Step thumbnails; select/reorder/delete; screenshot canvas; editable card title/body; movable hotspot/card; next-step target; simple clip in/out controls; preview | Rich text, multitrack video editing, audio, pan/zoom, AI writing       |
+| Player  | Still with accessible hotspot/button → transition video → next still; next/back/restart; responsive media and overlays                                            | Analytics, accounts, billing, hosted publishing                        |
+| Storage | Extension-origin IndexedDB for images and metadata; versioned manifest plus binary image/video assets in a project archive                                        | Cloud services, teams, conflict resolution                             |
 
 Use a React + TypeScript editor packaged as an extension page, with a shared player component. This avoids an extension-to-localhost bridge for the initial product. A Vite development preview can use fixture data. A standalone player/export is a later milestone; REA is a development tool, not a runtime dependency. No AI API is needed by this product.
 

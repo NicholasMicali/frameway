@@ -43,6 +43,6 @@ Share only sanitized screenshots or logs. Do not attach credentials, customer da
 
 No Windows enterprise findings have been reported yet. Record environment-specific results rather than treating one successful machine as support for every managed environment.
 
-| Environment / version | Scenario | Result | Issue / follow-up |
-| --- | --- | --- | --- |
+| Environment / version        | Scenario                            | Result         | Issue / follow-up          |
+| ---------------------------- | ----------------------------------- | -------------- | -------------------------- |
 | Windows enterprise — pending | Full record → edit → share workflow | Not yet tested | Owner will report findings |

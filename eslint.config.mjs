@@ -1,9 +1,27 @@
 import tsParser from '@typescript-eslint/parser';
 
 export default [
-  { ignores: ['node_modules/**', 'dist/**', 'release/**', 'tools/**', 'test-results/**', 'playwright-report/**', 'evidence/**', 'recordings/**', 'exports/**'] },
   {
-    files: ['src/**/*.{js,ts,tsx}', 'extension/**/*.ts', 'scripts/**/*.mjs', 'tests/**/*.{mjs,ts}', '*.mjs'],
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'release/**',
+      'tools/**',
+      'test-results/**',
+      'playwright-report/**',
+      'evidence/**',
+      'recordings/**',
+      'exports/**',
+    ],
+  },
+  {
+    files: [
+      'src/**/*.{js,ts,tsx}',
+      'extension/**/*.ts',
+      'scripts/**/*.mjs',
+      'tests/**/*.{mjs,ts}',
+      '*.mjs',
+    ],
     languageOptions: { ecmaVersion: 'latest', sourceType: 'module' },
     rules: {
       'no-debugger': 'error',
