@@ -1,5 +1,6 @@
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { zipSync, unzipSync } from 'fflate';
 const pkg = JSON.parse(await readFile('package.json', 'utf8'));
 const entries = {};
@@ -22,4 +23,8 @@ if (!check['manifest.json']) throw Error('Invalid release ZIP');
 await mkdir('release', { recursive: true });
 const target = `release/frameway-extension-v${pkg.version}.zip`;
 await writeFile(target, bytes);
+await writeFile(
+  `${target}.sha256`,
+  `${createHash('sha256').update(bytes).digest('hex')}  ${path.basename(target)}\n`,
+);
 console.log(`Created ${target} (${Object.keys(entries).length} files; no source maps)`);

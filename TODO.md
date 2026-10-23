@@ -43,7 +43,8 @@ The next milestone is a dependable first-use experience: record a real workflow,
 - [ ] Improve storage quota errors and make backup guidance actionable before space runs out.
 - [ ] Recover unfinished recordings after browser crashes, tab closure, or interrupted saving.
 - [ ] Test near-limit recordings and large exports for memory use, responsiveness, and useful failure messages.
-- [ ] Verify project backup/migration across extension updates and fresh installations.
+- [x] Owner confirmed export → reinstall → import recovery.
+- [ ] Verify migrations across future project schema versions.
 - [ ] Investigate export media trimming/redaction. Current exports retain original media; playback trims do not remove sensitive content.
 
 ## Usability — validate with testers

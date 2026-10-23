@@ -1,3 +1,5 @@
+import packageInfo from '../package.json';
+
 export function HomeIntro({ onRecord }: { onRecord: () => void }) {
   return (
     <>
@@ -48,26 +50,78 @@ export function HomeIntro({ onRecord }: { onRecord: () => void }) {
           </a>
         </div>
         <div className="install-guide">
-          <h3>Install the beta extension</h3>
+          <h3>Install from the extension ZIP</h3>
+          <a
+            className="primary home-cta"
+            href="https://github.com/NicholasMicali/frameway/releases"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Find the beta package ↗
+          </a>
+          <p>No Node.js or build tools needed. Works with Chrome on macOS and Windows.</p>
           <ol>
             <li>
-              Build the project with <code>npm ci</code> and <code>npm run build</code>, or unzip a
-              Frameway extension release package.
+              Download <strong>frameway-extension-v{packageInfo.version}.zip</strong> from the
+              release’s <strong>Assets</strong> list. Choose the extension package, not GitHub’s
+              “Source code” ZIP.
+            </li>
+            <li>
+              Unzip it into a folder you’ll keep. On Windows, right-click the ZIP and choose{' '}
+              <strong>Extract All</strong>.
             </li>
             <li>
               Open <code>chrome://extensions</code> in Chrome and turn on{' '}
               <strong>Developer mode</strong>.
             </li>
             <li>
-              Choose <strong>Load unpacked</strong> and select the built <code>dist</code> folder—or
-              the unzipped release folder containing <code>manifest.json</code>.
+              Click <strong>Load unpacked</strong>. Select the extracted folder containing{' '}
+              <code>manifest.json</code>—not the ZIP file or its parent folder.
             </li>
-            <li>Pin Frameway from Chrome’s Extensions menu. You’re ready to record.</li>
+            <li>
+              Pin Frameway from Chrome’s Extensions menu, open the page you want to demonstrate, and
+              click Frameway to record.
+            </li>
           </ol>
           <p>
-            Already installed? Use <strong>Reload</strong> on the extension’s card after updating
-            the build. No Chrome Web Store installation yet.
+            Already installed? Export important projects before replacing the extension. After
+            updating files in the same folder, click <strong>Reload</strong> on its Chrome card and
+            reopen the editor. Keep that folder in place.
           </p>
+          <details>
+            <summary>Building from source?</summary>
+            <p>
+              Run <code>npm ci</code> and <code>npm run build</code>, then load the generated{' '}
+              <code>dist</code> folder. There is no Chrome Web Store listing yet.
+            </p>
+          </details>
+        </div>
+      </section>
+      <section className="use-cases home-next-steps" aria-label="After recording">
+        <h2>Record it. Make it clear. Pass it on.</h2>
+        <div className="use-case-grid">
+          <article>
+            <h3>1. Refine the steps</h3>
+            <p>
+              Edit screenshot and video slides, add callouts and highlights, and make the title
+              slide your own.
+            </p>
+          </article>
+          <article>
+            <h3>2. Share the walkthrough</h3>
+            <p>
+              Choose Download HTML for one interactive file to send, or Export embed for your
+              website. Recipients can open the downloaded HTML in their browser.
+            </p>
+          </article>
+          <article>
+            <h3>3. Keep an editable backup</h3>
+            <p>
+              Choose Export project to save a project ZIP. Use Import to restore it after
+              reinstalling or move it to another computer. Playback HTML is for viewing; project
+              ZIPs keep your work editable.
+            </p>
+          </article>
         </div>
       </section>
       <section className="manual-recording">

@@ -2,6 +2,22 @@
 
 Record a workflow, edit screenshot and video steps, and send or embed an interactive walkthrough. Frameway is a local-first Chrome extension and editor built with original code. It does not require a Frameway account or backend.
 
+![Frameway demo: edit a callout, preview a highlighted step, and export an interactive walkthrough](docs/assets/frameway-demo.gif)
+
+_Recorded in Frameway using the built-in sample project. The GIF shows editing, preview, and export; the downloadable HTML remains interactive._
+
+## Install the packaged extension
+
+No Node.js or build tools are needed for the packaged version.
+
+1. Open [Releases](https://github.com/NicholasMicali/frameway/releases) and download **frameway-extension-v0.1.0.zip** from **Assets** (not the source-code archive).
+2. Unzip it into a permanent folder. On Windows, use **Extract All**.
+3. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
+4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
+5. Open a page, click Frameway, wait for **REC**, and click it again when finished. The editor opens automatically.
+
+Keep the extracted folder in place. Back up editable work with **Export project** before replacing or removing an installation; restore the `.frameway.zip` with **Import**. **Download HTML** creates the file to send to viewers.
+
 ## Project direction and contributions
 
 Frameway is a local tool: no accounts, application backend, managed hosting, cloud sync, or telemetry. Users may host their own exported walkthroughs. See [project policy](docs/PROJECT-POLICY.md), [privacy](PRIVACY.md), and [architecture](docs/ARCHITECTURE.md).
@@ -19,7 +35,7 @@ npm run build
 
 The build creates `dist/`. Generated files and dependencies are intentionally not committed.
 
-The same npm commands work on macOS and Windows (including PowerShell). Install Node.js 24 first; the optional `.sh` helper scripts are for Unix shells and are not required. Windows has not yet been manually verified.
+The same npm commands work on macOS and Windows (including PowerShell). Install Node.js 24 first; the optional `.sh` helper scripts are for Unix shells and are not required. The owner has confirmed Windows use, HTML delivery to recipients, and export → reinstall → import recovery. Specific managed-browser policies and display configurations still need broader testing.
 
 Your projects and recordings are saved in your own browser's IndexedDB, outside the Git repository. Cloning this source does not include the author's projects. The sample walkthrough uses generated demo content. If saving personal exports inside the repository, use `exports/` or `recordings/`; both are ignored, along with video files and the default walkthrough export filenames. Renamed HTML exports or extracted project folders should also stay in those ignored directories.
 
@@ -35,7 +51,7 @@ The extension records a tab's video and clicks, then creates screenshot/video st
 
 Shortcut: **Command+Shift+Y** on macOS; **Ctrl+Shift+Y** elsewhere. Reopen the editor through the extension's **Options** page. After updating the source, rebuild, click **Reload** on the extension's Chrome card, and reopen the editor. Export important projects before replacing or removing an extension installation.
 
-Alternatively, unzip a built `frameway-extension-v0.1.0.zip` release artifact and load the extracted folder containing `manifest.json`. There is no Chrome Web Store listing. ZIPs are produced locally and can be attached to a GitHub release once this repository is published.
+Alternatively, unzip a built `frameway-extension-v0.1.0.zip` release artifact and load the extracted folder containing `manifest.json`. There is no Chrome Web Store listing. Use the Releases page for packaged builds; developers can create one locally with `npm run package:extension`.
 
 ### Website and manual screen recording
 
