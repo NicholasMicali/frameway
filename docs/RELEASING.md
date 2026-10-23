@@ -2,7 +2,7 @@
 
 The first beta is 0.1.0. Source is published at [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). Publishing a packaged release is a separate step; track validation in [TODO.md](../TODO.md).
 
-1. Choose repository visibility and license. No open-source license has been granted by this repository yet; `private: true` prevents npm publication, not GitHub visibility.
+1. The repository is public and the source uses Apache-2.0; `private: true` prevents npm publication, not GitHub visibility.
 2. Review the prospective commit files (`git ls-files --cached --others --exclude-standard`). Keep recordings, private research captures, profiles, `.env` files, dependencies, and build artifacts out of Git.
 3. On Node 24, run `npm ci`, `npm run build`, `npm test`, install Playwright Chromium, and run `npm run test:browser`.
 4. Run `npm run package:extension`. Unzip the artifact and load it unpacked in Chrome for a real-tab smoke test. Export a project backup before changing an existing extension installation.

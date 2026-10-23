@@ -2,6 +2,12 @@
 
 Record a workflow, edit screenshot and video steps, and send or embed an interactive walkthrough. Frameway is a local-first Chrome extension and editor built with original code. It does not require a Frameway account or backend.
 
+## Project direction and contributions
+
+Frameway is a local tool: no accounts, application backend, managed hosting, cloud sync, or telemetry. Users may host their own exported walkthroughs. See [project policy](docs/PROJECT-POLICY.md), [privacy](PRIVACY.md), and [architecture](docs/ARCHITECTURE.md).
+
+Contributions are welcome under [Apache-2.0](LICENSE). Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [code of conduct](CODE_OF_CONDUCT.md), and the issue forms. Report vulnerabilities through [SECURITY.md](SECURITY.md). Your recordings and branding remain your content.
+
 ## Start from a fresh clone
 
 Use **Node.js 24** and npm. From this repository:
@@ -100,7 +106,7 @@ Creates `release/frameway-extension-v0.1.0.zip`, with `manifest.json` at its roo
 
 GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `v0.1.0` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
 
-Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). No packaged release has been published or open-source license selected yet.
+Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. A packaged beta release remains pending maintainer testing.
 
 ## Research notes
 

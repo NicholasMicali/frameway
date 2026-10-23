@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose an improvement to the local tool.
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Workflow and problem
+      description: What are you trying to do? What workaround do you use today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: How should it work? Explain any new permissions, dependencies, storage changes, or network behavior.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Project scope
+      options:
+        - label: I have read docs/PROJECT-POLICY.md and understand that managed hosting, accounts, cloud storage, and telemetry are outside the project's direction.
+          required: true

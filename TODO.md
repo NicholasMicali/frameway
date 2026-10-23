@@ -18,7 +18,7 @@ The next milestone is a dependable first-use experience: record a real workflow,
 
 - [ ] Verify the first GitHub Actions build and downloadable extension artifact.
 - [ ] Install the packaged extension in a fresh Chrome profile and complete the entire record → edit → export flow.
-- [ ] Choose a license so contributors and users know what reuse is permitted.
+- [x] Adopt Apache-2.0 and document contribution and local-only project policies.
 - [ ] Publish a versioned beta release with the extension ZIP and installation instructions after validation.
 - [ ] Ask a few testers to follow [the testing guide](docs/BETA-TESTING.md) without live setup help; capture where they get stuck.
 
