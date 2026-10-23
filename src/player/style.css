@@ -6,3 +6,4 @@
 
 body{background:#fff}.stage{background:#f8fafc}
 .screen{container-type:inline-size}
+.card .primary{color:var(--accent-text,#fff)}

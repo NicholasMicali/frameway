@@ -1,3 +1,5 @@
+import {areaZoomVars} from './area-zoom';
+import zoomCSS from './area-zoom.css?raw';
 import {themeVars} from './themes';
 import {zipSync,strToU8} from 'fflate';
 import {validateManifest,type Project} from './model';
@@ -8,14 +10,15 @@ import titleCSS from './title-slide.css?raw';
 const jsonForHTML=(value:unknown)=>JSON.stringify(value).replace(/</g,'\\u003c');
 const escapeHTML=(value:string)=>value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 function playerDocument(p:Project,video:string,images:string[]){
- const data={theme:themeVars(p.theme),title:p.title,width:p.width,height:p.height,video,steps:p.steps.map(({image,...s},i)=>({...s,image:images[i]}))};
+ const data={theme:themeVars(p.theme,p.customColor),logo:p.logo,title:p.title,width:p.width,height:p.height,video,steps:p.steps.map(({image,...s},i)=>({...s,image:images[i],zoomVars:areaZoomVars(p.steps[i])}))};
  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(p.title)}</title><style>${css}
-${titleCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>${runtime}</script></body></html>`;
+${titleCSS}
+${zoomCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>${runtime}</script></body></html>`;
 }
 function dataURL(blob:Blob){return new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(Error('Could not read export media'));reader.readAsDataURL(blob);});}
 export async function exportInteractive(p:Project,format:'html'|'zip'){
  validateManifest(p);
- const bytes=p.video.size+p.steps.reduce((n,s)=>n+s.image.size,0);
+ const bytes=(p.logo?.length??0)+p.video.size+p.steps.reduce((n,s)=>n+s.image.size,0);
  if(bytes>100*1024*1024)throw Error('Interactive export supports up to 100 MB of media. Use a shorter recording.');
  if(format==='html'){
   const video=await dataURL(p.video),images=[];

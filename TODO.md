@@ -2,6 +2,18 @@
 
 The next milestone is a dependable first-use experience: record a real workflow, edit it, and send or embed a working walkthrough. These are open tasks, not promised features. Prioritize changes using tester findings before expanding scope.
 
+## Real-use feedback — October 23
+
+- [x] Add per-slide quick actions for duplicate, move up/down, and delete, with undo support.
+- [x] Use accessible undo/redo icons and move project selection into the header.
+- [x] Scroll slide settings independently from the canvas.
+- [x] Add timeline zoom controls (1×–16×) for granular trimming.
+- [x] Upload a company logo for title slides only; preserve it in backups and exports.
+- [x] Add a custom theme color alongside presets, scoped to walkthrough content.
+- [x] Animate highlighted-area screenshots while keeping callouts at normal size.
+- [x] Add subtle, area-size-based automatic zoom plus per-slide enable/disable and custom percentage; preserve settings in backups and exported players, respect reduced motion, and avoid blank image edges.
+- [ ] Gather feedback on timeline zoom and numeric start/end editing before expanding video editing controls.
+
 ## Before wider sharing
 
 - [ ] Verify the first GitHub Actions build and downloadable extension artifact.

@@ -46,10 +46,10 @@ The website and extension have separate browser storage. Use **Export project �
 ## Edit a walkthrough
 
 - New recordings begin with an editable title slide, using the opening frame cropped into its lower-right corner. Existing projects have **Add title slide**.
-- Image steps support point hotspots, callout cards, and outlined area spotlights. Move and size overlays, edit text, and select navigation targets.
-- Themes apply to walkthrough overlays and title slides; the studio stays white/light blue.
-- Video steps have draggable trim handles, a scrubber, split actions, and autoplay settings. Insert a screenshot at a moment to split the video around it.
-- Duplicate, reorder, or delete steps. Undo/redo keeps up to 80 snapshots during the current editing session; it resets on reload or project opening.
+- Image steps support point hotspots, callout cards, and outlined area spotlights. Move and size overlays, edit text, and select navigation targets. Area highlights offer gentle automatic zoom based on their size, an on/off switch, and a custom percentage (100% = original size). The screenshot zooms toward the highlight in preview and exports while the callout stays its normal size. Editing stays unzoomed for accurate placement. Existing area slides keep zoom off until enabled; newly selected area styles enable it. Large custom percentages can crop the highlight. Reduced-motion viewers see the final view without animation.
+- Themes apply to walkthrough overlays and title slides; the studio stays white/light blue. Choose **Custom color…** for your own accent. Upload a company logo in title-slide settings (PNG/JPEG/WebP up to 5 MB); it appears only on title slides and travels with project backups and exports.
+- Video steps have draggable trim handles, 1×–16× timeline zoom with horizontal scrolling, a scrubber, split actions, and autoplay settings. Insert a screenshot at a moment to split the video around it.
+- Use each slide’s three-dot menu to duplicate, reorder, or delete it. Undo/redo keeps up to 80 snapshots during the current editing session; it resets on reload or project opening.
 - Preview starts at the selected step; returning to Edit restores the originating step. Restart begins at the title slide.
 
 ## Send or embed

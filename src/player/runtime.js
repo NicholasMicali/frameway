@@ -22,6 +22,7 @@
   const titleSlide=element('div','title-slide',screen);
   const titleImage=element('img','title-preview',titleSlide);titleImage.alt='';
   const titleCopy=element('div','title-copy',titleSlide);
+  const titleLogo=element('img','title-logo',titleCopy);titleLogo.alt='Company logo';titleLogo.hidden=!project.logo;if(project.logo)titleLogo.src=project.logo;
   const titleHeading=element('h2','',titleCopy),titleBody=element('p','',titleCopy),titleStart=element('button','title-start',titleCopy);
   const hotspot = element('button', 'hotspot', screen, '●');
   hotspot.setAttribute('aria-label', 'Hotspot');
@@ -101,6 +102,7 @@
     completed = false; ready = false;
     error.textContent = '';
     const s = step();
+    image.classList.remove('area-zoom-image');hotspot.classList.remove('area-zoom-hotspot');
     titleSlide.hidden=s.kind!=='title';titleImage.src=s.image;titleHeading.textContent=s.title;titleBody.textContent=s.body;titleStart.textContent=s.kind==='title'?s.buttonText:'';
     image.hidden = s.kind !== 'image';
     video.hidden = s.kind !== 'video';
@@ -117,6 +119,8 @@
     card.style.width = s.cardWidth ? `${s.cardWidth*100}%` : '';
     hotspot.style.left = `${(s.style === 'area' ? bound(s.x,s.areaWidth??.25) : s.x) * 100}%`;
     hotspot.style.top = `${(s.style === 'area' ? bound(s.y,s.areaHeight??.2) : s.y) * 100}%`;
+    for(const [key,value] of Object.entries(s.zoomVars||{})){image.style.setProperty(key,value);hotspot.style.setProperty(key,value);}
+    if(s.kind==='image'&&s.style==='area'&&s.zoomEnabled){void screen.offsetWidth;image.classList.add('area-zoom-image');hotspot.classList.add('area-zoom-hotspot');}
     card.hidden = s.kind !== 'image' || (s.style !== 'callout' && !s.openByDefault);
     heading.textContent = s.title;
     body.textContent = s.body;

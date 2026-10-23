@@ -33,7 +33,7 @@ try{
  await page.getByRole('button',{name:'✎ Edit'}).click();
  await page.getByLabel('Video scrubber').fill('0.5');await page.getByRole('button',{name:'Use this frame as still'}).click();await page.getByText('Extracting still frame…').waitFor({state:'hidden'});
  await page.locator('.export-menu summary').click();const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Export project'}).click();const download=await downloadPromise;await download.saveAs('test-results/roundtrip.zip');
- await page.locator('input[type=file]').setInputFiles('test-results/roundtrip.zip');await page.getByText('Importing walkthrough…').waitFor({state:'hidden'});assert.equal(await page.getByLabel('Callout headline').inputValue(),'Opening footage');
+ await page.locator('input[type=file][accept=".zip"]').setInputFiles('test-results/roundtrip.zip');await page.getByText('Importing walkthrough…').waitFor({state:'hidden'});assert.equal(await page.getByLabel('Callout headline').inputValue(),'Opening footage');
  await page.locator('.step-list .step').nth(1).click();
  assert.equal(await page.getByLabel('Open by default').isChecked(),false);
  await page.getByLabel('Overlay style').selectOption('callout');assert.equal(await page.getByRole('button',{name:'Hotspot',exact:true}).count(),0);

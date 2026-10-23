@@ -58,3 +58,18 @@ Version 0.1.0 is consistent across the package, extension manifest, and UI. A cl
 A pattern-based review of 55 prospective publication files found no credential assignments, private keys, private Arcade flow/share URLs, personal `/Users/` paths, or files over 1 MB. This is a bounded scan, not proof that no sensitive data exists. Dependencies, generated assets, release ZIPs, test artifacts, profiles, `.env` files, and raw evidence remain ignored. No files were committed or pushed as part of this preparation.
 
 GitHub workflows are configured but have not executed on GitHub yet. Repository visibility and licensing remain owner choices. Historical verification sections above describe earlier milestones, not the current package version.
+
+## October 23 editor feedback pass
+
+- Build and extension packaging pass; 11 model tests and all six browser suites pass.
+- Added interaction coverage for non-selected slide menu actions and undo, header project selection, zoomed trim coordinates, independent inspector scrolling, and narrow-screen overflow.
+- Title tests now upload a generated logo and use a custom accent, then verify persistence, editable archive roundtrip, and offline HTML rendering. Export regression coverage also checks relative media and React iframe playback.
+- Desktop/mobile screenshots reviewed. Tests use synthetic media; real Windows/enterprise recording validation remains with the owner.
+- Highlight zoom animation remains a pending design decision in TODO.md.
+
+### Highlight zoom follow-up
+
+- Implemented per-area-slide automatic or custom zoom, with callouts outside the animated transform. Editor placement remains unzoomed; preview and exported playback animate the screenshot and matching outline together.
+- Build/package and all 12 model tests pass. Dedicated zoom browser tests pass for percentage overrides, automatic/reset/disable controls, unchanged callout dimensions, persistence, archive roundtrip, offline HTML, reduced motion, and navigation reset.
+- Existing editor and export suites pass, including relative-file packages and React iframe embedding. Preview and offline export screenshots reviewed.
+- Automatic zoom is capped by the highlight dimensions so the whole area fits. Custom percentages intentionally allow cropping; translation remains bounded to avoid blank image edges.

@@ -31,3 +31,14 @@ test('split preserves incoming IDs, contiguous ranges, and outgoing branches',()
 test('duplicate uses a unique ID and keeps original media and branch',()=>{const p=project(),q=duplicateStep(p,'a');validateManifest(q);assert.equal(q.steps.length,4);assert.notEqual(q.steps[0].id,q.steps[1].id);assert.equal(q.steps[1].target,'c');assert.equal(q.steps[1].image,p.steps[0].image);});
 
 test('title insertion preserves all existing steps and is idempotent',()=>{const p=project(),image=new Blob(['opening']);const q=withTitleSlide(p,image);validateManifest(q);assert.equal(q.steps[0].kind,'title');assert.equal(q.steps[0].image,image);assert.equal(nextId(q,q.steps[0]),'a');assert.equal(q.steps[1],p.steps[0]);assert.equal(withTitleSlide(q,image),q);const bad={...q,steps:q.steps.map(s=>s.kind==='title'?{...s,buttonText:123}:s)};assert.throws(()=>validateManifest(bad));});
+
+test('custom theme and logo validation rejects invalid imported values',()=>{const p={...project(),theme:'custom' as const,customColor:'#ffd500',logo:'data:image/png;base64,aGVsbG8='};validateManifest(p);for(const change of [{customColor:'red'},{customColor:'#12345g'},{logo:'https://example.com/logo.png'},{logo:'data:image/svg+xml;base64,aA=='},{logo:'data:image/png;base64,'+'a'.repeat(700000)}])assert.throws(()=>validateManifest({...p,...change}));});
+
+import {automaticZoom,areaZoom} from '../src/area-zoom';
+test('automatic area zoom is subtle, size-aware, and keeps the image over the viewport',()=>{
+ const s={...step('zoom'),style:'area' as const,zoomEnabled:true,areaWidth:.1,areaHeight:.1};
+ assert.ok(automaticZoom(s)>automaticZoom({...s,areaWidth:.6,areaHeight:.6}));assert.ok(automaticZoom(s)<=120);assert.equal(automaticZoom({...s,areaWidth:1}),100);
+ for(const x of [0,.5,1])for(const y of [0,.5,1]){const z=areaZoom({...s,x,y});assert.ok(z.tx<=0&&z.ty<=0&&z.tx+z.scale>=1&&z.ty+z.scale>=1);assert.ok((z.x-.05)*z.scale+z.tx>=-1e-8);assert.ok((z.x+.05)*z.scale+z.tx<=1+1e-8);}
+ assert.equal(areaZoom({...s,zoomEnabled:false}).scale,1);assert.equal(areaZoom({...s,zoomPercent:237.5}).scale,2.375);
+ const p=project();p.steps[0]=s;validateManifest(p);for(const zoomPercent of [99,-1,NaN,Infinity])assert.throws(()=>validateManifest({...p,steps:[{...s,zoomPercent}]}));
+});
