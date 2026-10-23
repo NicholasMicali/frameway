@@ -41,6 +41,41 @@ try {
   assert.ok(Math.abs(size.width - after.width) < 1 && Math.abs(size.height - after.height) < 1);
   assert.equal(await scale(page.locator('.callout')), 1);
   await page.screenshot({ path: 'test-results/area-zoom-preview.png' });
+  // Leaving holds the current image, reverses both transforms, and locks all navigation.
+  const checkExit = async (p, imageSelector, cardSelector) => {
+    const before = await p.locator(cardSelector).boundingBox();
+    await p.getByRole('button', { name: /^Go to step 5:/ }).click();
+    assert.equal(await p.locator('.area-zoom-image').count(), 1);
+    assert.equal(await p.getByRole('button', { name: /^Go to step 5:/ }).isDisabled(), true);
+    await p.evaluate(() => {
+      for (const a of document.getAnimations()) {
+        if (a.constructor.name === 'Animation') {
+          a.pause();
+          a.currentTime = 325;
+        }
+      }
+    });
+    const halfway = await scale(p.locator(imageSelector));
+    assert.ok(halfway > 1 && halfway < 1.5, `Intermediate scale: ${halfway}`);
+    const during = await p.locator(cardSelector).boundingBox();
+    assert.ok(Math.abs(before.width - during.width) < 1);
+    await p.evaluate(() => {
+      for (const a of document.getAnimations()) if (a.constructor.name === 'Animation') a.finish();
+    });
+    await p.locator('.area-zoom-image').waitFor({ state: 'detached' });
+    await p.getByRole('button', { name: '← Back', exact: true }).click();
+    await p.locator('.area-zoom-image').waitFor();
+    await settle(p);
+  };
+  await checkExit(page, '.still', '.callout');
+  // Switching to Edit during exit cancels the pending destination.
+  await page.getByRole('button', { name: /^Go to step 5:/ }).click();
+  await page.getByRole('button', { name: '✎ Edit' }).click();
+  await page.waitForTimeout(700);
+  assert.equal(await page.getByLabel('Area zoom percentage').inputValue(), '150');
+  await page.getByRole('button', { name: '▷ Preview' }).click();
+  await settle(page);
+
   await page.getByRole('button', { name: '✎ Edit' }).click();
   await page.waitForTimeout(450);
   await page.reload();
@@ -81,6 +116,10 @@ try {
   assert.equal(await viewer.locator('.area-zoom-image').count(), 0);
   await viewer.getByRole('button', { name: '← Back', exact: true }).click();
   assert.equal(await viewer.locator('.area-zoom-image').count(), 1);
+  await viewer.emulateMedia({ reducedMotion: 'no-preference' });
+  await settle(viewer);
+  await checkExit(viewer, '.area-zoom-image', '.card');
+
   await page.getByLabel('Zoom into highlighted area').uncheck();
   await page.getByRole('button', { name: '▷ Preview' }).click();
   assert.equal(await page.locator('.area-zoom-image').count(), 0);

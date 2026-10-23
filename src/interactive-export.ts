@@ -1,3 +1,4 @@
+import { zoomOut } from './zoom-out';
 import { areaZoomVars } from './area-zoom';
 import zoomCSS from './area-zoom.css?raw';
 import { themeVars } from './themes';
@@ -29,7 +30,7 @@ function playerDocument(p: Project, video: string, images: string[]) {
   };
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(p.title)}</title><style>${css}
 ${titleCSS}
-${zoomCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>${runtime}</script></body></html>`;
+${zoomCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const zoomOut = ${zoomOut.toString()};\n${runtime}</script></body></html>`;
 }
 function dataURL(blob: Blob) {
   return new Promise<string>((resolve, reject) => {

@@ -70,7 +70,8 @@
     frame = 0,
     completed = false,
     ready = false,
-    starting = false;
+    starting = false,
+    leaving = false;
   const step = () => project.steps[index];
   const targetIndex = () => {
     const target = step().target;
@@ -83,12 +84,12 @@
         : project.steps.findIndex((s) => s.id === target);
   };
   function navigationLocked() {
-    return step().kind === 'video' && (starting || !video.paused);
+    return leaving || (step().kind === 'video' && (starting || !video.paused));
   }
   function updateNavigation() {
     const locked = navigationLocked();
     back.disabled = locked || history.length === 0;
-    next.disabled = restart.disabled = locked;
+    next.disabled = restart.disabled = continueButton.disabled = hotspot.disabled = locked;
     dotButtons.forEach((button, i) => {
       button.disabled = locked;
       button.classList.toggle('current', i === index);
@@ -105,11 +106,27 @@
   }
   new ResizeObserver(positionCard).observe(screen);
   new ResizeObserver(positionCard).observe(card);
-  function move(to, remember = true) {
-    if (to < 0 || to >= project.steps.length) return;
-    if (remember) history.push(index);
-    index = to;
-    render();
+  function move(to, remember = true, direction = '') {
+    if (leaving || to < 0 || to >= project.steps.length) return;
+    const commit = () => {
+      if (remember) history.push(index);
+      if (direction === 'back') history.pop();
+      if (direction === 'restart') history = [];
+      index = to;
+      leaving = false;
+      render();
+    };
+    const animation = zoomOut(screen);
+    if (!animation) {
+      commit();
+      return;
+    }
+    leaving = true;
+    updateNavigation();
+    void animation.finished.then(() => {
+      animation.cancel();
+      commit();
+    });
   }
   function advance() {
     const to = targetIndex();
@@ -216,8 +233,7 @@
   }
   const reset = () => {
     if (navigationLocked()) return;
-    history = [];
-    move(0, false);
+    move(0, false, 'restart');
   };
   const go = () => {
     if (!navigationLocked()) targetIndex() < 0 ? reset() : advance();
@@ -230,7 +246,7 @@
     } else go();
   };
   back.onclick = () => {
-    if (!navigationLocked() && history.length) move(history.pop(), false);
+    if (!navigationLocked() && history.length) move(history.at(-1), false, 'back');
   };
   restart.onclick = reset;
   play.onclick = () => {
