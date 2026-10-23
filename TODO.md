@@ -14,9 +14,11 @@ The next milestone is a dependable first-use experience: record a real workflow,
 - [x] Add subtle, area-size-based automatic zoom plus per-slide enable/disable and custom percentage; preserve settings in backups and exported players, respect reduced motion, and avoid blank image edges.
 - [ ] Gather feedback on timeline zoom and numeric start/end editing before expanding video editing controls.
 
+- [x] Name HTML downloads, embed ZIPs/extracted folders, and editable project backups after the project title, with portable filenames.
+
 ## Before wider sharing
 
-- [ ] Verify the first GitHub Actions build and downloadable extension artifact.
+- [x] Verify GitHub Actions checks on macOS, Windows, and Linux and build/test the local extension ZIP. Verification of the published release download remains part of release validation.
 - [ ] Install the packaged extension in a fresh Chrome profile and complete the entire record → edit → export flow.
 - [x] Adopt Apache-2.0 and document contribution and local-only project policies.
 - [ ] Publish a versioned beta release with the extension ZIP and installation instructions after validation.

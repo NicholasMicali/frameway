@@ -227,3 +227,15 @@ test('automatic area zoom is subtle, size-aware, and keeps the image over the vi
   for (const zoomPercent of [99, -1, NaN, Infinity])
     assert.throws(() => validateManifest({ ...p, steps: [{ ...s, zoomPercent }] }));
 });
+
+test('export filenames preserve readable titles and are portable on Windows', async () => {
+  const { exportName } = await import('../src/export-name');
+  assert.equal(exportName('CloudGo Advisor'), 'CloudGo Advisor');
+  assert.equal(exportName('  Sales: Q4 / demo?  '), 'Sales- Q4 - demo-');
+  assert.equal(exportName('../CON'), '..-CON');
+  assert.equal(exportName('CON.txt'), '_CON.txt');
+  assert.equal(exportName('...'), 'Untitled project');
+  assert.equal(exportName('   '), 'Untitled project');
+  assert.equal(exportName('Démo 日本語'), 'Démo 日本語');
+  assert.ok(new TextEncoder().encode(exportName('😀'.repeat(200)) + '.frameway.zip').length <= 255);
+});

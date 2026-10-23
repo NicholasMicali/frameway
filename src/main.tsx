@@ -15,6 +15,7 @@ import {
   type Step,
 } from './model';
 import { createProject, eventOnce, fixDuration, frameAt, openVideo, releaseVideo } from './media';
+import { exportName } from './export-name';
 import { download, exportProject, importProject } from './archive';
 import { sampleProject } from './sample';
 import './style.css';
@@ -627,7 +628,10 @@ function App() {
                 <button
                   onClick={() =>
                     task('Building standalone walkthrough…', async () =>
-                      download(await exportInteractive(project, 'html'), 'walkthrough.html'),
+                      download(
+                        await exportInteractive(project, 'html'),
+                        `${exportName(project.title)}.html`,
+                      ),
                     )
                   }
                 >
@@ -636,7 +640,10 @@ function App() {
                 <button
                   onClick={() =>
                     task('Building embed package…', async () =>
-                      download(await exportInteractive(project, 'zip'), 'walkthrough-embed.zip'),
+                      download(
+                        await exportInteractive(project, 'zip'),
+                        `${exportName(project.title)}.zip`,
+                      ),
                     )
                   }
                 >
@@ -645,7 +652,10 @@ function App() {
                 <button
                   onClick={() =>
                     task('Packing your walkthrough…', async () =>
-                      download(await exportProject(project), 'walkthrough.frameway.zip'),
+                      download(
+                        await exportProject(project),
+                        `${exportName(project.title)}.frameway.zip`,
+                      ),
                     )
                   }
                 >
