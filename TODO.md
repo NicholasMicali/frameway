@@ -24,8 +24,9 @@ The next milestone is a dependable first-use experience: record a real workflow,
 - [ ] Publish a versioned beta release with the extension ZIP and installation instructions after validation.
 - [ ] Ask a few testers to follow [the testing guide](docs/BETA-TESTING.md) without live setup help; capture where they get stuck.
 
-## Windows enterprise validation — awaiting owner testing
+## Windows enterprise validation — owner feedback received
 
+- [x] Owner reports Frameway works on Windows and exported HTML can be sent to recipients successfully. Exact OS/Chrome versions and managed-policy configuration were not supplied.
 - [ ] Clone and build with Node 24 in PowerShell, including a checkout path containing spaces.
 - [ ] Check whether managed Chrome permits Developer mode, unpacked extensions, and tab capture; document any policy blockers without bypassing them.
 - [ ] Record a representative workflow with approved test data; check click alignment, screenshots, video continuity, and stop/save behavior.
@@ -33,7 +34,8 @@ The next milestone is a dependable first-use experience: record a real workflow,
 - [ ] Exercise scrolling, dialogs, new tabs, and sign-in redirects; note where existing single-tab/top-frame/cross-origin limits affect the use case.
 - [ ] Edit title slides, callouts, highlights, step order, and video trims; reload and confirm the project persists.
 - [ ] Export/import a project, open standalone HTML offline, and test an embed on the intended internal site if permitted.
-- [ ] Test recipient delivery through the intended enterprise sharing channel, including any HTML/ZIP download restrictions.
+- [x] Confirm recipient delivery of standalone HTML on the owner-tested Windows workflow.
+- [ ] Check ZIP delivery and any additional enterprise sharing-channel restrictions.
 - [ ] Record findings using the guide below, then turn reproducible failures into prioritized tasks.
 
 ## Reliability and trust
