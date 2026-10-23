@@ -1,0 +1,13 @@
+node_modules/
+dist/
+release/
+tools/
+test-results/
+playwright-report/
+.browser-profile/
+evidence/
+recordings/
+exports/
+package-lock.json
+LICENSE
+NOTICE
