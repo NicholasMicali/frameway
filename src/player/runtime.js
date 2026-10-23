@@ -44,8 +44,22 @@
   nav.setAttribute('aria-label', 'Walkthrough controls');
   const back = element('button', '', nav, '← Back');
   const restart = element('button', '', nav, 'Restart');
-  const progress = element('span', 'progress', nav);
-  progress.setAttribute('aria-live', 'polite');
+  const progress = element('div', 'progress', nav);
+  const progressLabel = element('span', '', progress);
+  progressLabel.setAttribute('aria-live', 'polite');
+  const dots = element('div', 'step-dots', progress);
+  dots.setAttribute('role', 'group');
+  dots.setAttribute('aria-label', 'Walkthrough steps');
+  const dotButtons = project.steps.map((s, i) => {
+    const button = element('button', '', dots);
+    element('span', '', button);
+    button.setAttribute('aria-label', `Go to step ${i + 1}: ${s.title}`);
+    button.title = `Step ${i + 1}: ${s.title}`;
+    button.onclick = () => {
+      if (!navigationLocked() && i !== index) move(i);
+    };
+    return button;
+  });
   const play = element('button', '', nav, 'Play');
   const next = element('button', 'primary', nav, 'Next →');
   const error = element('p', 'error', root);
@@ -55,7 +69,8 @@
     generation = 0,
     frame = 0,
     completed = false,
-    ready = false;
+    ready = false,
+    starting = false;
   const step = () => project.steps[index];
   const targetIndex = () => {
     const target = step().target;
@@ -67,6 +82,20 @@
           : -1
         : project.steps.findIndex((s) => s.id === target);
   };
+  function navigationLocked() {
+    return step().kind === 'video' && (starting || !video.paused);
+  }
+  function updateNavigation() {
+    const locked = navigationLocked();
+    back.disabled = locked || history.length === 0;
+    next.disabled = restart.disabled = locked;
+    dotButtons.forEach((button, i) => {
+      button.disabled = locked;
+      button.classList.toggle('current', i === index);
+      if (i === index) button.setAttribute('aria-current', 'step');
+      else button.removeAttribute('aria-current');
+    });
+  }
   function positionCard() {
     if (card.hidden || matchMedia('(max-width: 600px)').matches) return;
     const bounds = screen.getBoundingClientRect();
@@ -108,6 +137,8 @@
       completed = false;
     }
     error.textContent = '';
+    starting = true;
+    updateNavigation();
     try {
       await video.play();
       if (token !== generation) return;
@@ -116,6 +147,11 @@
     } catch {
       if (token === generation)
         error.textContent = 'Playback did not start. Select Play to try again.';
+    } finally {
+      if (token === generation) {
+        starting = false;
+        updateNavigation();
+      }
     }
   }
   function prepare() {
@@ -131,6 +167,7 @@
     video.pause();
     completed = false;
     ready = false;
+    starting = false;
     error.textContent = '';
     const s = step();
     image.classList.remove('area-zoom-image');
@@ -168,8 +205,8 @@
     heading.textContent = s.title;
     body.textContent = s.body;
     card.scrollTop = 0;
-    progress.textContent = `Step ${index + 1} of ${project.steps.length}`;
-    back.disabled = history.length === 0;
+    progressLabel.textContent = `Step ${index + 1} of ${project.steps.length}`;
+    updateNavigation();
     play.hidden = s.kind !== 'video';
     play.disabled = true;
     play.textContent = 'Play';
@@ -178,10 +215,13 @@
     if (s.kind === 'video') prepare();
   }
   const reset = () => {
+    if (navigationLocked()) return;
     history = [];
     move(0, false);
   };
-  const go = () => (targetIndex() < 0 ? reset() : advance());
+  const go = () => {
+    if (!navigationLocked()) targetIndex() < 0 ? reset() : advance();
+  };
   titleStart.onclick = continueButton.onclick = next.onclick = go;
   hotspot.onclick = () => {
     if (card.hidden) {
@@ -190,16 +230,19 @@
     } else go();
   };
   back.onclick = () => {
-    if (history.length) move(history.pop(), false);
+    if (!navigationLocked() && history.length) move(history.pop(), false);
   };
   restart.onclick = reset;
   play.onclick = () => {
     if (video.paused) void start();
     else {
       video.pause();
+      updateNavigation();
       play.textContent = 'Play';
     }
   };
+  video.addEventListener('play', updateNavigation);
+  video.addEventListener('pause', updateNavigation);
   video.addEventListener('loadedmetadata', prepare);
   video.addEventListener('ended', finish);
   video.addEventListener('error', () => {

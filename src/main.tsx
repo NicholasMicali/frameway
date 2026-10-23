@@ -22,7 +22,9 @@ import { HomeIntro, UseCases } from './HomeIntro';
 import packageInfo from '../package.json';
 import './title-slide.css';
 import { TitleSlide } from './TitleSlide';
-import { themes, themeVars, type ThemeName } from './themes';
+import { themeVars } from './themes';
+import { ProjectSettings } from './ProjectSettings';
+import { LogoUpload } from './LogoUpload';
 import { prepareLogo } from './branding';
 import { automaticZoom, areaZoomVars } from './area-zoom';
 import './area-zoom.css';
@@ -532,23 +534,31 @@ function App() {
           }}
           aria-label="Home"
         >
-          <span className="brand-icon">◈</span> frameway<span className="lab">LAB</span>
+          <span className="brand-icon">◈</span> frameway
+          <span className="app-version" title="Beta version">
+            v{packageInfo.version}
+          </span>
         </a>
         <div className="breadcrumb">
           Workspace <span>/</span>{' '}
           {project ? (
-            <select
-              disabled={!!busy}
-              aria-label="Open walkthrough"
-              value={project.id}
-              onChange={(e) => switchProject(e.target.value)}
-            >
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.title}
-                </option>
-              ))}
-            </select>
+            <div className="project-select">
+              <div className="project-select-measure" aria-hidden="true">
+                {project.title || 'Untitled'}
+              </div>{' '}
+              <select
+                disabled={!!busy}
+                aria-label="Open walkthrough"
+                value={project.id}
+                onChange={(e) => switchProject(e.target.value)}
+              >
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.id === project.id ? project.title : p.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           ) : (
             'Your first walkthrough'
           )}
@@ -699,35 +709,6 @@ function App() {
                   maxLength={200}
                   onChange={(e) => update({ ...project, title: e.target.value })}
                 />
-                <label className="theme-picker">
-                  <span>Theme</span>
-                  <select
-                    aria-label="Color theme"
-                    value={project.theme ?? 'violet'}
-                    onChange={(e) => update({ ...project, theme: e.target.value as ThemeName })}
-                  >
-                    {Object.entries(themes).map(([id, t]) => (
-                      <option key={id} value={id}>
-                        {t.label}
-                      </option>
-                    ))}
-                    <option value="custom">Custom color…</option>
-                  </select>
-                </label>
-                {project.theme === 'custom' && (
-                  <label className="custom-color-picker">
-                    Accent
-                    <input
-                      aria-label="Custom theme color"
-                      type="color"
-                      value={project.customColor ?? '#2264c5'}
-                      onChange={(e) =>
-                        update({ ...project, customColor: e.target.value }, 'custom-color')
-                      }
-                    />
-                    <span>{project.customColor ?? '#2264c5'}</span>
-                  </label>
-                )}
               </div>
               <div className="subtitle">
                 {project.steps.length} steps <span>·</span> {project.duration.toFixed(1)}s captured{' '}
@@ -735,6 +716,7 @@ function App() {
               </div>
             </div>
             <div className="toolbar-right">
+              <ProjectSettings key={project.id} project={project} onChange={update} />
               {!preview && (
                 <>
                   <button
@@ -871,11 +853,11 @@ function App() {
                     </div>
                   ))}
                 </div>
-                <button className="sample-link" onClick={() => void addTitle()} disabled={!!busy}>
-                  {project.steps.some((s) => s.kind === 'title')
-                    ? 'Edit title slide'
-                    : '＋ Add title slide'}
-                </button>
+                {!project.steps.some((s) => s.kind === 'title') && (
+                  <button className="sample-link" onClick={() => void addTitle()} disabled={!!busy}>
+                    ＋ Add title slide
+                  </button>
+                )}
                 <button className="sample-link" onClick={newSample}>
                   ＋ New sample
                 </button>
@@ -1031,14 +1013,28 @@ function App() {
                 </div>
               </div>
               <div className="player-bar">
-                <button onClick={restart} disabled={!preview}>
+                <button onClick={restart} disabled={!preview || playing}>
                   ↺ Restart
                 </button>
-                <div className="progress-dots">
-                  {project.steps.map((s) => (
-                    <span key={s.id} className={s.id === selected ? 'current' : ''} />
+                <nav className="progress-dots" aria-label="Walkthrough steps">
+                  {project.steps.map((s, i) => (
+                    <button
+                      key={s.id}
+                      aria-label={`Go to step ${i + 1}: ${s.title}`}
+                      title={`Step ${i + 1}: ${s.title}`}
+                      aria-current={s.id === selected ? 'step' : undefined}
+                      className={s.id === selected ? 'current' : ''}
+                      disabled={!preview || playing}
+                      onClick={() => {
+                        if (!preview || playing || s.id === selected) return;
+                        history.current.push(selected);
+                        select(s.id);
+                      }}
+                    >
+                      <span />
+                    </button>
                   ))}
-                </div>
+                </nav>
                 <div>
                   <button onClick={back} disabled={!preview || !history.current.length || playing}>
                     ← Back
@@ -1143,31 +1139,16 @@ function App() {
                 </label>
                 {step.kind === 'title' && (
                   <>
-                    <label>
-                      Company logo
-                      <input
-                        aria-label="Company logo"
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp"
-                        disabled={!!busy}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          e.target.value = '';
-                          if (file)
-                            void task('Preparing logo…', async () =>
-                              update({ ...project, logo: await prepareLogo(file) }),
-                            );
-                        }}
-                      />
-                    </label>
-                    {project.logo && (
-                      <button onClick={() => update({ ...project, logo: undefined })}>
-                        Remove logo
-                      </button>
-                    )}
-                    <p className="field-note">
-                      PNG, JPEG, or WebP, up to 5 MB. Shown only on title slides.
-                    </p>
+                    <LogoUpload
+                      logo={project.logo}
+                      disabled={!!busy}
+                      onRemove={() => update({ ...project, logo: undefined })}
+                      onUpload={(file) =>
+                        void task('Preparing logo…', async () =>
+                          update({ ...project, logo: await prepareLogo(file) }),
+                        )
+                      }
+                    />
                     <label>
                       Description
                       <textarea
@@ -1439,25 +1420,11 @@ function App() {
                 >
                   Delete step
                 </button>
-                <div className="local-card">
-                  <span>◈</span>
-                  <div>
-                    <strong>Made to stay yours</strong>
-                    <p>
-                      Video and edits are saved in this browser. Export a project to keep a backup.
-                    </p>
-                  </div>
-                </div>
               </aside>
             )}
           </div>
         </>
       )}
-      <footer>
-        <span>FRAMEWAY STUDIO</span>
-        <span>Capture a moment. Give it meaning.</span>
-        <span>Beta · v{packageInfo.version}</span>
-      </footer>
     </div>
   );
 }
