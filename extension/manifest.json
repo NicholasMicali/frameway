@@ -4,13 +4,7 @@
   "version": "0.1.0",
   "minimum_chrome_version": "116",
   "description": "Record tab video and clicks, then build a local interactive walkthrough.",
-  "permissions": [
-    "activeTab",
-    "scripting",
-    "tabCapture",
-    "offscreen",
-    "storage"
-  ],
+  "permissions": ["activeTab", "scripting", "tabCapture", "offscreen", "storage"],
   "background": {
     "service_worker": "background.js"
   },

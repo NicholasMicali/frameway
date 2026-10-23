@@ -1,14 +1,83 @@
-import {chromium} from 'playwright';import {createServer} from 'vite';import {mkdir,mkdtemp} from 'node:fs/promises';import {tmpdir} from 'node:os';import path from 'node:path';import assert from 'node:assert/strict';
-await mkdir('test-results',{recursive:true});const server=await createServer({server:{host:'127.0.0.1',port:4174,strictPort:true}});await server.listen();
-const profile=await mkdtemp(path.join(tmpdir(),'frameway-test-'));const extension=path.resolve('dist');
-const context=await chromium.launchPersistentContext(profile,{channel:'chromium',headless:false,args:[`--disable-extensions-except=${extension}`,`--load-extension=${extension}`],viewport:{width:1280,height:800}});
-try{const worker=context.serviceWorkers()[0]||await context.waitForEvent('serviceworker');const extensionId=new URL(worker.url()).hostname;const page=context.pages()[0]||await context.newPage();await page.goto('http://127.0.0.1:4174/demo.html');await page.bringToFront();console.log('Awaiting toolbar action in isolated Chrome window…');
- for(let i=0;i<120;i++){const s=await worker.evaluate(()=>chrome.storage.session.get('capture'));if(s.capture?.state==='recording')break;await new Promise(r=>setTimeout(r,1000));}
- console.log('Capture state:',await worker.evaluate(()=>chrome.storage.session.get(null)));
- const state=await worker.evaluate(()=>chrome.storage.session.get('capture'));assert.equal(state.capture?.state,'recording','Keyboard action must start real tab capture');
- await page.locator('#new').click();await page.waitForTimeout(900);await page.locator('#create').click();await page.waitForTimeout(900);await page.locator('#filter').click();await page.waitForTimeout(800);await page.locator('#route').click();await page.waitForTimeout(800);await page.locator('#complete').scrollIntoViewIfNeeded();await page.waitForTimeout(700);await page.locator('#complete').click();await page.waitForTimeout(700);
- await page.goto('http://127.0.0.1:4174/demo.html?navigation=1');await page.waitForTimeout(1000);await page.locator('#new').click();await page.waitForTimeout(700);await page.locator('#cancel').click();await page.waitForTimeout(700);
- const editorPromise=context.waitForEvent('page');await worker.evaluate(()=>chrome.runtime.sendMessage({to:'recorder',type:'stop'}));const editor=await editorPromise;await editor.waitForLoadState();await editor.getByLabel('Callout headline').waitFor({timeout:45000});
- assert.ok((await editor.locator('.step-list .step').count())>=8);await editor.locator('.still').evaluate(async img=>{await img.decode();const c=document.createElement('canvas');c.width=64;c.height=40;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,64,40);const data=ctx.getImageData(0,0,64,40).data;let dark=0;for(let i=0;i<data.length;i+=4)if(data[i]<220||data[i+1]<220||data[i+2]<220)dark++;if(dark<50)throw Error('First still is blank or nearly blank');});await editor.screenshot({path:'test-results/live-capture.png',fullPage:true});await editor.getByRole('button',{name:'▷ Preview'}).click();await editor.getByRole('button',{name:'Get started',exact:true}).click();await editor.getByRole('button',{name:'Continue',exact:false}).click();await editor.getByText('Playing video').waitFor();await editor.waitForTimeout(1500);
- console.log('PASS: real extension tab capture, trusted clicks, SPA navigation, scroll, full same-origin navigation, finalization, frame extraction and playback.',extensionId);
-}finally{await context.close();await server.close();}
+import { chromium } from 'playwright';
+import { createServer } from 'vite';
+import { mkdir, mkdtemp } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+await mkdir('test-results', { recursive: true });
+const server = await createServer({ server: { host: '127.0.0.1', port: 4174, strictPort: true } });
+await server.listen();
+const profile = await mkdtemp(path.join(tmpdir(), 'frameway-test-'));
+const extension = path.resolve('dist');
+const context = await chromium.launchPersistentContext(profile, {
+  channel: 'chromium',
+  headless: false,
+  args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`],
+  viewport: { width: 1280, height: 800 },
+});
+try {
+  const worker = context.serviceWorkers()[0] || (await context.waitForEvent('serviceworker'));
+  const extensionId = new URL(worker.url()).hostname;
+  const page = context.pages()[0] || (await context.newPage());
+  await page.goto('http://127.0.0.1:4174/demo.html');
+  await page.bringToFront();
+  console.log('Awaiting toolbar action in isolated Chrome window…');
+  for (let i = 0; i < 120; i++) {
+    const s = await worker.evaluate(() => chrome.storage.session.get('capture'));
+    if (s.capture?.state === 'recording') break;
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  console.log('Capture state:', await worker.evaluate(() => chrome.storage.session.get(null)));
+  const state = await worker.evaluate(() => chrome.storage.session.get('capture'));
+  assert.equal(state.capture?.state, 'recording', 'Keyboard action must start real tab capture');
+  await page.locator('#new').click();
+  await page.waitForTimeout(900);
+  await page.locator('#create').click();
+  await page.waitForTimeout(900);
+  await page.locator('#filter').click();
+  await page.waitForTimeout(800);
+  await page.locator('#route').click();
+  await page.waitForTimeout(800);
+  await page.locator('#complete').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(700);
+  await page.locator('#complete').click();
+  await page.waitForTimeout(700);
+  await page.goto('http://127.0.0.1:4174/demo.html?navigation=1');
+  await page.waitForTimeout(1000);
+  await page.locator('#new').click();
+  await page.waitForTimeout(700);
+  await page.locator('#cancel').click();
+  await page.waitForTimeout(700);
+  const editorPromise = context.waitForEvent('page');
+  await worker.evaluate(() => chrome.runtime.sendMessage({ to: 'recorder', type: 'stop' }));
+  const editor = await editorPromise;
+  await editor.waitForLoadState();
+  await editor.getByLabel('Callout headline').waitFor({ timeout: 45000 });
+  assert.ok((await editor.locator('.step-list .step').count()) >= 8);
+  await editor.locator('.still').evaluate(async (img) => {
+    await img.decode();
+    const c = document.createElement('canvas');
+    c.width = 64;
+    c.height = 40;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0, 64, 40);
+    const data = ctx.getImageData(0, 0, 64, 40).data;
+    let dark = 0;
+    for (let i = 0; i < data.length; i += 4)
+      if (data[i] < 220 || data[i + 1] < 220 || data[i + 2] < 220) dark++;
+    if (dark < 50) throw Error('First still is blank or nearly blank');
+  });
+  await editor.screenshot({ path: 'test-results/live-capture.png', fullPage: true });
+  await editor.getByRole('button', { name: '▷ Preview' }).click();
+  await editor.getByRole('button', { name: 'Get started', exact: true }).click();
+  await editor.getByRole('button', { name: 'Continue', exact: false }).click();
+  await editor.getByText('Playing video').waitFor();
+  await editor.waitForTimeout(1500);
+  console.log(
+    'PASS: real extension tab capture, trusted clicks, SPA navigation, scroll, full same-origin navigation, finalization, frame extraction and playback.',
+    extensionId,
+  );
+} finally {
+  await context.close();
+  await server.close();
+}

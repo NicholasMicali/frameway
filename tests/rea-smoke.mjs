@@ -1,4 +1,36 @@
-import {chromium} from 'playwright';import {createServer} from 'vite';import {spawn} from 'node:child_process';import {writeFile} from 'node:fs/promises';
-const server=await createServer({server:{host:'127.0.0.1',port:4175,strictPort:true}});await server.listen();const browser=await chromium.launch({channel:'chromium',headless:true,args:['--remote-debugging-port=9222','--remote-debugging-address=127.0.0.1']});
-function rea(args){return new Promise((res,rej)=>{const p=spawn(process.execPath,['tools/runtime/node_modules/rea-agents/scripts/rea.mjs',...args],{env:process.env});let out='',err='';p.stdout.on('data',d=>out+=d);p.stderr.on('data',d=>err+=d);p.on('exit',code=>code?rej(Error(out+err)):res(out));p.on('error',rej);});}
-try{const page=await browser.newPage();await page.goto('http://127.0.0.1:4175/demo.html');const out=await rea(['list-browser-targets','http://127.0.0.1:9222','--json']);await writeFile('evidence/rea-browser-targets.json',out);console.log('REA browser discovery succeeded:',out.slice(0,1600));}finally{await browser.close();await server.close();}
+import { chromium } from 'playwright';
+import { createServer } from 'vite';
+import { spawn } from 'node:child_process';
+import { writeFile } from 'node:fs/promises';
+const server = await createServer({ server: { host: '127.0.0.1', port: 4175, strictPort: true } });
+await server.listen();
+const browser = await chromium.launch({
+  channel: 'chromium',
+  headless: true,
+  args: ['--remote-debugging-port=9222', '--remote-debugging-address=127.0.0.1'],
+});
+function rea(args) {
+  return new Promise((res, rej) => {
+    const p = spawn(
+      process.execPath,
+      ['tools/runtime/node_modules/rea-agents/scripts/rea.mjs', ...args],
+      { env: process.env },
+    );
+    let out = '',
+      err = '';
+    p.stdout.on('data', (d) => (out += d));
+    p.stderr.on('data', (d) => (err += d));
+    p.on('exit', (code) => (code ? rej(Error(out + err)) : res(out)));
+    p.on('error', rej);
+  });
+}
+try {
+  const page = await browser.newPage();
+  await page.goto('http://127.0.0.1:4175/demo.html');
+  const out = await rea(['list-browser-targets', 'http://127.0.0.1:9222', '--json']);
+  await writeFile('evidence/rea-browser-targets.json', out);
+  console.log('REA browser discovery succeeded:', out.slice(0, 1600));
+} finally {
+  await browser.close();
+  await server.close();
+}

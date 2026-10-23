@@ -3,7 +3,7 @@ description: Report a reproducible problem with sanitized examples.
 body:
   - type: markdown
     attributes:
-      value: "For security vulnerabilities, use SECURITY.md. Never attach real enterprise recordings or credentials."
+      value: 'For security vulnerabilities, use SECURITY.md. Never attach real enterprise recordings or credentials.'
   - type: textarea
     id: environment
     attributes:

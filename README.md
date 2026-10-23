@@ -62,11 +62,11 @@ The website and extension have separate browser storage. Use **Export project â†
 
 Open **Export / Download**:
 
-| Action | Result |
-| --- | --- |
-| Download HTML | One self-contained interactive file, including media. Download and open in a modern browser; works offline. |
-| Export embed | ZIP with a standalone player, media, an HTML iframe example, and a React iframe wrapper. Host the extracted folder on an existing website or internal static server. |
-| Export project | Editable ZIP backup for importing into Frameway later. |
+| Action         | Result                                                                                                                                                               |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Download HTML  | One self-contained interactive file, including media. Download and open in a modern browser; works offline.                                                          |
+| Export embed   | ZIP with a standalone player, media, an HTML iframe example, and a React iframe wrapper. Host the extracted folder on an existing website or internal static server. |
+| Export project | Editable ZIP backup for importing into Frameway later.                                                                                                               |
 
 No managed hosting service is included. A localhost URL only works on your computer. Email/file-sharing previews may block scripts; recipients should download the HTML and open it in a browser. The React wrapper uses the same standalone player, not the editor. Playback exports cannot be imported as editable projects.
 
@@ -82,6 +82,8 @@ No managed hosting service is included. A localhost URL only works on your compu
 - Automated browser verification uses Chromium; broader browser/OS compatibility has not been established. Direct screen-recording tests use a synthetic stream, not an automated OS picker.
 
 ## Develop and test
+
+Run `npm run format:check` and `npm run lint` before submitting a PR (`npm run format` applies formatting). CI checks builds/model tests on Windows, macOS, and Linux, plus Chromium workflows and an offline core-flow check on Linux.
 
 Trying the beta? Follow the [tester guide and feedback template](docs/BETA-TESTING.md). The [TODO list](TODO.md) tracks release readiness, Windows enterprise validation, reliability work, and candidate features.
 

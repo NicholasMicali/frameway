@@ -57,11 +57,11 @@ For scale planning only: a configured 5 Mbps stream is about 37.5 MB/minute befo
 
 ## Browser versus desktop
 
-| Option | Captures | Click markers | Recommended use |
-| --- | --- | --- | --- |
-| Chrome extension | Selected browser tab video | Content-script events in permitted frames | First implementation |
-| Browser screen/window sharing | User-selected window/display pixels | No general cross-app click event feed | Manual markers/import, not automatic desktop walkthrough capture |
-| macOS capture helper | Selected screen/window via native capture | Separate native event listener and coordinate conversion | Second capture adapter if desktop apps are required |
+| Option                        | Captures                                  | Click markers                                            | Recommended use                                                  |
+| ----------------------------- | ----------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------- |
+| Chrome extension              | Selected browser tab video                | Content-script events in permitted frames                | First implementation                                             |
+| Browser screen/window sharing | User-selected window/display pixels       | No general cross-app click event feed                    | Manual markers/import, not automatic desktop walkthrough capture |
+| macOS capture helper          | Selected screen/window via native capture | Separate native event listener and coordinate conversion | Second capture adapter if desktop apps are required              |
 
 Arcade documents desktop screen/window/area recording followed by browser upload and editing. This supports reusing one editor for multiple capture front ends, but does not establish how Arcade implements them. [Arcade desktop](https://www.arcade.software/download).
 

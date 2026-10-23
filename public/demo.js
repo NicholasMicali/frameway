@@ -1,1 +1,36 @@
-const $=s=>document.querySelector(s);let count=12,clicks=0;$('#new').onclick=()=>$('dialog').showModal();$('#cancel').onclick=()=>$('dialog').close();$('#create').onclick=()=>{const row=document.createElement('div');row.className='row';row.textContent=$('#name').value;$('#rows').prepend(row);$('#count').textContent=++count;$('dialog').close();};$('#filter').onclick=e=>{e.target.textContent=e.target.textContent==='Show completed'?'Show active':'Show completed';};$('#route').onclick=()=>{history.pushState({},'', '#reports');$('h1').textContent='Reports';};$('#complete').onclick=()=>{$('#milestone').textContent='✓ Milestone complete';};document.addEventListener('click',()=>{$('#clicks').textContent=++clicks;},true);function tick(t){$('#clock').textContent=(t/1000).toFixed(3);requestAnimationFrame(tick);}requestAnimationFrame(tick);
+const $ = (s) => document.querySelector(s);
+let count = 12,
+  clicks = 0;
+$('#new').onclick = () => $('dialog').showModal();
+$('#cancel').onclick = () => $('dialog').close();
+$('#create').onclick = () => {
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.textContent = $('#name').value;
+  $('#rows').prepend(row);
+  $('#count').textContent = ++count;
+  $('dialog').close();
+};
+$('#filter').onclick = (e) => {
+  e.target.textContent =
+    e.target.textContent === 'Show completed' ? 'Show active' : 'Show completed';
+};
+$('#route').onclick = () => {
+  history.pushState({}, '', '#reports');
+  $('h1').textContent = 'Reports';
+};
+$('#complete').onclick = () => {
+  $('#milestone').textContent = '✓ Milestone complete';
+};
+document.addEventListener(
+  'click',
+  () => {
+    $('#clicks').textContent = ++clicks;
+  },
+  true,
+);
+function tick(t) {
+  $('#clock').textContent = (t / 1000).toFixed(3);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
