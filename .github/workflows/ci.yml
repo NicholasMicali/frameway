@@ -3,7 +3,38 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
-  check:
+  quality:
+    name: Formatting and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+  build:
+    name: Build and model (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run package:extension
+      - run: npm test
+  browser:
+    name: Browser workflows
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -14,7 +45,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
       - run: node scripts/package-extension.mjs
@@ -28,3 +58,13 @@ jobs:
           name: browser-test-results
           path: test-results/
           retention-days: 7
+  check:
+    name: check
+    if: always()
+    needs: [quality, build, browser]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every check to pass
+        env:
+          RESULTS: ${{ join(needs.*.result, ',') }}
+        run: node -e "if(process.env.RESULTS.split(',').some(result => result !== 'success')) process.exit(1)"

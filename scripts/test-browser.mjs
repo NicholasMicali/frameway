@@ -9,6 +9,7 @@ for (const test of [
   'area-zoom',
   'export',
   'title',
+  'offline-core',
 ]) {
   await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [`tests/${test}.mjs`], {

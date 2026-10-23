@@ -34,11 +34,17 @@ Discuss changes to capture permissions, project schema, runtime networking, depe
 ## Validate changes
 
 ```sh
+npm run format:check
+npm run lint
 npm run build
 npm test
 npx playwright install chromium
 npm run test:browser
 ```
+
+Run `npm run format` to format source and documentation before committing. Prettier and ESLint versions are pinned. Lint targets likely bugs; TypeScript checks run as part of the build. Keep format-only changes separate from behavior changes.
+
+CI checks build, extension packaging, and model tests on Windows, macOS, and Linux. Formatting/lint and full Chromium workflows run on Linux; the stable `check` job requires every job to succeed. The offline test uses the built app, a synthetic screen stream, and an offline browser context after initial loading. It does not automate an OS picker or enterprise policy approval.
 
 On Linux, Playwright may need system dependencies: `npx playwright install --with-deps chromium`. Tests generate synthetic content and put results in ignored `test-results/`. Browser tests use local ports 4173–4182; stop conflicting servers before running them. Native recording/Chrome toolbar actions and enterprise policy restrictions still need manual testing.
 

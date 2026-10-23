@@ -83,6 +83,8 @@ No managed hosting service is included. A localhost URL only works on your compu
 
 ## Develop and test
 
+Run `npm run format:check` and `npm run lint` before submitting a PR (`npm run format` applies formatting). CI checks builds/model tests on Windows, macOS, and Linux, plus Chromium workflows and an offline core-flow check on Linux.
+
 Trying the beta? Follow the [tester guide and feedback template](docs/BETA-TESTING.md). The [TODO list](TODO.md) tracks release readiness, Windows enterprise validation, reliability work, and candidate features.
 
 ```sh
