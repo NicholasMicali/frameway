@@ -19,6 +19,8 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: node --input-type=module -e "import fs from 'node:fs'; const p=JSON.parse(fs.readFileSync('package.json')); if(process.env.RELEASE_TAG!=='v'+p.version) throw Error('Tag must match package version');"
+      - run: npm run format:check
+      - run: npm run lint
       - run: npm run build
       - run: npm test
       - run: npx playwright install --with-deps chromium
@@ -28,4 +30,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: gh release upload "$RELEASE_TAG" release/*.zip
+        run: gh release upload "$RELEASE_TAG" release/*.zip release/*.sha256 --clobber

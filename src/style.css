@@ -1755,3 +1755,9 @@ h1 {
     flex: 0 1 auto;
   }
 }
+
+@media (min-width: 801px) {
+  .home-next-steps .use-case-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

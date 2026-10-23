@@ -50,8 +50,8 @@ Share only sanitized screenshots or logs. Do not attach credentials, customer da
 
 ## Reported findings
 
-The owner reports successful Windows use and delivery of standalone HTML to other people. Exact Windows/Chrome versions, managed-policy configuration, and sharing channel were not supplied. This does not establish the remaining detailed Windows checklist items.
+The owner reports successful Windows use, delivery of standalone HTML to other people, and editable project recovery through export → reinstall → import. Exact Windows/Chrome versions, managed-policy configuration, and sharing channel were not supplied. This does not establish the remaining detailed Windows checklist items.
 
-| Environment / version          | Scenario                                          | Result                | Follow-up                                                                                                 |
-| ------------------------------ | ------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------- |
-| Windows — versions unspecified | Use Frameway and send exported HTML to recipients | Owner reports success | Verify editable backup/import; ZIP delivery and specific enterprise policy constraints remain unconfirmed |
+| Environment / version          | Scenario                                          | Result                | Follow-up                                                                                                    |
+| ------------------------------ | ------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Windows — versions unspecified | Use Frameway and send exported HTML to recipients | Owner reports success | Editable recovery also confirmed; ZIP delivery and specific enterprise policy constraints remain unconfirmed |
