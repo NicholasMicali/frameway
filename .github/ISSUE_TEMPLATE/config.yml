@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability privately
+    url: https://github.com/NicholasMicali/frameway/security/advisories/new
+    about: Please do not post vulnerability details or sensitive data in public issues.

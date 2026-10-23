@@ -1,5 +1,5 @@
 {
-  "name": "arcade-walkthrough-lab",
+  "name": "frameway",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -34,5 +34,6 @@
   },
   "engines": {
     "node": ">=24 <25"
-  }
+  },
+  "license": "Apache-2.0"
 }

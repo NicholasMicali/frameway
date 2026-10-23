@@ -1,0 +1,25 @@
+name: Bug report
+description: Report a reproducible problem with sanitized examples.
+body:
+  - type: markdown
+    attributes:
+      value: "For security vulnerabilities, use SECURITY.md. Never attach real enterprise recordings or credentials."
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Frameway version/commit, OS, Chrome version, managed browser status, and extension or website recorder.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include expected versus actual behavior and a synthetic example if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact and workaround
+      description: Does it block recording, editing, importing, exporting, or recipient playback?
