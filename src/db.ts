@@ -49,3 +49,24 @@ export async function remove(store: string, key: IDBValidKey) {
   });
 }
 export const saveProject = (p: Project) => put('projects', p);
+
+// Remove a saved project and its completed capture source in one transaction.
+export async function deleteProject(id: string) {
+  const d = await db();
+  return new Promise<void>((resolve, reject) => {
+    const t = d.transaction(['projects', 'sessions', 'chunks'], 'readwrite');
+    t.objectStore('projects').delete(id);
+    const sessions = t.objectStore('sessions').getAll();
+    sessions.onsuccess = () => {
+      for (const session of sessions.result) {
+        if (session.projectId !== id || session.status !== 'complete') continue;
+        for (let i = 0; i < session.chunkCount; i++)
+          t.objectStore('chunks').delete(`${session.id}:${i}`);
+        t.objectStore('sessions').delete(session.id);
+      }
+    };
+    t.oncomplete = () => resolve();
+    t.onerror = () => reject(t.error);
+    t.onabort = () => reject(t.error ?? Error('Project deletion aborted'));
+  });
+}

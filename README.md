@@ -88,6 +88,14 @@ No managed hosting service is included. A localhost URL only works on your compu
 
 **Trimming changes playback ranges, not the underlying media. Exports retain the complete original recording.**
 
+## Local storage and backups
+
+Open **Storage & backups** to see approximate browser usage and project media sizes, export editable backups, or delete an unneeded project after confirmation. The open project cannot be deleted until you return Home. Extension and localhost storage are separate.
+
+Projects show whether a backup export is recorded for the current edits. This records a download being started, not proof that the file was kept. **Export project** creates the editable ZIP; HTML/embed downloads do not count as editable backups. Imported projects start with no local backup-export record.
+
+If saving fails, keep the tab open: current edits remain available for **Export backup** and **Retry saving**. The previous saved copy is retained when a storage transaction fails. Export an editable backup before removing other projects to free space. Storage figures are estimates, not a guarantee of free disk space. This does not recover recordings lost in a browser crash.
+
 ## Beta limitations
 
 - Automatic screenshots use an approximate 120 ms pre-click offset. Review timing and boundaries.
