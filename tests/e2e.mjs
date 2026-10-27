@@ -57,9 +57,11 @@ try {
   await page.getByLabel('Video scrubber').fill('0.5');
   await page.getByRole('button', { name: 'Use this frame as still' }).click();
   await page.getByText('Extracting still frame…').waitFor({ state: 'hidden' });
-  await page.locator('.export-menu summary').click();
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export project' }).click();
+  await page.getByText('Download started — check your downloads', { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close export' }).click();
   const download = await downloadPromise;
   await download.saveAs('test-results/roundtrip.zip');
   await page.locator('input[type=file][accept=".zip"]').setInputFiles('test-results/roundtrip.zip');

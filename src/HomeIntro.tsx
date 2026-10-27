@@ -49,9 +49,9 @@ export function HomeIntro({ onRecord, returning }: { onRecord: () => void; retur
             </span>
             <h3>Send it to someone</h3>
             <p>
-              Choose <strong>Export / Download → Download HTML</strong>. Send that file; your
-              recipient downloads it and opens it in a browser. Use <strong>Export project</strong>{' '}
-              for an editable backup.
+              Choose <strong>Export → Send a walkthrough → Download HTML</strong>. Send that file;
+              your recipient downloads it and opens it in a browser. Use{' '}
+              <strong>Export project backup</strong> for an editable backup.
             </p>
           </article>
         </div>

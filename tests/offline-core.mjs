@@ -60,9 +60,11 @@ try {
   await page.getByRole('button', { name: 'Library', exact: true }).click();
   await page.getByRole('button', { name: /Offline workflow.*Open walkthrough/ }).click();
   assert.equal(await page.getByLabel('Callout headline').inputValue(), 'Works without a backend');
-  await page.locator('.export-menu summary').click();
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download HTML', exact: true }).click();
+  await page.getByText('Download started — check your downloads', { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close export' }).click();
   const file = path.resolve('test-results/offline-core.html');
   await (await download).saveAs(file);
   const viewer = await context.newPage();

@@ -2,7 +2,7 @@ import { ProjectNavigation, WorkspaceOptions } from './HeaderMenus';
 import { Disclosure } from './Disclosure';
 import { ProjectLibrary } from './ProjectLibrary';
 import { StorageManager } from './StorageManager';
-import { backupStatus, revision, saveFailure, storageSummary } from './storage-health';
+import { revision, saveFailure, storageSummary } from './storage-health';
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { all, get, put, saveProject, deleteProject } from './db';
@@ -37,7 +37,7 @@ import { zoomOut } from './zoom-out';
 import { Icon } from './Icon';
 import { ClipTimeline } from './Timeline';
 import { ScreenRecorder } from './ScreenRecorder';
-import { exportInteractive } from './interactive-export';
+import { ExportDialog } from './ExportDialog';
 function useURL(blob?: Blob) {
   const [url, set] = useState('');
   useEffect(() => {
@@ -63,6 +63,7 @@ function Thumb({ step, logo }: { step: Step; logo?: string }) {
 }
 function App() {
   const [recording, setRecording] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   const [storageOpen, setStorageOpen] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [storageEstimate, setStorageEstimate] = useState<StorageEstimate>();
@@ -257,22 +258,23 @@ function App() {
     }
   }
   async function backup(p: Project) {
-    await task('Exporting editable backup…', async () => {
-      const blob = await exportProject(p);
-      download(blob, `${exportName(p.title)}.frameway.zip`);
-      const localBackup = { revision: revision(p), exportedAt: Date.now() };
-      if (currentProject.current?.id === p.id) {
-        setProject((current) => (current?.id === p.id ? { ...current, localBackup } : current));
-      } else {
-        try {
-          await persist({ ...p, localBackup });
-        } catch {
-          setError(
-            'Backup download started, but its export record could not be saved. Keep the ZIP file.',
-          );
-        }
+    await task('Exporting editable backup…', () => downloadBackup(p));
+  }
+  async function downloadBackup(p: Project) {
+    const blob = await exportProject(p);
+    download(blob, `${exportName(p.title)}.frameway.zip`);
+    const localBackup = { revision: revision(p), exportedAt: Date.now() };
+    if (currentProject.current?.id === p.id) {
+      setProject((current) => (current?.id === p.id ? { ...current, localBackup } : current));
+    } else {
+      try {
+        await persist({ ...p, localBackup });
+      } catch {
+        setError(
+          'Backup download started, but its export record could not be saved. Keep the ZIP file.',
+        );
       }
-    });
+    }
   }
   useEffect(() => {
     if (!project) return;
@@ -658,43 +660,9 @@ function App() {
             onImport={() => importInput.current?.click()}
           />
           {project && (
-            <details className="export-menu">
-              <summary>Export / Download ▾</summary>
-              <div
-                className="export-options"
-                onClick={(e) => {
-                  const button = (e.target as HTMLElement).closest('button');
-                  if (button) e.currentTarget.closest('details')?.removeAttribute('open');
-                }}
-              >
-                <button
-                  onClick={() =>
-                    task('Building standalone walkthrough…', async () =>
-                      download(
-                        await exportInteractive(project, 'html'),
-                        `${exportName(project.title)}.html`,
-                      ),
-                    )
-                  }
-                >
-                  Download HTML
-                </button>
-                <button
-                  onClick={() =>
-                    task('Building embed package…', async () =>
-                      download(
-                        await exportInteractive(project, 'zip'),
-                        `${exportName(project.title)}.zip`,
-                      ),
-                    )
-                  }
-                >
-                  Export embed
-                </button>
-                <button onClick={() => project && backup(project)}>Export project ↗</button>
-                <p className="backup-note">{backupStatus(project)}. Keep the downloaded ZIP.</p>
-              </div>
-            </details>
+            <button disabled={!!busy} onClick={() => setExportOpen(true)} aria-haspopup="dialog">
+              <Icon name="share" /> Export
+            </button>
           )}
         </div>
       </header>
@@ -716,6 +684,13 @@ function App() {
             });
         }}
       />
+      {exportOpen && project && (
+        <ExportDialog
+          project={project}
+          onBackup={downloadBackup}
+          onClose={() => setExportOpen(false)}
+        />
+      )}
       {storageOpen && (
         <StorageManager
           projects={project ? [project, ...projects.filter((p) => p.id !== project.id)] : projects}

@@ -63,9 +63,11 @@ try {
   await page.getByRole('button', { name: '↺ Restart' }).click();
   await page.getByRole('button', { name: 'Get Started', exact: true }).waitFor();
   await page.getByRole('button', { name: '✎ Edit' }).click();
-  await page.locator('.export-menu summary').click();
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download HTML', exact: true }).click();
+  await page.getByText('Download started — check your downloads', { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close export' }).click();
   const file = path.resolve('test-results/title.html');
   await (await download).saveAs(file);
   const context = await browser.newContext();
@@ -86,9 +88,11 @@ try {
   await viewer.setViewportSize({ width: 390, height: 844 });
   await viewer.screenshot({ path: 'test-results/title-mobile.png', fullPage: true });
   assert.ok(await viewer.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-  await page.locator('.export-menu summary').click();
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
   const archive = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export project', exact: false }).click();
+  await page.getByText('Download started — check your downloads', { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close export' }).click();
   const zip = path.resolve('test-results/title.zip');
   await (await archive).saveAs(zip);
   await page.locator('input[type=file][accept=".zip"]').setInputFiles(zip);
