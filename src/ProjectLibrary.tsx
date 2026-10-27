@@ -7,11 +7,13 @@ function ProjectActions({
   project,
   busy,
   onBackup,
+  onCopy,
   onDelete,
 }: {
   project: Project;
   busy: boolean;
   onBackup: () => void;
+  onCopy: () => void;
   onDelete: () => void;
 }) {
   const menu = useRef<HTMLDetailsElement>(null);
@@ -38,6 +40,17 @@ function ProjectActions({
         <Icon name="more" />
       </summary>
       <div className="project-actions-panel">
+        <button
+          disabled={busy}
+          aria-label={`Make a copy of ${project.title}`}
+          onClick={() => {
+            close();
+            menu.current?.querySelector('summary')?.focus();
+            onCopy();
+          }}
+        >
+          <Icon name="copy" /> Make a copy
+        </button>
         <button
           disabled={busy}
           onClick={() => {
@@ -73,6 +86,7 @@ export function ProjectLibrary({
   busy,
   onOpen,
   onBackup,
+  onCopy,
   onDelete,
   thumbnail,
 }: {
@@ -80,6 +94,7 @@ export function ProjectLibrary({
   busy: boolean;
   onOpen: (p: Project) => void;
   onBackup: (p: Project) => void;
+  onCopy: (p: Project) => void;
   onDelete: (p: Project) => void;
   thumbnail: (p: Project) => ReactNode;
 }) {
@@ -152,6 +167,7 @@ export function ProjectLibrary({
                 project={p}
                 busy={busy}
                 onBackup={() => onBackup(p)}
+                onCopy={() => onCopy(p)}
                 onDelete={() => setConfirm(p.id)}
               />
             </div>

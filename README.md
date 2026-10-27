@@ -16,7 +16,7 @@ No Node.js or build tools are needed for the packaged version.
 4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
 5. Open a page, click Frameway → **Record this tab**, wait for **REC**, and choose **Stop recording** when finished. The editor opens automatically.
 
-Keep the extracted folder in place. Back up editable work with **Export project backup** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Export → Send a walkthrough → Download HTML** creates the file to send to viewers. The export dialog explains each format and shows next steps after starting the download.
+Keep the extracted folder in place. Back up editable work with **Export project backup** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Share → Send a walkthrough → Download HTML** creates the file to send to viewers. The export dialog explains each format and shows next steps after starting the download.
 
 ## Project direction and contributions
 
@@ -65,6 +65,8 @@ Open `http://127.0.0.1:5173/`. Home includes a recording/sharing guide, searchab
 
 The website and extension have separate browser storage. Use **Export project backup → Options → Import project backup** to move walkthroughs between them.
 
+In the library, open a project’s three-dot menu and choose **Make a copy** to create a separately saved version. The copy opens with a “(copy)” name you can edit. Changes or deletion of either project do not affect the other; export a new backup for the copy. Copies include the media and may use additional browser storage.
+
 ## Edit a walkthrough
 
 - New recordings begin with an editable title slide, using the opening frame cropped into its lower-right corner. Existing projects have **Add title slide**.
@@ -76,7 +78,7 @@ The website and extension have separate browser storage. Use **Export project ba
 
 ## Send or embed
 
-Open **Export**:
+Open **Share**:
 
 | Action                | Result                                                                                                                                                               |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

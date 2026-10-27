@@ -2560,3 +2560,13 @@ h1 {
     font-size: 21px;
   }
 }
+
+.header-actions .share-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.header-actions .share-button svg {
+  flex-shrink: 0;
+}

@@ -47,7 +47,7 @@ try {
   await editor.locator('.step-list .step').nth(1).click();
   await editor.getByLabel('Open by default').uncheck();
   // A modal explains formats, contains focus, and recovers from generation failures.
-  await editor.getByRole('button', { name: 'Export', exact: true }).click();
+  await editor.getByRole('button', { name: 'Share', exact: true }).click();
   const dialog = editor.getByRole('dialog', { name: 'Export your walkthrough' });
   await dialog.waitFor();
   await dialog.getByRole('heading', { name: 'Send a walkthrough', exact: true }).waitFor();
@@ -59,12 +59,12 @@ try {
   assert.equal(await dialog.count(), 0);
   assert.equal(
     await editor
-      .getByRole('button', { name: 'Export', exact: true })
+      .getByRole('button', { name: 'Share', exact: true })
       .evaluate((e) => e === document.activeElement),
     true,
   );
   await editor.setViewportSize({ width: 1280, height: 900 });
-  await editor.getByRole('button', { name: 'Export', exact: true }).click();
+  await editor.getByRole('button', { name: 'Share', exact: true }).click();
   await editor.evaluate(() => {
     window.originalCreateObjectURL = URL.createObjectURL;
     URL.createObjectURL = () => {
@@ -88,7 +88,7 @@ try {
   const title = 'Demo </script><script>window.injected=true</script>';
   await editor.getByLabel('Walkthrough title').fill(title);
   async function download(name, file) {
-    await editor.getByRole('button', { name: 'Export', exact: true }).click();
+    await editor.getByRole('button', { name: 'Share', exact: true }).click();
     const promise = editor.waitForEvent('download');
     await editor.getByRole('button', { name, exact: true }).click();
     const result = await promise;
