@@ -16,7 +16,7 @@ No Node.js or build tools are needed for the packaged version.
 4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
 5. Open a page, click Frameway → **Record this tab**, wait for **REC**, and choose **Stop recording** when finished. The editor opens automatically.
 
-Keep the extracted folder in place. Back up editable work with **Export project** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Download HTML** creates the file to send to viewers.
+Keep the extracted folder in place. Back up editable work with **Export project backup** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Export → Send a walkthrough → Download HTML** creates the file to send to viewers. The export dialog explains each format and shows next steps after starting the download.
 
 ## Project direction and contributions
 
@@ -63,7 +63,7 @@ Open `http://127.0.0.1:5173/`. Home includes a recording/sharing guide, searchab
 
 **Record my screen** uses the browser picker for a tab, window, or whole screen. It records silent video; mark screenshot moments while recording or insert them later. It cannot automatically detect clicks in other applications. Keep the recorder page open until saving finishes. Recording stops at ten minutes or approximately 90 MB.
 
-The website and extension have separate browser storage. Use **Export project → Options → Import project backup** to move walkthroughs between them.
+The website and extension have separate browser storage. Use **Export project backup → Options → Import project backup** to move walkthroughs between them.
 
 ## Edit a walkthrough
 
@@ -76,13 +76,13 @@ The website and extension have separate browser storage. Use **Export project �
 
 ## Send or embed
 
-Open **Export / Download**:
+Open **Export**:
 
-| Action         | Result                                                                                                                                                               |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Download HTML  | One self-contained interactive file, including media. Download and open in a modern browser; works offline.                                                          |
-| Export embed   | ZIP with a standalone player, media, an HTML iframe example, and a React iframe wrapper. Host the extracted folder on an existing website or internal static server. |
-| Export project | Editable ZIP backup for importing into Frameway later.                                                                                                               |
+| Action                | Result                                                                                                                                                               |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Download HTML         | One self-contained interactive file, including media. Download and open in a modern browser; works offline.                                                          |
+| Export embed          | ZIP with a standalone player, media, an HTML iframe example, and a React iframe wrapper. Host the extracted folder on an existing website or internal static server. |
+| Export project backup | Editable ZIP backup for importing into Frameway later.                                                                                                               |
 
 No managed hosting service is included. A localhost URL only works on your computer. Email/file-sharing previews may block scripts; recipients should download the HTML and open it in a browser. The React wrapper uses the same standalone player, not the editor. Playback exports cannot be imported as editable projects.
 
@@ -92,7 +92,7 @@ No managed hosting service is included. A localhost URL only works on your compu
 
 Open **Options → Storage & backups** to see approximate browser usage and project media sizes, export editable backups, or delete an unneeded project after confirmation. The open project cannot be deleted until you return to Library. Extension and localhost storage are separate.
 
-Projects show whether a backup export is recorded for the current edits. This records a download being started, not proof that the file was kept. **Export project** creates the editable ZIP; HTML/embed downloads do not count as editable backups. Imported projects start with no local backup-export record.
+Projects show whether a backup export is recorded for the current edits. This records a download being started, not proof that the file was kept. **Export project backup** creates the editable ZIP; HTML/embed downloads do not count as editable backups. Imported projects start with no local backup-export record.
 
 If saving fails, keep the tab open: current edits remain available for **Export backup** and **Retry saving**. The previous saved copy is retained when a storage transaction fails. Export an editable backup before removing other projects to free space. Storage figures are estimates, not a guarantee of free disk space. This does not recover recordings lost in a browser crash.
 

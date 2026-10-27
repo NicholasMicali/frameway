@@ -49,12 +49,12 @@ Share only sanitized screenshots or logs. Do not attach credentials, customer da
 
 ## Backup and import
 
-1. Open your project, then select **Export / Download → Export project ↗**. Save the `.frameway.zip` file somewhere outside browser storage. Keep it zipped.
+1. Open your project, then select **Export → Export project backup**. Save the `.frameway.zip` file somewhere outside browser storage. Keep it zipped.
 2. Select **Options → Import project backup** in the Frameway header and choose that ZIP. This creates a separate editable project; it does not overwrite the original.
 3. Preview the imported copy and check its video, screenshots, title, callouts, branding, and step order. Make an edit and reload to confirm it saves.
 4. To test recovery across an extension update or another computer, export before updating, then import the same ZIP into the destination installation. You can also use a separate Chrome profile for a clean recovery test.
 
-**Download HTML** and **Export embed** create viewer-facing playback exports. Use **Export project** for an editable backup. The extension and localhost editor have separate libraries; project ZIPs transfer work between them.
+**Download HTML** and **Export embed** create viewer-facing playback exports. Use **Export project backup** for an editable backup. The extension and localhost editor have separate libraries; project ZIPs transfer work between them.
 
 ## Reported findings
 

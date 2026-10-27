@@ -46,10 +46,49 @@ try {
   await editor.getByRole('button', { name: 'Delete step', exact: true }).click();
   await editor.locator('.step-list .step').nth(1).click();
   await editor.getByLabel('Open by default').uncheck();
+  // A modal explains formats, contains focus, and recovers from generation failures.
+  await editor.getByRole('button', { name: 'Export', exact: true }).click();
+  const dialog = editor.getByRole('dialog', { name: 'Export your walkthrough' });
+  await dialog.waitFor();
+  await dialog.getByRole('heading', { name: 'Send a walkthrough', exact: true }).waitFor();
+  await editor.screenshot({ path: 'test-results/export-dialog.png', fullPage: true });
+  await editor.setViewportSize({ width: 390, height: 844 });
+  assert.ok(await dialog.evaluate((e) => e.scrollWidth <= e.clientWidth));
+  await editor.screenshot({ path: 'test-results/export-dialog-mobile.png', fullPage: true });
+  await editor.keyboard.press('Escape');
+  assert.equal(await dialog.count(), 0);
+  assert.equal(
+    await editor
+      .getByRole('button', { name: 'Export', exact: true })
+      .evaluate((e) => e === document.activeElement),
+    true,
+  );
+  await editor.setViewportSize({ width: 1280, height: 900 });
+  await editor.getByRole('button', { name: 'Export', exact: true }).click();
+  await editor.evaluate(() => {
+    window.originalCreateObjectURL = URL.createObjectURL;
+    URL.createObjectURL = () => {
+      throw new Error('Simulated download failure');
+    };
+  });
+  await dialog.getByRole('button', { name: 'Download HTML', exact: true }).click();
+  await dialog.getByRole('alert').filter({ hasText: 'Simulated download failure' }).waitFor();
+  assert.equal(
+    await dialog.getByText('Download started — check your downloads', { exact: true }).count(),
+    0,
+  );
+  assert.equal(
+    await dialog.getByRole('button', { name: 'Download HTML', exact: true }).isEnabled(),
+    true,
+  );
+  await editor.evaluate(() => {
+    URL.createObjectURL = window.originalCreateObjectURL;
+  });
+  await dialog.getByRole('button', { name: 'Close export' }).click();
   const title = 'Demo </script><script>window.injected=true</script>';
   await editor.getByLabel('Walkthrough title').fill(title);
   async function download(name, file) {
-    await editor.locator('.export-menu summary').click();
+    await editor.getByRole('button', { name: 'Export', exact: true }).click();
     const promise = editor.waitForEvent('download');
     await editor.getByRole('button', { name, exact: true }).click();
     const result = await promise;
@@ -58,10 +97,12 @@ try {
       name === 'Download HTML' ? '.html' : name === 'Export embed' ? '.zip' : '.frameway.zip';
     assert.equal(result.suggestedFilename(), base + suffix);
     await result.saveAs(path.join(directory, file));
+    await editor.getByText('Download started — check your downloads', { exact: true }).waitFor();
+    await editor.getByRole('button', { name: 'Close export' }).click();
   }
   await download('Download HTML', 'portable.html');
   await download('Export embed', 'embed.zip');
-  await download('Export project ↗', 'backup.zip');
+  await download('Export project backup', 'backup.zip');
   const files = unzipSync(new Uint8Array(await readFile(path.join(directory, 'embed.zip'))));
   for (const [name, bytes] of Object.entries(files)) {
     await mkdir(path.dirname(path.join(directory, name)), { recursive: true });
