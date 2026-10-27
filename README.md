@@ -1,4 +1,4 @@
-# Frameway — 0.1.0 beta
+# Frameway — 0.2.0 beta
 
 Record a workflow, edit screenshot and video steps, and send or embed an interactive walkthrough. Frameway is a local-first Chrome extension and editor built with original code. It does not require a Frameway account or backend.
 
@@ -10,7 +10,7 @@ _Recorded in Frameway using the built-in sample project. The GIF shows editing, 
 
 No Node.js or build tools are needed for the packaged version.
 
-1. Open [Releases](https://github.com/NicholasMicali/frameway/releases) and download **frameway-extension-v0.1.0.zip** from **Assets** (not the source-code archive).
+1. Open [Releases](https://github.com/NicholasMicali/frameway/releases) and download **frameway-extension-v0.2.0.zip** from **Assets** (not the source-code archive).
 2. Unzip it into a permanent folder. On Windows, use **Extract All**.
 3. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
@@ -51,7 +51,7 @@ The extension records a tab's video and clicks, then creates screenshot/video st
 
 Open the toolbar menu with **Command+Shift+Y** on macOS or **Ctrl+Shift+Y** elsewhere. Choose **Open Frameway** to access saved projects without recording. The extension's **Options** page also opens the editor. After updating the source, rebuild, click **Reload** on the extension's Chrome card, and reopen the editor. Export important projects before replacing or removing an extension installation.
 
-Alternatively, unzip a built `frameway-extension-v0.1.0.zip` release artifact and load the extracted folder containing `manifest.json`. There is no Chrome Web Store listing. Use the Releases page for packaged builds; developers can create one locally with `npm run package:extension`.
+Alternatively, unzip a built `frameway-extension-v0.2.0.zip` release artifact and load the extracted folder containing `manifest.json`. There is no Chrome Web Store listing. Use the Releases page for packaged builds; developers can create one locally with `npm run package:extension`.
 
 ### Website and manual screen recording
 
@@ -130,9 +130,9 @@ On the original development machine, `./scripts/dev.sh` can use the ignored proj
 npm run package:extension
 ```
 
-Creates `release/frameway-extension-v0.1.0.zip`, with `manifest.json` at its root. Source maps are excluded. `release/` and `dist/` stay ignored.
+Creates `release/frameway-extension-v0.2.0.zip`, with `manifest.json` at its root. Source maps are excluded. `release/` and `dist/` stay ignored.
 
-GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `v0.1.0` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
+GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `v0.2.0` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
 
 Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. A packaged beta release remains pending maintainer testing.
 
