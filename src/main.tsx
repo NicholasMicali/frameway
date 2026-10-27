@@ -1,3 +1,4 @@
+import { ProjectNavigation, WorkspaceOptions } from './HeaderMenus';
 import { Disclosure } from './Disclosure';
 import { ProjectLibrary } from './ProjectLibrary';
 import { StorageManager } from './StorageManager';
@@ -621,47 +622,24 @@ function App() {
             e.preventDefault();
             void home();
           }}
-          aria-label="Home"
+          aria-label="Library"
         >
           <span className="brand-icon">◈</span> frameway
           <span className="app-version" title="Beta version">
             v{packageInfo.version}
           </span>
         </a>
-        <div className="breadcrumb">
-          Workspace <span>/</span>{' '}
-          {project ? (
-            <div className="project-select">
-              <div className="project-select-measure" aria-hidden="true">
-                {project.title || 'Untitled'}
-              </div>{' '}
-              <select
-                disabled={!!busy}
-                aria-label="Open walkthrough"
-                value={project.id}
-                onChange={(e) => switchProject(e.target.value)}
-              >
-                {projects.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.id === project.id ? project.title : p.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ) : (
-            'Project library'
-          )}
-        </div>
+        <ProjectNavigation
+          projects={projects}
+          project={project}
+          busy={!!busy}
+          onLibrary={() => void home()}
+          onProject={(id) => void switchProject(id)}
+        />
         <div className="header-actions">
           <span className="save-state" role="status">
             {saved}
           </span>
-          <button onClick={() => setStorageOpen(true)}>Storage & backups</button>
-          {project && (
-            <button onClick={() => void home()} disabled={!!busy}>
-              Home
-            </button>
-          )}
           <button
             className={project ? 'primary' : ''}
             disabled={!!busy}
@@ -674,7 +652,11 @@ function App() {
           >
             Record screen
           </button>
-          <button onClick={() => importInput.current?.click()}>Import</button>
+          <WorkspaceOptions
+            busy={!!busy}
+            onStorage={() => setStorageOpen(true)}
+            onImport={() => importInput.current?.click()}
+          />
           {project && (
             <details className="export-menu">
               <summary>Export / Download ▾</summary>
@@ -818,7 +800,6 @@ function App() {
               busy={!!busy}
               onOpen={choose}
               onBackup={backup}
-              onImport={() => importInput.current?.click()}
               onDelete={(p) => {
                 void task('Deleting project…', async () => {
                   await deleteProject(p.id);
@@ -857,8 +838,8 @@ function App() {
                   project here does not switch apps.
                 </p>
                 <p>
-                  To bring a project here, export its project backup there, then use Import project
-                  backup on this page.
+                  To bring a project here, export its project backup there, then choose Options →
+                  Import project backup.
                 </p>
               </Disclosure>
             )}
@@ -1025,9 +1006,6 @@ function App() {
                     ＋ Add title slide
                   </button>
                 )}
-                <a className="practice-link" href="demo.html" target="_blank">
-                  Practice workspace ↗
-                </a>
               </aside>
             )}
             <main className="canvas-area">

@@ -48,7 +48,8 @@ try {
   assert.equal(await page.getByLabel('Walkthrough title').inputValue(), 'My screen recording');
   assert.ok((await page.locator('.step-list .step').count()) >= 4);
   await page.getByLabel('Walkthrough title').fill('My first recording');
-  await page.getByRole('button', { name: 'Home', exact: true }).click();
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.getByRole('button', { name: 'Library', exact: true }).click();
   await page.getByRole('heading', { name: 'Your walkthroughs' }).waitFor();
   await page.reload();
   await page.getByRole('heading', { name: 'Your walkthroughs' }).waitFor();
@@ -60,7 +61,8 @@ try {
   await page.getByText('Adding screenshot step…').waitFor({ state: 'hidden' });
   assert.equal(await page.getByLabel('Callout headline').inputValue(), 'Explain this moment');
   assert.ok((await page.locator('.step-list .step').count()) >= 6);
-  await page.getByRole('button', { name: 'Home', exact: true }).click();
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.getByRole('button', { name: 'Library', exact: true }).click();
   await page.screenshot({ path: 'test-results/home.png', fullPage: true });
   await page.getByRole('button', { name: 'Record screen', exact: true }).click();
   await page.getByRole('button', { name: 'Choose screen to record' }).click();

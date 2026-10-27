@@ -16,7 +16,7 @@ No Node.js or build tools are needed for the packaged version.
 4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
 5. Open a page, click Frameway, wait for **REC**, and click it again when finished. The editor opens automatically.
 
-Keep the extracted folder in place. Back up editable work with **Export project** before replacing or removing an installation; restore the `.frameway.zip` with **Import**. **Download HTML** creates the file to send to viewers.
+Keep the extracted folder in place. Back up editable work with **Export project** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Download HTML** creates the file to send to viewers.
 
 ## Project direction and contributions
 
@@ -63,7 +63,7 @@ Open `http://127.0.0.1:5173/`. Home includes a recording/sharing guide, searchab
 
 **Record my screen** uses the browser picker for a tab, window, or whole screen. It records silent video; mark screenshot moments while recording or insert them later. It cannot automatically detect clicks in other applications. Keep the recorder page open until saving finishes. Recording stops at ten minutes or approximately 90 MB.
 
-The website and extension have separate browser storage. Use **Export project → Import** to move walkthroughs between them.
+The website and extension have separate browser storage. Use **Export project → Options → Import project backup** to move walkthroughs between them.
 
 ## Edit a walkthrough
 
@@ -90,7 +90,7 @@ No managed hosting service is included. A localhost URL only works on your compu
 
 ## Local storage and backups
 
-Open **Storage & backups** to see approximate browser usage and project media sizes, export editable backups, or delete an unneeded project after confirmation. The open project cannot be deleted until you return Home. Extension and localhost storage are separate.
+Open **Options → Storage & backups** to see approximate browser usage and project media sizes, export editable backups, or delete an unneeded project after confirmation. The open project cannot be deleted until you return to Library. Extension and localhost storage are separate.
 
 Projects show whether a backup export is recorded for the current edits. This records a download being started, not proof that the file was kept. **Export project** creates the editable ZIP; HTML/embed downloads do not count as editable backups. Imported projects start with no local backup-export record.
 

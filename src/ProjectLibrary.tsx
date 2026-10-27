@@ -74,7 +74,6 @@ export function ProjectLibrary({
   onOpen,
   onBackup,
   onDelete,
-  onImport,
   thumbnail,
 }: {
   projects: Project[];
@@ -82,7 +81,6 @@ export function ProjectLibrary({
   onOpen: (p: Project) => void;
   onBackup: (p: Project) => void;
   onDelete: (p: Project) => void;
-  onImport: () => void;
   thumbnail: (p: Project) => ReactNode;
 }) {
   const [query, setQuery] = useState('');
@@ -107,9 +105,6 @@ export function ProjectLibrary({
             to pick up where you left off.
           </p>
         </div>
-        <button onClick={onImport} disabled={busy}>
-          <Icon name="upload" /> Import project backup
-        </button>
       </div>
       {!!projects.length && (
         <div className="library-tools">
@@ -186,8 +181,8 @@ export function ProjectLibrary({
           <Icon name="folder" />
           <h3>Your next walkthrough starts here</h3>
           <p>
-            Record with the extension to create your first project, or import an editable project
-            ZIP from another installation.
+            Record with the extension to create your first project, or choose Options → Import
+            project backup to restore an editable project ZIP.
           </p>
         </div>
       ) : (

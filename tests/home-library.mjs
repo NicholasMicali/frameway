@@ -93,7 +93,41 @@ try {
   assert.equal(await page.locator('.project-actions[open]').count(), 0);
   await page.locator('.project-card').first().click();
   await page.getByLabel('Walkthrough title').waitFor();
-  await page.getByRole('button', { name: 'Home', exact: true }).click();
+  assert.equal(await page.locator('.workspace a[href="demo.html"]').count(), 0);
+  await page.getByLabel('Walkthrough title').fill('Support revised');
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.getByLabel('Find a project').fill('Zulu');
+  await page.locator('.navigation-projects button').filter({ hasText: 'Zulu demo' }).click();
+  await page.waitForFunction(
+    () => document.querySelector('[aria-label="Walkthrough title"]').value === 'Zulu demo',
+  );
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.getByLabel('Find a project').fill('Support');
+  await page.locator('.navigation-projects button').filter({ hasText: 'Support revised' }).click();
+  await page.waitForFunction(
+    () => document.querySelector('[aria-label="Walkthrough title"]').value === 'Support revised',
+  );
+  await page.getByLabel('Workspace options', { exact: true }).click();
+  const bounds = await page.locator('.workspace-options .header-menu-panel').boundingBox();
+  assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= 390);
+  assert.equal(
+    await page.getByRole('button', { name: 'Import project backup', exact: true }).isVisible(),
+    true,
+  );
+  await page.screenshot({ path: 'test-results/header-mobile.png', fullPage: true });
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('.workspace-options[open]').count(), 0);
+  await page.getByLabel('Workspace options', { exact: true }).click();
+  await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
+  await page.getByRole('dialog').waitFor();
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.screenshot({ path: 'test-results/header-projects.png', fullPage: true });
+  await page.keyboard.press('Escape');
+
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.getByRole('button', { name: 'Library', exact: true }).click();
   await page.locator('.project-card').first().waitFor();
   assert.equal(errors.length, 0, errors.join('\n'));
   console.log(

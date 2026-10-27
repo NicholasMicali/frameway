@@ -56,7 +56,8 @@ try {
   await page.getByLabel('Walkthrough title').waitFor({ timeout: 30000 });
   await page.getByLabel('Walkthrough title').fill('Offline workflow');
   await page.getByLabel('Callout headline').fill('Works without a backend');
-  await page.getByRole('button', { name: 'Home', exact: true }).click();
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.getByRole('button', { name: 'Library', exact: true }).click();
   await page.getByRole('button', { name: /Offline workflow.*Open walkthrough/ }).click();
   assert.equal(await page.getByLabel('Callout headline').inputValue(), 'Works without a backend');
   await page.locator('.export-menu summary').click();
