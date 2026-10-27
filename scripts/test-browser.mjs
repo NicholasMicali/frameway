@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { mkdir } from 'node:fs/promises';
 await mkdir('test-results', { recursive: true });
 for (const test of [
+  'extension-popup',
   'e2e',
   'recording',
   'editor',

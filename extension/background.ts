@@ -7,7 +7,7 @@ type Session = {
 };
 const session = async () =>
   (await chrome.storage.session.get('capture')).capture as Session | undefined;
-async function badge(text: string, color = '#7155e8') {
+async function badge(text: string, color = '#1685e6') {
   await chrome.action.setBadgeText({ text });
   await chrome.action.setBadgeBackgroundColor({ color });
 }
@@ -69,15 +69,6 @@ async function fail(e: unknown) {
   await badge('!', '#c33f55');
   await chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
 }
-chrome.action.onClicked.addListener((tab) => {
-  (async () => {
-    const s = await session();
-    if (s) {
-      if (s.state === 'starting') return;
-      await stop();
-    } else await start(tab);
-  })().catch(fail);
-});
 chrome.tabs.onUpdated.addListener((id, info, tab) => {
   (async () => {
     const s = await session();
@@ -101,6 +92,21 @@ chrome.tabs.onRemoved.addListener((id) => {
 chrome.runtime.onMessage.addListener((m, sender, reply) => {
   if (m.to !== 'worker') return;
   (async () => {
+    if (m.type === 'start-capture' || m.type === 'stop-capture') {
+      if (sender.url !== chrome.runtime.getURL('popup.html')) return { ok: false };
+      const current = await session();
+      if (m.type === 'start-capture') {
+        if (current) return { ok: false, error: 'A recording is already in progress.' };
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab) return { ok: false, error: 'Open a web page before recording.' };
+        await start(tab);
+      } else {
+        if (current?.state !== 'recording')
+          return { ok: false, error: 'Recording is not ready to stop.' };
+        await stop();
+      }
+      return { ok: true };
+    }
     if (m.type === 'marker') {
       const s = await session();
       if (!s || s.state !== 'recording' || sender.tab?.id !== s.tabId || sender.frameId !== 0)
