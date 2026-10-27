@@ -13,6 +13,14 @@ Use [the README](../README.md) to build and install the Chrome extension. The go
 
 Windows enterprise testers should also work through the [Windows checklist](../TODO.md#windows-enterprise-validation--owner-feedback-received). A policy restriction is a useful finding; there is no need to bypass it.
 
+## Home and project library
+
+An empty library opens the short Record → Edit → Share guide. Try the practice workspace link, and expand the setup section if you need installation instructions. Once projects exist, Home puts your library first and collapses the guide below it.
+
+Search by project name or sort by creation date, name, or estimated media size. Each project offers Open, Export backup, and Delete with confirmation. Import project backup restores an editable project ZIP; HTML exports are for viewing. The header's Storage & backups action still provides storage estimates and cleanup guidance.
+
+When testing, create two walkthroughs, find and reopen one, export its backup, and cancel a deletion before trying a confirmed deletion on a disposable sample. Reload and verify the remaining project is intact.
+
 ## Report a bug or request
 
 Open an [issue](https://github.com/NicholasMicali/frameway/issues/new), or send these notes directly to the maintainer. One issue per problem makes follow-up easier.

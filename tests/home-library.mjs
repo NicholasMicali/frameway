@@ -1,0 +1,80 @@
+import { chromium } from 'playwright';
+import { createServer } from 'vite';
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+await mkdir('test-results', { recursive: true });
+const server = await createServer({ server: { host: '127.0.0.1', port: 4186, strictPort: true } });
+await server.listen();
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const errors = [];
+page.on('pageerror', (e) => errors.push(String(e)));
+try {
+  await page.goto('http://127.0.0.1:4186');
+  await page.getByText('Opening your studio…').waitFor({ state: 'hidden' });
+  assert.equal(await page.locator('.quick-guide').getAttribute('open'), '');
+  assert.equal(await page.getByRole('heading', { name: 'Record your clicks' }).isVisible(), true);
+  await page.locator('.quick-guide > summary').click();
+  assert.equal(await page.getByRole('heading', { name: 'Record your clicks' }).isVisible(), false);
+  await page.locator('.quick-guide > summary').click();
+  await page.screenshot({ path: 'test-results/home-first-run.png', fullPage: true });
+  await page.evaluate(async () => {
+    const { sampleProject } = await import('/src/sample.ts');
+    const { saveProject } = await import('/src/db.ts');
+    const p = await sampleProject();
+    for (const [id, title, createdAt] of [
+      ['one', 'Zulu demo', Date.UTC(2026, 9, 24)],
+      ['two', 'Alpha demo', Date.UTC(2026, 9, 25)],
+      ['three', 'Support demo', Date.UTC(2026, 9, 26)],
+    ]) {
+      await saveProject({ ...p, id, title, createdAt });
+    }
+  });
+  await page.reload();
+  await page.locator('.project-card').nth(2).waitFor();
+  assert.equal(await page.locator('.quick-guide').getAttribute('open'), null);
+  assert.ok(
+    (await page.locator('.project-library').boundingBox()).y <
+      (await page.locator('.quick-guide').boundingBox()).y,
+  );
+  assert.equal(await page.locator('.project-card strong').first().innerText(), 'Support demo');
+  await page.getByLabel('Sort by').selectOption('name');
+  assert.equal(await page.locator('.project-card strong').first().innerText(), 'Alpha demo');
+  await page.getByLabel('Find a walkthrough').fill('ALPHA');
+  assert.equal(await page.locator('.project-card').count(), 1);
+  await page.getByLabel('Find a walkthrough').fill('missing');
+  assert.equal(await page.locator('.project-card').count(), 0);
+  await page.getByRole('button', { name: 'Clear search' }).click();
+  assert.equal(await page.locator('.project-card').count(), 3);
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export backup of Alpha demo', exact: true }).click();
+  assert.match((await download).suggestedFilename(), /Alpha demo/);
+  await page
+    .getByText(/Creating.*backup|Exporting/, { exact: false })
+    .waitFor({ state: 'hidden' })
+    .catch(() => {});
+  await page.getByRole('button', { name: 'Delete Alpha demo', exact: true }).click();
+  await page.getByRole('button', { name: 'Keep project', exact: true }).click();
+  assert.equal(await page.locator('.project-card').count(), 3);
+  await page.getByRole('button', { name: 'Delete Alpha demo', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirm delete', exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll('.project-card').length === 2);
+  await page.reload();
+  await page.locator('.project-card').nth(1).waitFor();
+  assert.equal(await page.locator('.project-card').count(), 2);
+  await page.screenshot({ path: 'test-results/home-returning.png', fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await page.screenshot({ path: 'test-results/home-mobile.png', fullPage: true });
+  await page.locator('.project-card').first().click();
+  await page.getByLabel('Walkthrough title').waitFor();
+  await page.getByRole('button', { name: 'Home', exact: true }).click();
+  await page.locator('.project-card').first().waitFor();
+  assert.equal(errors.length, 0, errors.join('\n'));
+  console.log(
+    'Home/library passed: guide, returning layout, search, sort, backup, cancel/delete, persistence, mobile and reopen.',
+  );
+} finally {
+  await browser.close();
+  await server.close();
+}

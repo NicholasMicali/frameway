@@ -1,12 +1,6 @@
+import { ProjectLibrary } from './ProjectLibrary';
 import { StorageManager } from './StorageManager';
-import {
-  backupStatus,
-  formatBytes,
-  mediaBytes,
-  revision,
-  saveFailure,
-  storageSummary,
-} from './storage-health';
+import { backupStatus, revision, saveFailure, storageSummary } from './storage-health';
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { all, get, put, saveProject, deleteProject } from './db';
@@ -663,7 +657,7 @@ function App() {
               </select>
             </div>
           ) : (
-            'Your first walkthrough'
+            'Project library'
           )}
         </div>
         <div className="header-actions">
@@ -808,35 +802,45 @@ function App() {
       )}
       {!project ? (
         <main className="welcome home-page">
-          <HomeIntro onRecord={() => setRecording(true)} />
-          <section className="project-library">
-            <h2>Your walkthroughs</h2>
-            <p className="field-note">{storage.text}. Project sizes below estimate media only.</p>
-            {projects.length ? (
-              <div className="project-grid">
-                {projects.map((p) => (
-                  <article className="project-library-item" key={p.id}>
-                    <button className="project-card" onClick={() => choose(p)}>
-                      <Thumb step={p.steps[0]} logo={p.logo} />
-                      <strong>{p.title}</strong>
-                      <span>
-                        {p.steps.length} steps · {p.duration.toFixed(1)}s · About{' '}
-                        {formatBytes(mediaBytes(p))}
-                      </span>
-                      <span>{backupStatus(p)}</span>
-                      <span>Open walkthrough →</span>
-                    </button>
-                    <button disabled={!!busy} onClick={() => backup(p)}>
-                      Export backup
-                    </button>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <p>No walkthroughs yet. Start a recording or explore the sample.</p>
+          <div className="home-heading">
+            <div>
+              <div className="eyebrow">YOUR LOCAL WALKTHROUGH STUDIO</div>
+              <h1>
+                {projects.length
+                  ? 'Pick up where you left off.'
+                  : 'Show a workflow. Let people try it.'}
+              </h1>
+              <p>
+                {projects.length
+                  ? 'Open a project below, or start a new recording from the Frameway toolbar icon.'
+                  : 'Record your screen, edit the steps, and share a walkthrough anyone can open.'}
+              </p>
+            </div>
+          </div>
+          <div className={`home-workspace ${projects.length ? 'has-projects' : ''}`}>
+            {!projects.length && (
+              <HomeIntro onRecord={() => setRecording(true)} returning={false} />
             )}
-          </section>
-          <UseCases />
+            <ProjectLibrary
+              projects={projects}
+              busy={!!busy}
+              onOpen={choose}
+              onBackup={backup}
+              onImport={() => importInput.current?.click()}
+              onDelete={(p) => {
+                void task('Deleting project…', async () => {
+                  await deleteProject(p.id);
+                  await refresh();
+                });
+              }}
+              thumbnail={(p) => <Thumb step={p.steps[0]} logo={p.logo} />}
+            />
+            {!!projects.length && <HomeIntro onRecord={() => setRecording(true)} returning />}
+          </div>
+          <details className="home-use-cases">
+            <summary>Ways to use Frameway</summary>
+            <UseCases />
+          </details>
           <section className="sample-section">
             <div>
               <h2>Take a look before recording</h2>

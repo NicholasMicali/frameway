@@ -1826,3 +1826,193 @@ h1 {
   padding: 8px 12px;
   margin: 0;
 }
+
+/* Home: first-run guidance, then a library-first layout for returning authors. */
+.home-heading {
+  text-align: left;
+  margin: 20px 0 26px;
+}
+.home-heading h1 {
+  font-size: clamp(25px, 3vw, 36px);
+  line-height: 1.2;
+  margin: 10px 0;
+}
+.home-heading p {
+  color: #526578;
+}
+.home-workspace {
+  display: flex;
+  flex-direction: column;
+}
+.home-start,
+.home-workspace .project-library {
+  width: 100%;
+  min-width: 0;
+}
+.home-workspace .project-library {
+  margin: 0 0 28px;
+  max-width: none;
+}
+.quick-guide {
+  text-align: left;
+  border: 1px solid #dbe6ee;
+  border-radius: 16px;
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+.quick-guide > summary {
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 650;
+}
+.quick-guide > p {
+  color: #526578;
+  line-height: 1.6;
+}
+.quick-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin: 24px 0;
+}
+.quick-guide-grid article {
+  min-width: 0;
+}
+.quick-guide-grid h3 {
+  font-size: 16px;
+  margin: 12px 0 8px;
+}
+.quick-guide-grid p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #526578;
+}
+.guide-number {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: #eaf4ff;
+  color: #2264c5;
+  font-weight: 700;
+}
+.quick-guide .guide-tip {
+  background: #f4f8fc;
+  border-radius: 9px;
+  padding: 12px;
+  font-size: 13px;
+}
+.quick-guide .install-guide {
+  padding: 16px;
+  border: 1px solid #e0e8ef;
+  margin-top: 18px;
+}
+.quick-guide .install-guide summary,
+.home-use-cases > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.quick-guide .manual-recording {
+  max-width: none;
+  border: 0;
+  border-top: 1px solid #e0e8ef;
+  border-radius: 0;
+  margin: 20px 0 0;
+  padding: 16px 0 0;
+}
+.library-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.library-heading h2 {
+  margin: 0 0 6px;
+}
+.library-tools {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.library-tools label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #526578;
+}
+.library-tools label:first-child {
+  flex: 1;
+}
+.library-tools input,
+.library-tools select {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #cedce8;
+  border-radius: 9px;
+  font: inherit;
+  color: #172638;
+}
+.library-card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+.project-library-item {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.project-card {
+  width: 100%;
+}
+.project-card span {
+  color: #526578;
+}
+.project-card span:last-child {
+  color: #2264c5;
+}
+.library-empty {
+  padding: 24px;
+  background: #f6f9fc;
+  border: 1px dashed #cedce8;
+  border-radius: 12px;
+  color: #526578;
+}
+.library-empty h3 {
+  margin-top: 0;
+  color: #172638;
+}
+.library-delete {
+  margin: 0 12px 12px;
+  padding: 12px;
+  border: 1px solid #e5bec5;
+  border-radius: 10px;
+  background: #fff8f9;
+  font-size: 13px;
+}
+.library-delete button {
+  margin: 4px 6px 0 0;
+}
+.home-use-cases {
+  text-align: left;
+  margin: 20px 0;
+}
+@media (max-width: 700px) {
+  .quick-guide-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .library-heading,
+  .library-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .quick-guide {
+    padding: 16px;
+  }
+}

@@ -62,7 +62,7 @@ try {
   assert.ok((await page.locator('.step-list .step').count()) >= 6);
   await page.getByRole('button', { name: 'Home', exact: true }).click();
   await page.screenshot({ path: 'test-results/home.png', fullPage: true });
-  await page.getByRole('button', { name: 'Record my screen', exact: true }).click();
+  await page.getByRole('button', { name: 'Record screen', exact: true }).click();
   await page.getByRole('button', { name: 'Choose screen to record' }).click();
   await page.getByRole('button', { name: 'Stop and edit' }).waitFor();
   await page.waitForTimeout(1500);
