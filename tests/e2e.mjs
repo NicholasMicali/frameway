@@ -57,7 +57,7 @@ try {
   await page.getByLabel('Video scrubber').fill('0.5');
   await page.getByRole('button', { name: 'Use this frame as still' }).click();
   await page.getByText('Extracting still frame…').waitFor({ state: 'hidden' });
-  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await page.getByRole('button', { name: 'Share', exact: true }).click();
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export project' }).click();
   await page.getByText('Download started — check your downloads', { exact: true }).waitFor();

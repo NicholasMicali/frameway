@@ -73,7 +73,7 @@ try {
     '#23754e',
   );
   await page.screenshot({ path: 'test-results/theme-scoped-editor.png', fullPage: true });
-  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await page.getByRole('button', { name: 'Share', exact: true }).click();
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download HTML', exact: true }).click();
   await page.getByText('Download started — check your downloads', { exact: true }).waitFor();

@@ -688,8 +688,13 @@ function App() {
             onImport={() => importInput.current?.click()}
           />
           {project && (
-            <button disabled={!!busy} onClick={() => setExportOpen(true)} aria-haspopup="dialog">
-              <Icon name="share" /> Export
+            <button
+              className="share-button"
+              disabled={!!busy}
+              onClick={() => setExportOpen(true)}
+              aria-haspopup="dialog"
+            >
+              <Icon name="share" /> Share
             </button>
           )}
         </div>

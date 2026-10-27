@@ -83,7 +83,7 @@ try {
   await page.getByLabel('Callout headline').waitFor();
   await page.locator('.step').nth(2).click();
   assert.equal(await page.getByLabel('Area zoom percentage').inputValue(), '150');
-  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await page.getByRole('button', { name: 'Share', exact: true }).click();
   const dl = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export project', exact: false }).click();
   await page.getByText('Download started — check your downloads', { exact: true }).waitFor();
@@ -94,7 +94,7 @@ try {
   await page.getByText('Importing walkthrough…').waitFor({ state: 'hidden' });
   await page.locator('.step').nth(2).click();
   assert.equal(await page.getByLabel('Area zoom percentage').inputValue(), '150');
-  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await page.getByRole('button', { name: 'Share', exact: true }).click();
   const html = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download HTML', exact: true }).click();
   await page.getByText('Download started — check your downloads', { exact: true }).waitFor();

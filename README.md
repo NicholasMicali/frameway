@@ -16,7 +16,7 @@ No Node.js or build tools are needed for the packaged version.
 4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
 5. Open a page, click Frameway → **Record this tab**, wait for **REC**, and choose **Stop recording** when finished. The editor opens automatically.
 
-Keep the extracted folder in place. Back up editable work with **Export project backup** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Export → Send a walkthrough → Download HTML** creates the file to send to viewers. The export dialog explains each format and shows next steps after starting the download.
+Keep the extracted folder in place. Back up editable work with **Export project backup** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Share → Send a walkthrough → Download HTML** creates the file to send to viewers. The export dialog explains each format and shows next steps after starting the download.
 
 ## Project direction and contributions
 
@@ -78,7 +78,7 @@ In the library, open a project’s three-dot menu and choose **Make a copy** to 
 
 ## Send or embed
 
-Open **Export**:
+Open **Share**:
 
 | Action                | Result                                                                                                                                                               |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

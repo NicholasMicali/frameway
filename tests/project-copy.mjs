@@ -115,7 +115,7 @@ try {
   await page.getByRole('button', { name: 'Hotspot', exact: true }).waitFor();
   await page.getByRole('button', { name: '✎ Edit' }).click();
   const exportFile = async (button, file) => {
-    await page.getByRole('button', { name: 'Export', exact: true }).click();
+    await page.getByRole('button', { name: 'Share', exact: true }).click();
     const pending = page.waitForEvent('download');
     await page.getByRole('button', { name: button, exact: true }).click();
     await (await pending).saveAs(file);
