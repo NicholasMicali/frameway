@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Frameway \u00b7 Walkthrough recorder",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "minimum_chrome_version": "116",
   "description": "Record tab video and clicks, then build a local interactive walkthrough.",
   "permissions": ["activeTab", "scripting", "tabCapture", "offscreen", "storage"],
