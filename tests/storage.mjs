@@ -1,3 +1,4 @@
+import { openSample } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
@@ -40,11 +41,12 @@ const exportBackup = async () => {
 try {
   await page.goto('http://127.0.0.1:4185');
   await page.getByText(/Browser storage is nearly full/).waitFor();
-  await page.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(page);
   await page.getByLabel('Callout headline').waitFor({ timeout: 30000 });
   await saved();
   await exportBackup();
   await saved();
+  await page.getByLabel('Workspace options', { exact: true }).click();
   await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
   await page
     .getByRole('dialog')
@@ -53,6 +55,7 @@ try {
   await page.getByRole('button', { name: 'Close', exact: true }).click();
   await page.getByLabel('Walkthrough title').fill('Changed after backup');
   await saved();
+  await page.getByLabel('Workspace options', { exact: true }).click();
   await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
   await page
     .getByRole('dialog')
@@ -64,6 +67,7 @@ try {
   await page.reload();
   await page.getByLabel('Callout headline').waitFor();
   await saved();
+  await page.getByLabel('Workspace options', { exact: true }).click();
   await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
   await page
     .getByRole('dialog')
@@ -78,7 +82,8 @@ try {
   await page.getByRole('button', { name: 'Retry saving', exact: true }).waitFor();
   assert.equal((await stored())[0].title, before);
   assert.equal(await page.getByText('Saved locally', { exact: true }).count(), 0);
-  await page.getByRole('button', { name: 'Home', exact: true }).click();
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.getByRole('button', { name: 'Library', exact: true }).click();
   assert.equal(await page.getByLabel('Walkthrough title').inputValue(), 'Unsaved but recoverable');
   await exportBackup();
   const data = JSON.parse(
@@ -97,7 +102,8 @@ try {
   await page.getByRole('button', { name: 'Retry saving', exact: true }).click();
   await saved();
   assert.equal((await stored())[0].title, 'Unsaved but recoverable');
-  await page.getByRole('button', { name: 'Home', exact: true }).click();
+  await page.getByLabel('Open walkthrough', { exact: true }).click();
+  await page.getByRole('button', { name: 'Library', exact: true }).click();
   await page.locator('.project-card').waitFor();
   assert.match(await page.locator('.project-card').innerText(), /About .*MB/);
   await page.evaluate(async () => {
@@ -111,6 +117,7 @@ try {
     });
     await put('chunks', new Blob(['sample']), 'completed-test:0');
   });
+  await page.getByLabel('Workspace options', { exact: true }).click();
   await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
   await page.screenshot({ path: 'test-results/storage-manager.png' });
   await page.getByRole('button', { name: 'Delete project', exact: true }).click();
@@ -136,6 +143,7 @@ try {
     });
   });
   await other.goto('http://127.0.0.1:4185');
+  await other.getByLabel('Workspace options', { exact: true }).click();
   await other.getByRole('button', { name: 'Storage & backups', exact: true }).click();
   await other
     .getByRole('dialog')
@@ -155,7 +163,7 @@ try {
       return original.apply(this, args);
     };
   });
-  await other.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(other);
   await other.getByLabel('Callout headline').waitFor({ timeout: 30000 });
   await other.getByRole('button', { name: 'Retry saving', exact: true }).waitFor();
   const emergencyDownload = other.waitForEvent('download');

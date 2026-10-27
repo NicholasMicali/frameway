@@ -1,5 +1,29 @@
-type IconName = 'undo' | 'redo' | 'more' | 'plus' | 'minus' | 'settings' | 'upload' | 'trash';
+type IconName =
+  | 'undo'
+  | 'redo'
+  | 'more'
+  | 'plus'
+  | 'minus'
+  | 'settings'
+  | 'upload'
+  | 'trash'
+  | 'search'
+  | 'download'
+  | 'record'
+  | 'edit'
+  | 'share'
+  | 'chevron'
+  | 'folder'
+  | 'arrow';
 const paths: Record<IconName, string> = {
+  search: 'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0',
+  download: 'M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5',
+  record: 'M15 8l6-3v14l-6-3M3 5h12v14H3Z',
+  edit: 'm14 4 6 6M3 21l5-1L21 7l-4-4L4 16Z',
+  share: 'M12 16V3m-5 5 5-5 5 5M4 13v8h16v-8',
+  chevron: 'm6 9 6 6 6-6',
+  folder: 'M3 5h7l2 3h9v12H3Z',
+  arrow: 'M4 12h16m-6-6 6 6-6 6',
   settings: 'M4 7h6m4 0h6M4 17h10m4 0h2M10 4v6m4 4v6',
   upload: 'M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6',
   trash: 'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7',

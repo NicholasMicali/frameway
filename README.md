@@ -16,7 +16,7 @@ No Node.js or build tools are needed for the packaged version.
 4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
 5. Open a page, click Frameway → **Record this tab**, wait for **REC**, and choose **Stop recording** when finished. The editor opens automatically.
 
-Keep the extracted folder in place. Back up editable work with **Export project** before replacing or removing an installation; restore the `.frameway.zip` with **Import**. **Download HTML** creates the file to send to viewers.
+Keep the extracted folder in place. Back up editable work with **Export project** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Download HTML** creates the file to send to viewers.
 
 ## Project direction and contributions
 
@@ -37,7 +37,7 @@ The build creates `dist/`. Generated files and dependencies are intentionally no
 
 The same npm commands work on macOS and Windows (including PowerShell). Install Node.js 24 first; the optional `.sh` helper scripts are for Unix shells and are not required. The owner has confirmed Windows use, HTML delivery to recipients, and export → reinstall → import recovery. Specific managed-browser policies and display configurations still need broader testing.
 
-Your projects and recordings are saved in your own browser's IndexedDB, outside the Git repository. Cloning this source does not include the author's projects. The sample walkthrough uses generated demo content. If saving personal exports inside the repository, use `exports/` or `recordings/`; both are ignored, along with video files and the default walkthrough export filenames. Renamed HTML exports or extracted project folders should also stay in those ignored directories.
+Your projects and recordings are saved in your own browser's IndexedDB, outside the Git repository. Cloning this source does not include the author's projects. Automated tests use generated demo content. If saving personal exports inside the repository, use `exports/` or `recordings/`; both are ignored, along with video files and the default walkthrough export filenames. Renamed HTML exports or extracted project folders should also stay in those ignored directories.
 
 ### Recommended: Chrome extension
 
@@ -59,11 +59,11 @@ Alternatively, unzip a built `frameway-extension-v0.1.0.zip` release artifact an
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173/`. Home includes the installation guide, saved projects, business use cases, and a sample walkthrough. The practice app is at `/demo.html`.
+Open `http://127.0.0.1:5173/`. Home includes a recording/sharing guide, searchable saved projects with backup/delete options, and expandable setup help. The practice app is at `/demo.html`.
 
 **Record my screen** uses the browser picker for a tab, window, or whole screen. It records silent video; mark screenshot moments while recording or insert them later. It cannot automatically detect clicks in other applications. Keep the recorder page open until saving finishes. Recording stops at ten minutes or approximately 90 MB.
 
-The website and extension have separate browser storage. Use **Export project → Import** to move walkthroughs between them.
+The website and extension have separate browser storage. Use **Export project → Options → Import project backup** to move walkthroughs between them.
 
 ## Edit a walkthrough
 
@@ -90,7 +90,7 @@ No managed hosting service is included. A localhost URL only works on your compu
 
 ## Local storage and backups
 
-Open **Storage & backups** to see approximate browser usage and project media sizes, export editable backups, or delete an unneeded project after confirmation. The open project cannot be deleted until you return Home. Extension and localhost storage are separate.
+Open **Options → Storage & backups** to see approximate browser usage and project media sizes, export editable backups, or delete an unneeded project after confirmation. The open project cannot be deleted until you return to Library. Extension and localhost storage are separate.
 
 Projects show whether a backup export is recorded for the current edits. This records a download being started, not proof that the file was kept. **Export project** creates the editable ZIP; HTML/embed downloads do not count as editable backups. Imported projects start with no local backup-export record.
 

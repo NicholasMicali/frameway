@@ -13,6 +13,7 @@ for (const test of [
   'offline-core',
   'ui-polish',
   'storage',
+  'home-library',
 ]) {
   await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [`tests/${test}.mjs`], {

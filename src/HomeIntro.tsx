@@ -1,56 +1,69 @@
+import { Disclosure } from './Disclosure';
+import { Icon } from './Icon';
 import packageInfo from '../package.json';
 
-export function HomeIntro({ onRecord }: { onRecord: () => void }) {
+export function HomeIntro({ onRecord, returning }: { onRecord: () => void; returning: boolean }) {
+  const extension = location.protocol === 'chrome-extension:';
   return (
-    <>
-      <section className="home-hero">
-        <div className="eyebrow">FROM A FEW CLICKS TO A CLEARER STORY</div>
-        <h1>
-          Show how it works.
-          <br />
-          Let people try it.
-        </h1>
-        <p>
-          Turn a real workflow into an interactive walkthrough.
-          <br />
-          Record your clicks, refine each step, and share it anywhere.
-        </p>
-        <a
-          className="primary home-cta"
-          href="#extension-setup"
-          onClick={(e) => {
-            e.preventDefault();
-            document.getElementById('extension-setup')?.scrollIntoView({ behavior: 'smooth' });
-          }}
-        >
-          Get started with the Chrome extension ↓
-        </a>
-        <p className="home-recommendation">
-          Recommended · Automatic screenshots and video between your clicks
-        </p>
-      </section>
-      <section id="extension-setup" className="extension-setup">
-        <div>
-          <span className="eyebrow">THE EASIEST WAY TO RECORD</span>
+    <section className="home-start" aria-label="Getting started">
+      <div className="quick-guide">
+        <div className="guide-heading">
           <h2>
-            Click through your product.
-            <br />
-            We’ll build the steps.
+            {returning ? 'From recording to sharing' : 'Your first walkthrough, in three steps'}
           </h2>
-          <p>
-            The Chrome extension captures your tab and click locations, then opens an editable
-            walkthrough with screenshots and video already arranged.
-          </p>
-          <p>
-            Pin Frameway in Chrome. Click its icon and choose <strong>Record this tab</strong>. Wait
-            for the <strong>REC</strong> badge, then choose <strong>Stop recording</strong> to
-            finish. Choose <strong>Open Frameway</strong> anytime to return to your saved projects.
-          </p>
-          <a href="demo.html" target="_blank" rel="noreferrer">
-            Try it on the practice workspace ↗
-          </a>
+          <span className="guide-badge">Quick guide</span>
         </div>
-        <div className="install-guide">
+        <p>
+          Capture a short workflow, add context, and send an interactive file. Everything stays
+          local until you share it.
+        </p>
+        <div className="quick-guide-grid">
+          <article>
+            <span className="guide-number">
+              <Icon name="record" />
+            </span>
+            <h3>Record your clicks</h3>
+            <p>
+              Open the page you want to show. In Chrome’s toolbar, click Frameway →{' '}
+              <strong>Record this tab</strong>. Wait for <strong>REC</strong>, then choose{' '}
+              <strong>Stop recording</strong> when done.
+            </p>
+            <a href="demo.html" target="_blank" rel="noreferrer">
+              Open the practice workspace ↗
+            </a>
+          </article>
+          <article>
+            <span className="guide-number">
+              <Icon name="edit" />
+            </span>
+            <h3>Make the steps clear</h3>
+            <p>
+              The editor opens automatically. Select a slide to edit its title and callout.
+              Screenshot slides wait for a click; video slides show the action between clicks. Use
+              Preview to try the walkthrough.
+            </p>
+          </article>
+          <article>
+            <span className="guide-number">
+              <Icon name="share" />
+            </span>
+            <h3>Send it to someone</h3>
+            <p>
+              Choose <strong>Export / Download → Download HTML</strong>. Send that file; your
+              recipient downloads it and opens it in a browser. Use <strong>Export project</strong>{' '}
+              for an editable backup.
+            </p>
+          </article>
+        </div>
+        <p className="guide-tip">
+          Coming back later? Choose <strong>Open Frameway</strong> from the extension menu. Your
+          projects are saved in this browser.
+        </p>
+        <Disclosure
+          id="extension-setup"
+          title={extension ? 'Setup & updates' : 'Install the Chrome extension'}
+          description="Automatic screenshots and video between your clicks."
+        >
           <h3>Install from the extension ZIP</h3>
           <a
             className="primary home-cta"
@@ -81,7 +94,7 @@ export function HomeIntro({ onRecord }: { onRecord: () => void }) {
             </li>
             <li>
               Pin Frameway from Chrome’s Extensions menu, open the page you want to demonstrate, and
-              click Frameway to record.
+              choose Frameway → Record this tab.
             </li>
           </ol>
           <p>
@@ -89,53 +102,28 @@ export function HomeIntro({ onRecord }: { onRecord: () => void }) {
             updating files in the same folder, click <strong>Reload</strong> on its Chrome card and
             reopen the editor. Keep that folder in place.
           </p>
-          <details>
-            <summary>Building from source?</summary>
+          <Disclosure title="Building from source?">
             <p>
               Run <code>npm ci</code> and <code>npm run build</code>, then load the generated{' '}
               <code>dist</code> folder. There is no Chrome Web Store listing yet.
             </p>
-          </details>
-        </div>
-      </section>
-      <section className="use-cases home-next-steps" aria-label="After recording">
-        <h2>Record it. Make it clear. Pass it on.</h2>
-        <div className="use-case-grid">
-          <article>
-            <h3>1. Refine the steps</h3>
+          </Disclosure>
+        </Disclosure>
+        <div className="manual-recording">
+          <div>
+            <h3>Need a window or your whole screen?</h3>
             <p>
-              Edit screenshot and video slides, add callouts and highlights, and make the title
-              slide your own.
+              The browser recorder captures video; you add screenshot steps manually. The Chrome
+              extension creates click-by-click steps automatically.
             </p>
-          </article>
-          <article>
-            <h3>2. Share the walkthrough</h3>
-            <p>
-              Choose Download HTML for one interactive file to send, or Export embed for your
-              website. Recipients can open the downloaded HTML in their browser.
-            </p>
-          </article>
-          <article>
-            <h3>3. Keep an editable backup</h3>
-            <p>
-              Choose Export project to save a project ZIP. Use Import to restore it after
-              reinstalling or move it to another computer. Playback HTML is for viewing; project
-              ZIPs keep your work editable.
-            </p>
-          </article>
+          </div>
+          <button onClick={onRecord}>
+            <Icon name="record" />
+            Record my screen
+          </button>
         </div>
-      </section>
-      <section className="manual-recording">
-        <div>
-          <h3>Need to capture a window or your whole screen?</h3>
-          <p>
-            Use the browser recorder, then add screenshot steps manually. For automatic
-            click-by-click steps, use the extension above.
-          </p>
-        </div>
-        <button onClick={onRecord}>Record my screen</button>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 export function UseCases() {

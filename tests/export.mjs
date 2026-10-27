@@ -1,3 +1,4 @@
+import { openSample } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer as createViteServer } from 'vite';
 import { createServer } from 'node:http';
@@ -40,7 +41,7 @@ const browser = await chromium.launch({ headless: true });
 try {
   const editor = await browser.newPage();
   await editor.goto('http://127.0.0.1:4176');
-  await editor.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(editor);
   await editor.getByLabel('Callout headline').waitFor({ timeout: 30000 });
   await editor.getByRole('button', { name: 'Delete step', exact: true }).click();
   await editor.locator('.step-list .step').nth(1).click();

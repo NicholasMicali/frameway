@@ -1,12 +1,8 @@
+import { ProjectNavigation, WorkspaceOptions } from './HeaderMenus';
+import { Disclosure } from './Disclosure';
+import { ProjectLibrary } from './ProjectLibrary';
 import { StorageManager } from './StorageManager';
-import {
-  backupStatus,
-  formatBytes,
-  mediaBytes,
-  revision,
-  saveFailure,
-  storageSummary,
-} from './storage-health';
+import { backupStatus, revision, saveFailure, storageSummary } from './storage-health';
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { all, get, put, saveProject, deleteProject } from './db';
@@ -26,7 +22,6 @@ import {
 import { createProject, eventOnce, fixDuration, frameAt, openVideo, releaseVideo } from './media';
 import { exportName } from './export-name';
 import { download, exportProject, importProject } from './archive';
-import { sampleProject } from './sample';
 import './style.css';
 import { HomeIntro, UseCases } from './HomeIntro';
 import packageInfo from '../package.json';
@@ -482,14 +477,6 @@ function App() {
     el.addEventListener('pointerup', end);
     el.addEventListener('pointercancel', end);
   }
-  function newSample() {
-    task('Creating a sample with real video…', async () => {
-      const p = await sampleProject();
-      choose(p);
-      await persist(p);
-      await refresh();
-    });
-  }
   async function switchProject(id: string) {
     await task('Opening walkthrough…', async () => {
       if (project) await persist(project);
@@ -635,47 +622,24 @@ function App() {
             e.preventDefault();
             void home();
           }}
-          aria-label="Home"
+          aria-label="Library"
         >
           <span className="brand-icon">◈</span> frameway
           <span className="app-version" title="Beta version">
             v{packageInfo.version}
           </span>
         </a>
-        <div className="breadcrumb">
-          Workspace <span>/</span>{' '}
-          {project ? (
-            <div className="project-select">
-              <div className="project-select-measure" aria-hidden="true">
-                {project.title || 'Untitled'}
-              </div>{' '}
-              <select
-                disabled={!!busy}
-                aria-label="Open walkthrough"
-                value={project.id}
-                onChange={(e) => switchProject(e.target.value)}
-              >
-                {projects.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.id === project.id ? project.title : p.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ) : (
-            'Your first walkthrough'
-          )}
-        </div>
+        <ProjectNavigation
+          projects={projects}
+          project={project}
+          busy={!!busy}
+          onLibrary={() => void home()}
+          onProject={(id) => void switchProject(id)}
+        />
         <div className="header-actions">
           <span className="save-state" role="status">
             {saved}
           </span>
-          <button onClick={() => setStorageOpen(true)}>Storage & backups</button>
-          {project && (
-            <button onClick={() => void home()} disabled={!!busy}>
-              Home
-            </button>
-          )}
           <button
             className={project ? 'primary' : ''}
             disabled={!!busy}
@@ -688,7 +652,11 @@ function App() {
           >
             Record screen
           </button>
-          <button onClick={() => importInput.current?.click()}>Import</button>
+          <WorkspaceOptions
+            busy={!!busy}
+            onStorage={() => setStorageOpen(true)}
+            onImport={() => importInput.current?.click()}
+          />
           {project && (
             <details className="export-menu">
               <summary>Export / Download ▾</summary>
@@ -808,51 +776,74 @@ function App() {
       )}
       {!project ? (
         <main className="welcome home-page">
-          <HomeIntro onRecord={() => setRecording(true)} />
-          <section className="project-library">
-            <h2>Your walkthroughs</h2>
-            <p className="field-note">{storage.text}. Project sizes below estimate media only.</p>
-            {projects.length ? (
-              <div className="project-grid">
-                {projects.map((p) => (
-                  <article className="project-library-item" key={p.id}>
-                    <button className="project-card" onClick={() => choose(p)}>
-                      <Thumb step={p.steps[0]} logo={p.logo} />
-                      <strong>{p.title}</strong>
-                      <span>
-                        {p.steps.length} steps · {p.duration.toFixed(1)}s · About{' '}
-                        {formatBytes(mediaBytes(p))}
-                      </span>
-                      <span>{backupStatus(p)}</span>
-                      <span>Open walkthrough →</span>
-                    </button>
-                    <button disabled={!!busy} onClick={() => backup(p)}>
-                      Export backup
-                    </button>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <p>No walkthroughs yet. Start a recording or explore the sample.</p>
-            )}
-          </section>
-          <UseCases />
-          <section className="sample-section">
+          <div className="home-heading">
             <div>
-              <h2>Take a look before recording</h2>
+              <div className="eyebrow">WELCOME TO FRAMEWAY</div>
+              <h1>
+                {projects.length
+                  ? 'Pick up where you left off.'
+                  : 'Show a workflow. Let people try it.'}
+              </h1>
               <p>
-                Explore a sample to try title slides, callouts, video editing, and interactive
-                playback.
+                {projects.length
+                  ? 'Open a project below, or start a new recording from the Frameway toolbar icon.'
+                  : 'Record your screen, edit the steps, and share a walkthrough anyone can open.'}
               </p>
             </div>
-            <button onClick={newSample} disabled={!!busy}>
-              Explore a sample walkthrough →
-            </button>
-          </section>
-          <p className="storage-note">
-            The extension and this website have separate libraries. Use Export project and Import to
-            move walkthroughs between them.
-          </p>
+          </div>
+          <div className={`home-workspace ${projects.length ? 'has-projects' : ''}`}>
+            {!projects.length && (
+              <HomeIntro onRecord={() => setRecording(true)} returning={false} />
+            )}
+            <ProjectLibrary
+              projects={projects}
+              busy={!!busy}
+              onOpen={choose}
+              onBackup={backup}
+              onDelete={(p) => {
+                void task('Deleting project…', async () => {
+                  await deleteProject(p.id);
+                  await refresh();
+                });
+              }}
+              thumbnail={(p) => <Thumb step={p.steps[0]} logo={p.logo} />}
+            />
+            {!!projects.length && <HomeIntro onRecord={() => setRecording(true)} returning />}
+          </div>
+          <div className="home-help">
+            <Disclosure
+              title="Ideas for your next walkthrough"
+              description="Product demos, training, support, and more."
+            >
+              <UseCases />
+            </Disclosure>
+            <Disclosure
+              title="Keeping your work safe"
+              description="Projects are saved on this device. Back them up to keep a copy."
+            >
+              <p>
+                Use Export backup on a project to save an editable ZIP. Import that backup to
+                restore your work or move it to another computer. Keep a backup before removing or
+                reinstalling Frameway.
+              </p>
+            </Disclosure>
+            {location.protocol !== 'chrome-extension:' && (
+              <Disclosure
+                title="Can’t find a recording?"
+                description="Open Frameway from Chrome’s toolbar to find extension recordings."
+              >
+                <p>
+                  This is the local development app. To find walkthroughs recorded with the Chrome
+                  extension, click the Frameway icon in Chrome and choose Open Frameway. Opening a
+                  project here does not switch apps.
+                </p>
+                <p>
+                  To bring a project here, export its project backup there, then choose Options →
+                  Import project backup.
+                </p>
+              </Disclosure>
+            )}
+          </div>
         </main>
       ) : (
         <>
@@ -1015,12 +1006,6 @@ function App() {
                     ＋ Add title slide
                   </button>
                 )}
-                <button className="sample-link" onClick={newSample}>
-                  ＋ New sample
-                </button>
-                <a className="practice-link" href="demo.html" target="_blank">
-                  Practice workspace ↗
-                </a>
               </aside>
             )}
             <main className="canvas-area">
