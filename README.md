@@ -65,6 +65,8 @@ Open `http://127.0.0.1:5173/`. Home includes a recording/sharing guide, searchab
 
 The website and extension have separate browser storage. Use **Export project backup → Options → Import project backup** to move walkthroughs between them.
 
+In the library, open a project’s three-dot menu and choose **Make a copy** to create a separately saved version. The copy opens with a “(copy)” name you can edit. Changes or deletion of either project do not affect the other; export a new backup for the copy. Copies include the media and may use additional browser storage.
+
 ## Edit a walkthrough
 
 - New recordings begin with an editable title slide, using the opening frame cropped into its lower-right corner. Existing projects have **Add title slide**.

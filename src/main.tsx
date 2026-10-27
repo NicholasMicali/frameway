@@ -12,6 +12,7 @@ import {
   withTitleSlide,
   splitVideo,
   duplicateStep,
+  copyProject,
   deleteStep,
   moveStep,
   nextId,
@@ -63,6 +64,7 @@ function Thumb({ step, logo }: { step: Step; logo?: string }) {
 }
 function App() {
   const [recording, setRecording] = useState(false);
+  const copying = useRef(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [storageOpen, setStorageOpen] = useState(false);
   const [saveError, setSaveError] = useState('');
@@ -255,6 +257,32 @@ function App() {
         setSaveError(saveFailure(error));
       }
       throw error;
+    }
+  }
+  async function makeCopy(source: Project) {
+    if (copying.current) return;
+    copying.current = true;
+    try {
+      await task('Making a copy…', async () => {
+        const copy = copyProject(
+          source,
+          projects.map((p) => p.title),
+        );
+        try {
+          await persist(copy);
+        } catch (cause) {
+          throw new Error(
+            `Could not make a copy. ${
+              cause instanceof DOMException && cause.name === 'QuotaExceededError'
+                ? 'Browser storage is full. Export backups, free space in Options → Storage & backups, then try Make a copy again.'
+                : 'The browser could not save it. Check available storage and try Make a copy again.'
+            } The original project is unchanged.`,
+          );
+        }
+        choose(copy);
+      });
+    } finally {
+      copying.current = false;
     }
   }
   async function backup(p: Project) {
@@ -775,6 +803,7 @@ function App() {
               busy={!!busy}
               onOpen={choose}
               onBackup={backup}
+              onCopy={makeCopy}
               onDelete={(p) => {
                 void task('Deleting project…', async () => {
                   await deleteProject(p.id);

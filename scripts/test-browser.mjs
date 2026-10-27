@@ -14,6 +14,7 @@ for (const test of [
   'ui-polish',
   'storage',
   'home-library',
+  'project-copy',
 ]) {
   await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [`tests/${test}.mjs`], {

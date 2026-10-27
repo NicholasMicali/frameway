@@ -95,6 +95,32 @@ export function migrateProject(p: Project | LegacyProject): Project {
   }
   return { ...p, schemaVersion: 2, steps };
 }
+/** Copy content into an independent project; blobs are immutable and stored with each record. */
+export function copyProject(source: Project, existingTitles: string[] = []): Project {
+  const copy = structuredClone(source);
+  const titles = new Set(existingTitles);
+  let suffix = ' (copy)';
+  let title = source.title.slice(0, 200 - suffix.length) + suffix;
+  for (let n = 2; titles.has(title); n++) {
+    suffix = ` (copy ${n})`;
+    title = source.title.slice(0, 200 - suffix.length) + suffix;
+  }
+  const ids = new Map(copy.steps.map((step) => [step.id, crypto.randomUUID()]));
+  return {
+    ...copy,
+    id: crypto.randomUUID(),
+    title,
+    createdAt: Date.now(),
+    localRevision: undefined,
+    localBackup: undefined,
+    markers: copy.markers.map((marker) => ({ ...marker, id: crypto.randomUUID() })),
+    steps: copy.steps.map((step) => ({
+      ...step,
+      id: ids.get(step.id)!,
+      target: step.target === 'next' || step.target === 'end' ? step.target : ids.get(step.target)!,
+    })),
+  };
+}
 export function deleteStep(p: Project, id: string): Project {
   return {
     ...p,

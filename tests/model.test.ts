@@ -5,6 +5,7 @@ import {
   normalizedPoint,
   splitVideo,
   duplicateStep,
+  copyProject,
   moveStep,
   deleteStep,
   nextId,
@@ -252,4 +253,33 @@ test('storage estimates degrade gracefully and backup status follows content rev
   assert.equal(backupStatus(p), 'Backup exported for these edits');
   p.localRevision = 'edited';
   assert.equal(backupStatus(p), 'Changed since last backup export');
+});
+
+test('project copies isolate edits, remap branches, reset backups, and preserve media', async () => {
+  const source = project();
+  source.title = 'x'.repeat(200);
+  source.video = new Blob(['video'], { type: 'video/webm' });
+  source.steps[0].image = new Blob(['image'], { type: 'image/png' });
+  source.localRevision = 'revision';
+  source.localBackup = { revision: 'revision', exportedAt: 1 };
+  source.theme = 'custom';
+  source.customColor = '#123456';
+  const copy = copyProject(source);
+  assert.notEqual(copy.id, source.id);
+  assert.equal(copy.title.length, 200);
+  assert.ok(copy.title.endsWith(' (copy)'));
+  assert.ok(copyProject(source, [copy.title]).title.endsWith(' (copy 2)'));
+  assert.equal(copy.localBackup, undefined);
+  assert.equal(copy.localRevision, undefined);
+  assert.equal(copy.customColor, source.customColor);
+  assert.equal(await copy.video.text(), await source.video.text());
+  assert.equal(await copy.steps[0].image.text(), await source.steps[0].image.text());
+  assert.ok(copy.steps.every((s) => !source.steps.some((original) => original.id === s.id)));
+  assert.equal(nextId(copy, copy.steps[0]), copy.steps[2].id);
+  const reordered = moveStep(copy, copy.steps[2].id, -1);
+  assert.equal(nextId(reordered, reordered.steps[0]), copy.steps[2].id);
+  validateManifest(deleteStep(reordered, copy.steps[2].id));
+  copy.steps[0].body = 'Changed only in copy';
+  assert.equal(source.steps[0].body, 'text');
+  assert.equal(source.steps[0].target, 'c');
 });
