@@ -36,6 +36,9 @@ export type Step = StepBase &
   );
 export type LegacyStep = StepBase & { transition: boolean };
 type ProjectBase = {
+  /** Local bookkeeping only; omitted from portable exports. */
+  localRevision?: string;
+  localBackup?: { revision: string; exportedAt: number };
   theme?: ThemeName;
   customColor?: string;
   logo?: string;

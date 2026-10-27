@@ -1761,3 +1761,68 @@ h1 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.storage-dialog {
+  width: min(640px, calc(100vw - 32px));
+  max-height: 85vh;
+  overflow: auto;
+  border: 1px solid #dbe4ee;
+  border-radius: 16px;
+  padding: 24px;
+  color: #263445;
+}
+.storage-dialog::backdrop {
+  background: #10243e66;
+}
+.storage-heading,
+.storage-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.storage-heading h2 {
+  margin: 0;
+}
+.storage-projects article {
+  border-top: 1px solid #e2e8f0;
+  padding: 16px 0;
+}
+.storage-projects strong {
+  overflow-wrap: anywhere;
+}
+.storage-projects p,
+.storage-dialog > p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.storage-actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.storage-warning,
+.storage-confirm {
+  background: #fff8e6;
+  color: #6b4c12;
+  padding: 12px;
+  border-radius: 8px;
+}
+.storage-confirm {
+  margin-top: 12px;
+}
+.project-library-item {
+  min-width: 0;
+}
+.project-library-item .project-card {
+  width: 100%;
+}
+.project-library-item > button {
+  margin-top: 8px;
+}
+.backup-note {
+  font-size: 12px;
+  color: #526175;
+  max-width: 240px;
+  padding: 8px 12px;
+  margin: 0;
+}

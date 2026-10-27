@@ -3,6 +3,8 @@ import { validateManifest, migrateProject, type Project } from './model';
 export async function exportProject(p: Project) {
   const manifest = {
     ...p,
+    localRevision: undefined,
+    localBackup: undefined,
     video: undefined,
     markers: undefined,
     steps: p.steps.map(({ image, ...s }) => s),
@@ -55,6 +57,8 @@ export async function importProject(file: Blob): Promise<Project> {
   });
   return migrateProject({
     ...p,
+    localRevision: undefined,
+    localBackup: undefined,
     id: crypto.randomUUID(),
     createdAt: Date.now(),
     steps,

@@ -46,7 +46,7 @@ Run `npm run format` to format source and documentation before committing. Prett
 
 CI checks build, extension packaging, and model tests on Windows, macOS, and Linux. Formatting/lint and full Chromium workflows run on Linux; the stable `check` job requires every job to succeed. The offline test uses the built app, a synthetic screen stream, and an offline browser context after initial loading. It does not automate an OS picker or enterprise policy approval.
 
-On Linux, Playwright may need system dependencies: `npx playwright install --with-deps chromium`. Tests generate synthetic content and put results in ignored `test-results/`. Browser tests use local ports 4173–4183; stop conflicting servers before running them. Native recording/Chrome toolbar actions and enterprise policy restrictions still need manual testing.
+On Linux, Playwright may need system dependencies: `npx playwright install --with-deps chromium`. Tests generate synthetic content and put results in ignored `test-results/`. Browser tests use local ports 4173–4185; stop conflicting servers before running them. Native recording/Chrome toolbar actions and enterprise policy restrictions still need manual testing.
 
 For an extension change, also run `npm run package:extension`, extract the ZIP, and verify the real recording flow. Test both editor preview and standalone exports when rendering behavior changes. Add meaningful tests for fixes; do not add tests that merely repeat implementation details.
 

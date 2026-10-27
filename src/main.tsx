@@ -1,6 +1,15 @@
+import { StorageManager } from './StorageManager';
+import {
+  backupStatus,
+  formatBytes,
+  mediaBytes,
+  revision,
+  saveFailure,
+  storageSummary,
+} from './storage-health';
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { all, get, put, saveProject } from './db';
+import { all, get, put, saveProject, deleteProject } from './db';
 import {
   clamp,
   migrateProject,
@@ -59,6 +68,9 @@ function Thumb({ step, logo }: { step: Step; logo?: string }) {
 }
 function App() {
   const [recording, setRecording] = useState(false);
+  const [storageOpen, setStorageOpen] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const [storageEstimate, setStorageEstimate] = useState<StorageEstimate>();
   const [leaving, setLeaving] = useState(false);
   const [visit, setVisit] = useState(0);
   const exitAnimation = useRef<ReturnType<typeof zoomOut>>(undefined);
@@ -97,6 +109,32 @@ function App() {
   const step = project?.steps.find((s) => s.id === selected),
     imageURL = useURL(step?.image),
     videoURL = useURL(project?.video);
+  const currentProject = useRef(project);
+  currentProject.current = project;
+  const storage = storageSummary(storageEstimate);
+  useEffect(() => {
+    let active = true;
+    void navigator.storage
+      ?.estimate?.()
+      .then((e) => {
+        if (active) setStorageEstimate(e);
+      })
+      .catch(() => {
+        if (active) setStorageEstimate(undefined);
+      });
+    return () => {
+      active = false;
+    };
+  }, [projects]);
+  useEffect(() => {
+    if (!saveError && saved !== 'Saving…') return;
+    const preventClose = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', preventClose);
+    return () => window.removeEventListener('beforeunload', preventClose);
+  }, [saveError, saved]);
   const zooming = preview && step?.kind === 'image' && step.style === 'area' && !!step.zoomEnabled;
   useEffect(() => {
     const el = card.current,
@@ -126,6 +164,7 @@ function App() {
     location.hash = `project/${input.id}`;
     const p = migrateProject(input);
     generation.current++;
+    setSaveError('');
     setProject(p);
     setSelected(p.steps[0]?.id || '');
     setPreview(false);
@@ -181,10 +220,10 @@ function App() {
           pending.title,
           pending.warning || 'Automatic frames are approximate. Review each still and transition.',
         );
-        await saveProject(p);
+        choose(p);
+        await persist(p);
         await put('sessions', { ...pending, projectId: p.id });
         await refresh();
-        choose(p);
       } else {
         const wanted = location.hash.slice(1).replace(/^project\//, '');
         const saved = list.find((p) => p.id === wanted);
@@ -204,20 +243,47 @@ function App() {
       }
     });
   }, []);
+  async function persist(p: Project) {
+    const operation = saveQueue.current.then(() => saveProject(p));
+    saveQueue.current = operation.catch(() => {});
+    try {
+      await operation;
+      setProjects((ps) => [p, ...ps.filter((x) => x.id !== p.id)]);
+      if (currentProject.current === p) {
+        setSaved('Saved locally');
+        setSaveError('');
+      }
+    } catch (error) {
+      if (currentProject.current?.id === p.id) {
+        setSaved('Save failed');
+        setSaveError(saveFailure(error));
+      }
+      throw error;
+    }
+  }
+  async function backup(p: Project) {
+    await task('Exporting editable backup…', async () => {
+      const blob = await exportProject(p);
+      download(blob, `${exportName(p.title)}.frameway.zip`);
+      const localBackup = { revision: revision(p), exportedAt: Date.now() };
+      if (currentProject.current?.id === p.id) {
+        setProject((current) => (current?.id === p.id ? { ...current, localBackup } : current));
+      } else {
+        try {
+          await persist({ ...p, localBackup });
+        } catch {
+          setError(
+            'Backup download started, but its export record could not be saved. Keep the ZIP file.',
+          );
+        }
+      }
+    });
+  }
   useEffect(() => {
     if (!project) return;
     setSaved('Saving…');
     const timer = setTimeout(() => {
-      saveQueue.current = saveQueue.current
-        .then(async () => {
-          await saveProject(project);
-          setProjects((ps) => [project, ...ps.filter((p) => p.id !== project.id)]);
-          setSaved('Saved locally');
-        })
-        .catch((e) => {
-          setSaved('Save failed');
-          setError(String(e));
-        });
+      void persist(project).catch(() => {});
     }, 350);
     return () => clearTimeout(timer);
   }, [project]);
@@ -260,7 +326,7 @@ function App() {
     }
     future.current = [];
     editGroup.current = { key, time: now };
-    setProject(p);
+    setProject({ ...p, localRevision: crypto.randomUUID() });
   }
   function travel(direction: 'undo' | 'redo') {
     if (!project || preview || busy) return;
@@ -270,7 +336,7 @@ function App() {
     if (!frame) return;
     to.current.push({ project, selected });
     boundary();
-    setProject(frame.project);
+    setProject({ ...frame.project, localBackup: project.localBackup });
     select(
       frame.project.steps.some((s) => s.id === frame.selected)
         ? frame.selected
@@ -419,14 +485,14 @@ function App() {
   function newSample() {
     task('Creating a sample with real video…', async () => {
       const p = await sampleProject();
-      await saveProject(p);
-      await refresh();
       choose(p);
+      await persist(p);
+      await refresh();
     });
   }
   async function switchProject(id: string) {
     await task('Opening walkthrough…', async () => {
-      if (project) await saveProject(project);
+      if (project) await persist(project);
       const p = await get<Project>('projects', id);
       if (p) choose(p);
     });
@@ -434,7 +500,7 @@ function App() {
   async function home() {
     await task('Saving walkthrough…', async () => {
       await saveQueue.current;
-      if (project) await saveProject(project);
+      if (project) await persist(project);
       generation.current++;
       video.current?.pause();
       setPlaying(false);
@@ -476,10 +542,10 @@ function App() {
         last,
       ];
     }
-    await saveProject(p);
-    await refresh();
     setRecording(false);
     choose(p);
+    await persist(p);
+    await refresh();
   }
   async function addScreenshot() {
     if (!project || !step) return;
@@ -601,7 +667,10 @@ function App() {
           )}
         </div>
         <div className="header-actions">
-          <span className="save-state">{saved}</span>
+          <span className="save-state" role="status">
+            {saved}
+          </span>
+          <button onClick={() => setStorageOpen(true)}>Storage & backups</button>
           {project && (
             <button onClick={() => void home()} disabled={!!busy}>
               Home
@@ -610,7 +679,12 @@ function App() {
           <button
             className={project ? 'primary' : ''}
             disabled={!!busy}
-            onClick={() => setRecording(true)}
+            onClick={() =>
+              task('Preparing recorder…', async () => {
+                if (project) await persist(project);
+                setRecording(true);
+              })
+            }
           >
             Record screen
           </button>
@@ -649,18 +723,8 @@ function App() {
                 >
                   Export embed
                 </button>
-                <button
-                  onClick={() =>
-                    task('Packing your walkthrough…', async () =>
-                      download(
-                        await exportProject(project),
-                        `${exportName(project.title)}.frameway.zip`,
-                      ),
-                    )
-                  }
-                >
-                  Export project ↗
-                </button>
+                <button onClick={() => project && backup(project)}>Export project ↗</button>
+                <p className="backup-note">{backupStatus(project)}. Keep the downloaded ZIP.</p>
               </div>
             </details>
           )}
@@ -676,13 +740,51 @@ function App() {
           e.target.value = '';
           if (file)
             task('Importing walkthrough…', async () => {
+              if (project) await persist(project);
               const p = await importProject(file);
-              await saveProject(p);
-              await refresh();
               choose(p);
+              await persist(p);
+              await refresh();
             });
         }}
       />
+      {storageOpen && (
+        <StorageManager
+          projects={project ? [project, ...projects.filter((p) => p.id !== project.id)] : projects}
+          currentId={project?.id}
+          error={error}
+          busy={!!busy}
+          onClose={() => setStorageOpen(false)}
+          onBackup={backup}
+          onDelete={async (p) => {
+            await task('Deleting project…', async () => {
+              await deleteProject(p.id);
+              await refresh();
+            });
+          }}
+        />
+      )}
+      {saveError && project && (
+        <div className="banner error" role="alert">
+          <span>{saveError} Your current edits are still open in this tab.</span>
+          <button disabled={!!busy} onClick={() => backup(project)}>
+            Export backup
+          </button>
+          <button disabled={!!busy} onClick={() => task('Retrying save…', () => persist(project))}>
+            Retry saving
+          </button>
+          <button onClick={() => setStorageOpen(true)}>Manage storage</button>
+        </div>
+      )}
+      {storage.low && !saveError && (
+        <div className="banner storage-warning">
+          <span>
+            Browser storage is nearly full. Export backups and review projects before recording
+            more.
+          </span>
+          <button onClick={() => setStorageOpen(true)}>Manage storage</button>
+        </div>
+      )}
       {error && (
         <div role="alert" className="banner error">
           {error}
@@ -709,16 +811,25 @@ function App() {
           <HomeIntro onRecord={() => setRecording(true)} />
           <section className="project-library">
             <h2>Your walkthroughs</h2>
+            <p className="field-note">{storage.text}. Project sizes below estimate media only.</p>
             {projects.length ? (
               <div className="project-grid">
                 {projects.map((p) => (
-                  <button className="project-card" key={p.id} onClick={() => choose(p)}>
-                    <Thumb step={p.steps[0]} logo={p.logo} />
-                    <strong>{p.title}</strong>
-                    <span>
-                      {p.steps.length} steps · {p.duration.toFixed(1)}s · Open walkthrough →
-                    </span>
-                  </button>
+                  <article className="project-library-item" key={p.id}>
+                    <button className="project-card" onClick={() => choose(p)}>
+                      <Thumb step={p.steps[0]} logo={p.logo} />
+                      <strong>{p.title}</strong>
+                      <span>
+                        {p.steps.length} steps · {p.duration.toFixed(1)}s · About{' '}
+                        {formatBytes(mediaBytes(p))}
+                      </span>
+                      <span>{backupStatus(p)}</span>
+                      <span>Open walkthrough →</span>
+                    </button>
+                    <button disabled={!!busy} onClick={() => backup(p)}>
+                      Export backup
+                    </button>
+                  </article>
                 ))}
               </div>
             ) : (

@@ -239,3 +239,17 @@ test('export filenames preserve readable titles and are portable on Windows', as
   assert.equal(exportName('Démo 日本語'), 'Démo 日本語');
   assert.ok(new TextEncoder().encode(exportName('😀'.repeat(200)) + '.frameway.zip').length <= 255);
 });
+
+test('storage estimates degrade gracefully and backup status follows content revisions', async () => {
+  const { storageSummary, backupStatus, revision } = await import('../src/storage-health');
+  assert.equal(storageSummary().low, false);
+  assert.match(storageSummary({ usage: 5, quota: 0 }).text, /unavailable/);
+  assert.equal(storageSummary({ usage: 95, quota: 100 }).low, true);
+  assert.equal(storageSummary({ usage: 50, quota: 100 }).low, false);
+  const p = project();
+  assert.equal(backupStatus(p), 'No backup export recorded');
+  p.localBackup = { revision: revision(p), exportedAt: 123 };
+  assert.equal(backupStatus(p), 'Backup exported for these edits');
+  p.localRevision = 'edited';
+  assert.equal(backupStatus(p), 'Changed since last backup export');
+});
