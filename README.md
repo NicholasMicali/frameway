@@ -14,7 +14,7 @@ No Node.js or build tools are needed for the packaged version.
 2. Unzip it into a permanent folder. On Windows, use **Extract All**.
 3. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
-5. Open a page, click Frameway, wait for **REC**, and click it again when finished. The editor opens automatically.
+5. Open a page, click Frameway → **Record this tab**, wait for **REC**, and choose **Stop recording** when finished. The editor opens automatically.
 
 Keep the extracted folder in place. Back up editable work with **Export project** before replacing or removing an installation; restore the `.frameway.zip` with **Import**. **Download HTML** creates the file to send to viewers.
 
@@ -46,10 +46,10 @@ The extension records a tab's video and clicks, then creates screenshot/video st
 1. Open `chrome://extensions` in Chrome (116 or newer).
 2. Enable **Developer mode**, click **Load unpacked**, and select this repository's `dist` folder.
 3. Pin **Frameway · Walkthrough recorder** in Chrome's Extensions menu.
-4. Open the page you want to demonstrate. Click Frameway and wait for the **REC** badge.
-5. Perform your workflow; click Frameway again to stop. Its editor opens automatically.
+4. Open the page you want to demonstrate. Click Frameway → **Record this tab** and wait for the **REC** badge.
+5. Perform your workflow; click Frameway → **Stop recording**. Its editor opens automatically.
 
-Shortcut: **Command+Shift+Y** on macOS; **Ctrl+Shift+Y** elsewhere. Reopen the editor through the extension's **Options** page. After updating the source, rebuild, click **Reload** on the extension's Chrome card, and reopen the editor. Export important projects before replacing or removing an extension installation.
+Open the toolbar menu with **Command+Shift+Y** on macOS or **Ctrl+Shift+Y** elsewhere. Choose **Open Frameway** to access saved projects without recording. The extension's **Options** page also opens the editor. After updating the source, rebuild, click **Reload** on the extension's Chrome card, and reopen the editor. Export important projects before replacing or removing an extension installation.
 
 Alternatively, unzip a built `frameway-extension-v0.1.0.zip` release artifact and load the extracted folder containing `manifest.json`. There is no Chrome Web Store listing. Use the Releases page for packaged builds; developers can create one locally with `npm run package:extension`.
 

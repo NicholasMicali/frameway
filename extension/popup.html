@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Frameway</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="icons/frameway-48.png" width="36" height="36" alt="" />
+      <div>
+        <h1>Frameway</h1>
+        <p>Your local walkthrough studio</p>
+      </div>
+    </header>
+    <main>
+      <button id="record" disabled>
+        <span id="record-icon" aria-hidden="true">●</span><span id="record-label">Loading…</span>
+      </button>
+      <p id="status" role="status">Checking recording status…</p>
+      <button id="open">
+        <span aria-hidden="true">▦</span
+        ><span>Open Frameway<small>My projects & editor</small></span>
+      </button>
+      <p id="error" role="alert" hidden></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
