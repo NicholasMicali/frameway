@@ -9,7 +9,14 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Frameway: start / stop recording"
+    "default_title": "Frameway: record or open projects",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/frameway-16.png",
+      "32": "icons/frameway-32.png",
+      "48": "icons/frameway-48.png",
+      "128": "icons/frameway-128.png"
+    }
   },
   "options_page": "index.html",
   "commands": {
@@ -18,7 +25,13 @@
         "default": "Ctrl+Shift+Y",
         "mac": "Command+Shift+Y"
       },
-      "description": "Start or stop walkthrough recording"
+      "description": "Open Frameway recording and projects menu"
     }
+  },
+  "icons": {
+    "16": "icons/frameway-16.png",
+    "32": "icons/frameway-32.png",
+    "48": "icons/frameway-48.png",
+    "128": "icons/frameway-128.png"
   }
 }

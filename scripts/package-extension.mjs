@@ -15,7 +15,17 @@ async function collect(dir, prefix = '') {
 await collect('dist');
 const manifest = JSON.parse(new TextDecoder().decode(entries['manifest.json']));
 if (manifest.version !== pkg.version) throw Error('Build version mismatch; run npm run build');
-for (const name of ['index.html', 'background.js', 'offscreen.js', 'offscreen.html', 'content.js'])
+for (const name of [
+  'index.html',
+  'background.js',
+  'offscreen.js',
+  'offscreen.html',
+  'content.js',
+  'popup.html',
+  'popup.js',
+  'popup.css',
+  ...Object.values(manifest.icons),
+])
   if (!entries[name]) throw Error(`Missing ${name}`);
 const bytes = zipSync(entries, { level: 6 });
 const check = unzipSync(bytes);

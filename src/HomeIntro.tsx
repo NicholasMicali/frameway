@@ -42,8 +42,9 @@ export function HomeIntro({ onRecord }: { onRecord: () => void }) {
             walkthrough with screenshots and video already arranged.
           </p>
           <p>
-            Pin Frameway in Chrome. Click its icon to start, wait for the <strong>REC</strong>{' '}
-            badge, then click it again to finish.
+            Pin Frameway in Chrome. Click its icon and choose <strong>Record this tab</strong>. Wait
+            for the <strong>REC</strong> badge, then choose <strong>Stop recording</strong> to
+            finish. Choose <strong>Open Frameway</strong> anytime to return to your saved projects.
           </p>
           <a href="demo.html" target="_blank" rel="noreferrer">
             Try it on the practice workspace ↗
