@@ -1,3 +1,4 @@
+import { openSample } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
@@ -40,7 +41,7 @@ const exportBackup = async () => {
 try {
   await page.goto('http://127.0.0.1:4185');
   await page.getByText(/Browser storage is nearly full/).waitFor();
-  await page.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(page);
   await page.getByLabel('Callout headline').waitFor({ timeout: 30000 });
   await saved();
   await exportBackup();
@@ -155,7 +156,7 @@ try {
       return original.apply(this, args);
     };
   });
-  await other.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(other);
   await other.getByLabel('Callout headline').waitFor({ timeout: 30000 });
   await other.getByRole('button', { name: 'Retry saving', exact: true }).waitFor();
   const emergencyDownload = other.waitForEvent('download');

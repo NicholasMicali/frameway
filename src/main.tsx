@@ -1,3 +1,4 @@
+import { Disclosure } from './Disclosure';
 import { ProjectLibrary } from './ProjectLibrary';
 import { StorageManager } from './StorageManager';
 import { backupStatus, revision, saveFailure, storageSummary } from './storage-health';
@@ -20,7 +21,6 @@ import {
 import { createProject, eventOnce, fixDuration, frameAt, openVideo, releaseVideo } from './media';
 import { exportName } from './export-name';
 import { download, exportProject, importProject } from './archive';
-import { sampleProject } from './sample';
 import './style.css';
 import { HomeIntro, UseCases } from './HomeIntro';
 import packageInfo from '../package.json';
@@ -476,14 +476,6 @@ function App() {
     el.addEventListener('pointerup', end);
     el.addEventListener('pointercancel', end);
   }
-  function newSample() {
-    task('Creating a sample with real video…', async () => {
-      const p = await sampleProject();
-      choose(p);
-      await persist(p);
-      await refresh();
-    });
-  }
   async function switchProject(id: string) {
     await task('Opening walkthrough…', async () => {
       if (project) await persist(project);
@@ -804,7 +796,7 @@ function App() {
         <main className="welcome home-page">
           <div className="home-heading">
             <div>
-              <div className="eyebrow">YOUR LOCAL WALKTHROUGH STUDIO</div>
+              <div className="eyebrow">WELCOME TO FRAMEWAY</div>
               <h1>
                 {projects.length
                   ? 'Pick up where you left off.'
@@ -837,26 +829,40 @@ function App() {
             />
             {!!projects.length && <HomeIntro onRecord={() => setRecording(true)} returning />}
           </div>
-          <details className="home-use-cases">
-            <summary>Ways to use Frameway</summary>
-            <UseCases />
-          </details>
-          <section className="sample-section">
-            <div>
-              <h2>Take a look before recording</h2>
+          <div className="home-help">
+            <Disclosure
+              title="Ideas for your next walkthrough"
+              description="Product demos, training, support, and more."
+            >
+              <UseCases />
+            </Disclosure>
+            <Disclosure
+              title="Keeping your work safe"
+              description="Projects are saved on this device. Back them up to keep a copy."
+            >
               <p>
-                Explore a sample to try title slides, callouts, video editing, and interactive
-                playback.
+                Use Export backup on a project to save an editable ZIP. Import that backup to
+                restore your work or move it to another computer. Keep a backup before removing or
+                reinstalling Frameway.
               </p>
-            </div>
-            <button onClick={newSample} disabled={!!busy}>
-              Explore a sample walkthrough →
-            </button>
-          </section>
-          <p className="storage-note">
-            The extension and this website have separate libraries. Use Export project and Import to
-            move walkthroughs between them.
-          </p>
+            </Disclosure>
+            {location.protocol !== 'chrome-extension:' && (
+              <Disclosure
+                title="Can’t find a recording?"
+                description="Open Frameway from Chrome’s toolbar to find extension recordings."
+              >
+                <p>
+                  This is the local development app. To find walkthroughs recorded with the Chrome
+                  extension, click the Frameway icon in Chrome and choose Open Frameway. Opening a
+                  project here does not switch apps.
+                </p>
+                <p>
+                  To bring a project here, export its project backup there, then use Import project
+                  backup on this page.
+                </p>
+              </Disclosure>
+            )}
+          </div>
         </main>
       ) : (
         <>
@@ -1019,9 +1025,6 @@ function App() {
                     ＋ Add title slide
                   </button>
                 )}
-                <button className="sample-link" onClick={newSample}>
-                  ＋ New sample
-                </button>
                 <a className="practice-link" href="demo.html" target="_blank">
                   Practice workspace ↗
                 </a>

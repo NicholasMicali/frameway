@@ -15,11 +15,11 @@ Windows enterprise testers should also work through the [Windows checklist](../T
 
 ## Home and project library
 
-An empty library opens the short Record → Edit → Share guide. Try the practice workspace link, and expand the setup section if you need installation instructions. Once projects exist, Home puts your library first and collapses the guide below it.
+An empty library opens the short Record → Edit → Share guide. Try the practice workspace link, and expand the setup section if you need installation instructions. Once projects exist, Home puts your library first; the recording and sharing guide stays visible below it.
 
-Search by project name or sort by creation date, name, or estimated media size. Each project offers Open, Export backup, and Delete with confirmation. Import project backup restores an editable project ZIP; HTML exports are for viewing. The header's Storage & backups action still provides storage estimates and cleanup guidance.
+Search by project name or sort by creation date, name, or estimated media size. Click a project to open it. Its three-dot options menu offers Export backup and Delete with confirmation. Import project backup restores an editable project ZIP; HTML exports are for viewing. The header's Storage & backups action still provides storage estimates and cleanup guidance.
 
-When testing, create two walkthroughs, find and reopen one, export its backup, and cancel a deletion before trying a confirmed deletion on a disposable sample. Reload and verify the remaining project is intact.
+When testing, create two walkthroughs, find and reopen one, export its backup, and cancel a deletion before trying a confirmed deletion on a disposable test project. Reload and verify the remaining project is intact.
 
 ## Report a bug or request
 

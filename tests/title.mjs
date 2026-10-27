@@ -1,3 +1,4 @@
+import { openSample } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import { pathToFileURL } from 'node:url';
@@ -13,7 +14,7 @@ const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
 try {
   await page.goto('http://127.0.0.1:4180');
-  await page.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(page);
   await page.getByLabel('Title description').waitFor({ timeout: 30000 });
   assert.equal(await page.locator('.step-list .step').count(), 7);
   assert.equal(await page.locator('.inspector-tabs').count(), 0);

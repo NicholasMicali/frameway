@@ -1,3 +1,4 @@
+import { openSample } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
@@ -11,7 +12,7 @@ const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
 try {
   await page.goto('http://127.0.0.1:4181');
-  await page.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(page);
   await page.getByLabel('Callout headline').waitFor({ timeout: 30000 });
   assert.equal(await page.locator('header').getByLabel('Open walkthrough').count(), 1);
   const headline = await page.getByLabel('Callout headline').inputValue();

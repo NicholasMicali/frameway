@@ -12,11 +12,19 @@ page.on('pageerror', (e) => errors.push(String(e)));
 try {
   await page.goto('http://127.0.0.1:4186');
   await page.getByText('Opening your studio…').waitFor({ state: 'hidden' });
-  assert.equal(await page.locator('.quick-guide').getAttribute('open'), '');
   assert.equal(await page.getByRole('heading', { name: 'Record your clicks' }).isVisible(), true);
-  await page.locator('.quick-guide > summary').click();
-  assert.equal(await page.getByRole('heading', { name: 'Record your clicks' }).isVisible(), false);
-  await page.locator('.quick-guide > summary').click();
+  assert.equal(await page.getByRole('button', { name: /sample/i }).count(), 0);
+  await page.locator('#extension-setup > summary').click();
+  assert.equal(
+    await page.getByRole('heading', { name: 'Install from the extension ZIP' }).isVisible(),
+    true,
+  );
+  await page.locator('#extension-setup > summary').focus();
+  await page.keyboard.press('Enter');
+  assert.equal(
+    await page.getByRole('heading', { name: 'Install from the extension ZIP' }).isVisible(),
+    false,
+  );
   await page.screenshot({ path: 'test-results/home-first-run.png', fullPage: true });
   await page.evaluate(async () => {
     const { sampleProject } = await import('/src/sample.ts');
@@ -32,7 +40,7 @@ try {
   });
   await page.reload();
   await page.locator('.project-card').nth(2).waitFor();
-  assert.equal(await page.locator('.quick-guide').getAttribute('open'), null);
+  assert.equal(await page.getByRole('heading', { name: 'Send it to someone' }).isVisible(), true);
   assert.ok(
     (await page.locator('.project-library').boundingBox()).y <
       (await page.locator('.quick-guide').boundingBox()).y,
@@ -47,15 +55,26 @@ try {
   await page.getByRole('button', { name: 'Clear search' }).click();
   assert.equal(await page.locator('.project-card').count(), 3);
   const download = page.waitForEvent('download');
+  await page.getByLabel('Options for Alpha demo').click();
+  await page.keyboard.press('Escape');
+  assert.equal(
+    await page
+      .getByRole('button', { name: 'Export backup of Alpha demo', exact: true })
+      .isVisible(),
+    false,
+  );
+  await page.getByLabel('Options for Alpha demo').click();
   await page.getByRole('button', { name: 'Export backup of Alpha demo', exact: true }).click();
   assert.match((await download).suggestedFilename(), /Alpha demo/);
   await page
     .getByText(/Creating.*backup|Exporting/, { exact: false })
     .waitFor({ state: 'hidden' })
     .catch(() => {});
+  await page.getByLabel('Options for Alpha demo').click();
   await page.getByRole('button', { name: 'Delete Alpha demo', exact: true }).click();
   await page.getByRole('button', { name: 'Keep project', exact: true }).click();
   assert.equal(await page.locator('.project-card').count(), 3);
+  await page.getByLabel('Options for Alpha demo').click();
   await page.getByRole('button', { name: 'Delete Alpha demo', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm delete', exact: true }).click();
   await page.waitForFunction(() => document.querySelectorAll('.project-card').length === 2);
@@ -65,7 +84,13 @@ try {
   await page.screenshot({ path: 'test-results/home-returning.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await page.getByLabel('Options for Support demo').click();
+  assert.ok(
+    (await page.locator('.project-actions[open] .project-actions-panel').boundingBox()).x >= 0,
+  );
   await page.screenshot({ path: 'test-results/home-mobile.png', fullPage: true });
+  await page.getByRole('heading', { name: 'Your walkthroughs' }).click();
+  assert.equal(await page.locator('.project-actions[open]').count(), 0);
   await page.locator('.project-card').first().click();
   await page.getByLabel('Walkthrough title').waitFor();
   await page.getByRole('button', { name: 'Home', exact: true }).click();

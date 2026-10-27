@@ -1,26 +1,27 @@
+import { Disclosure } from './Disclosure';
+import { Icon } from './Icon';
 import packageInfo from '../package.json';
 
 export function HomeIntro({ onRecord, returning }: { onRecord: () => void; returning: boolean }) {
   const extension = location.protocol === 'chrome-extension:';
   return (
     <section className="home-start" aria-label="Getting started">
-      <details
-        className="quick-guide"
-        key={returning ? 'returning' : 'new'}
-        open={returning ? undefined : true}
-      >
-        <summary>
-          {returning
-            ? 'Create another walkthrough · Recording & sharing guide'
-            : 'Make your first walkthrough'}
-        </summary>
+      <div className="quick-guide">
+        <div className="guide-heading">
+          <h2>
+            {returning ? 'From recording to sharing' : 'Your first walkthrough, in three steps'}
+          </h2>
+          <span className="guide-badge">Quick guide</span>
+        </div>
         <p>
           Capture a short workflow, add context, and send an interactive file. Everything stays
           local until you share it.
         </p>
         <div className="quick-guide-grid">
           <article>
-            <span className="guide-number">1</span>
+            <span className="guide-number">
+              <Icon name="record" />
+            </span>
             <h3>Record your clicks</h3>
             <p>
               Open the page you want to show. In Chrome’s toolbar, click Frameway →{' '}
@@ -32,7 +33,9 @@ export function HomeIntro({ onRecord, returning }: { onRecord: () => void; retur
             </a>
           </article>
           <article>
-            <span className="guide-number">2</span>
+            <span className="guide-number">
+              <Icon name="edit" />
+            </span>
             <h3>Make the steps clear</h3>
             <p>
               The editor opens automatically. Select a slide to edit its title and callout.
@@ -41,7 +44,9 @@ export function HomeIntro({ onRecord, returning }: { onRecord: () => void; retur
             </p>
           </article>
           <article>
-            <span className="guide-number">3</span>
+            <span className="guide-number">
+              <Icon name="share" />
+            </span>
             <h3>Send it to someone</h3>
             <p>
               Choose <strong>Export / Download → Download HTML</strong>. Send that file; your
@@ -54,12 +59,11 @@ export function HomeIntro({ onRecord, returning }: { onRecord: () => void; retur
           Coming back later? Choose <strong>Open Frameway</strong> from the extension menu. Your
           projects are saved in this browser.
         </p>
-        <details id="extension-setup" className="install-guide">
-          <summary>
-            {extension
-              ? 'Extension setup & updating'
-              : 'Install the Chrome extension (recommended)'}
-          </summary>
+        <Disclosure
+          id="extension-setup"
+          title={extension ? 'Setup & updates' : 'Install the Chrome extension'}
+          description="Automatic screenshots and video between your clicks."
+        >
           <h3>Install from the extension ZIP</h3>
           <a
             className="primary home-cta"
@@ -98,14 +102,13 @@ export function HomeIntro({ onRecord, returning }: { onRecord: () => void; retur
             updating files in the same folder, click <strong>Reload</strong> on its Chrome card and
             reopen the editor. Keep that folder in place.
           </p>
-          <details>
-            <summary>Building from source?</summary>
+          <Disclosure title="Building from source?">
             <p>
               Run <code>npm ci</code> and <code>npm run build</code>, then load the generated{' '}
               <code>dist</code> folder. There is no Chrome Web Store listing yet.
             </p>
-          </details>
-        </details>
+          </Disclosure>
+        </Disclosure>
         <div className="manual-recording">
           <div>
             <h3>Need a window or your whole screen?</h3>
@@ -114,9 +117,12 @@ export function HomeIntro({ onRecord, returning }: { onRecord: () => void; retur
               extension creates click-by-click steps automatically.
             </p>
           </div>
-          <button onClick={onRecord}>Record my screen</button>
+          <button onClick={onRecord}>
+            <Icon name="record" />
+            Record my screen
+          </button>
         </div>
-      </details>
+      </div>
     </section>
   );
 }

@@ -916,7 +916,7 @@ header {
   text-align: left;
   padding: 14px;
 }
-.project-card img {
+.project-card > img {
   width: 100%;
   aspect-ratio: 16/10;
   object-fit: cover;
@@ -925,7 +925,7 @@ header {
 .project-card strong {
   font-size: 16px;
 }
-.project-card span {
+.project-card > span {
   color: var(--accent);
   font-size: 12px;
 }
@@ -1827,192 +1827,478 @@ h1 {
   margin: 0;
 }
 
-/* Home: first-run guidance, then a library-first layout for returning authors. */
-.home-heading {
+/* Home uses fixed app colors; walkthrough themes remain inside the player. */
+.home-page {
+  padding: 44px clamp(20px, 5vw, 80px) 64px;
+  background: #f7f9fc;
   text-align: left;
-  margin: 20px 0 26px;
+}
+.home-heading,
+.home-workspace,
+.home-help {
+  max-width: 1200px;
+  margin-inline: auto;
+}
+.home-heading {
+  margin-bottom: 40px;
+}
+.home-heading .eyebrow {
+  font-size: 12px;
+  letter-spacing: 1.6px;
 }
 .home-heading h1 {
-  font-size: clamp(25px, 3vw, 36px);
+  font-size: clamp(28px, 3.2vw, 40px);
+  letter-spacing: -1.2px;
+  margin: 12px 0;
   line-height: 1.2;
-  margin: 10px 0;
 }
 .home-heading p {
-  color: #526578;
+  font-size: 17px;
+  line-height: 1.65;
+  color: #56667b;
+  max-width: 680px;
+  margin: 0;
 }
 .home-workspace {
   display: flex;
   flex-direction: column;
+  gap: 40px;
 }
 .home-start,
 .home-workspace .project-library {
   width: 100%;
   min-width: 0;
-}
-.home-workspace .project-library {
-  margin: 0 0 28px;
+  margin: 0;
   max-width: none;
-}
-.quick-guide {
-  text-align: left;
-  border: 1px solid #dbe6ee;
-  border-radius: 16px;
-  background: #fff;
-  padding: 20px;
-  margin-bottom: 28px;
-}
-.quick-guide > summary {
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 650;
-}
-.quick-guide > p {
-  color: #526578;
-  line-height: 1.6;
-}
-.quick-guide-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-  margin: 24px 0;
-}
-.quick-guide-grid article {
-  min-width: 0;
-}
-.quick-guide-grid h3 {
-  font-size: 16px;
-  margin: 12px 0 8px;
-}
-.quick-guide-grid p {
-  font-size: 14px;
-  line-height: 1.7;
-  color: #526578;
-}
-.guide-number {
-  display: inline-grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  background: #eaf4ff;
-  color: #2264c5;
-  font-weight: 700;
-}
-.quick-guide .guide-tip {
-  background: #f4f8fc;
-  border-radius: 9px;
-  padding: 12px;
-  font-size: 13px;
-}
-.quick-guide .install-guide {
-  padding: 16px;
-  border: 1px solid #e0e8ef;
-  margin-top: 18px;
-}
-.quick-guide .install-guide summary,
-.home-use-cases > summary {
-  cursor: pointer;
-  font-weight: 600;
-}
-.quick-guide .manual-recording {
-  max-width: none;
-  border: 0;
-  border-top: 1px solid #e0e8ef;
-  border-radius: 0;
-  margin: 20px 0 0;
-  padding: 16px 0 0;
 }
 .library-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 18px;
+  gap: 20px;
+  margin-bottom: 24px;
 }
-.library-heading h2 {
-  margin: 0 0 6px;
+.library-heading h2,
+.guide-heading h2 {
+  margin: 0 0 8px;
+  font-size: 23px;
+  letter-spacing: -0.5px;
+}
+.home-page .field-note {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #617187;
+  margin: 0;
+}
+.home-page button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+}
+.home-page button svg {
+  flex-shrink: 0;
 }
 .library-tools {
   display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
 }
-.library-tools label {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
-  color: #526578;
+.library-search {
+  position: relative;
+  width: min(380px, 100%);
 }
-.library-tools label:first-child {
-  flex: 1;
+.library-search > svg {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  color: #78869b;
+  pointer-events: none;
 }
 .library-tools input,
 .library-tools select {
-  width: 100%;
-  min-width: 0;
-  padding: 10px 12px;
+  box-sizing: border-box;
   background: #fff;
-  border: 1px solid #cedce8;
-  border-radius: 9px;
+  border: 1px solid #dce3ee;
+  border-radius: 10px;
+  color: #334155;
   font: inherit;
-  color: #172638;
+  font-size: 14px;
+  min-height: 46px;
 }
-.library-card-actions {
+.library-tools input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+}
+.library-sort {
   display: flex;
-  gap: 8px;
-  padding: 0 12px 12px;
+  align-items: center;
+  gap: 10px;
+  color: #617187;
+  font-size: 14px;
 }
-.project-library-item {
+.library-tools select {
+  padding: 10px 12px;
+}
+.library-tools + [role='status']:not(:empty) {
+  margin-bottom: 16px;
+}
+.home-page .project-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 24px;
+}
+.home-page .project-library-item {
+  position: relative;
   min-width: 0;
+  border: 1px solid #e0e6ef;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 3px 12px #25354a05;
+  transition:
+    box-shadow 0.18s,
+    border-color 0.18s;
+}
+.home-page .project-library-item:hover {
+  border-color: #bed3ea;
+  box-shadow: 0 8px 24px #25354a0c;
+}
+.home-page .project-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
+  max-width: none;
+  border: 0;
+  background: transparent;
+  padding: 16px 16px 12px;
+  gap: 10px;
+  border-radius: 16px;
+  margin: 0;
+}
+.project-cover {
+  background: #f1f5fa;
+  border: 1px solid #edf1f6;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+  margin-bottom: 8px;
+}
+.project-cover > img,
+.project-cover > .title-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.home-page .project-card strong {
+  font-size: 18px;
+  line-height: 1.4;
   overflow-wrap: anywhere;
 }
-.project-card {
-  width: 100%;
+.home-page .project-card > span {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #617187;
 }
-.project-card span {
+.home-page .project-card .project-open {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #2264c5;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.library-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid #edf1f6;
+}
+.library-card-footer > span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #617187;
+}
+.project-actions {
+  position: relative;
+  flex-shrink: 0;
+}
+.project-actions > summary {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  list-style: none;
   color: #526578;
 }
-.project-card span:last-child {
+.project-actions > summary::-webkit-details-marker,
+.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+.project-actions > summary:hover,
+.project-actions[open] > summary {
+  background: #edf4fc;
   color: #2264c5;
 }
-.library-empty {
-  padding: 24px;
-  background: #f6f9fc;
-  border: 1px dashed #cedce8;
+.project-actions-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  width: 190px;
+  padding: 6px;
+  z-index: 12;
+  background: #fff;
+  border: 1px solid #dce3ee;
   border-radius: 12px;
-  color: #526578;
+  box-shadow: 0 12px 36px #25354a26;
 }
-.library-empty h3 {
-  margin-top: 0;
-  color: #172638;
+.home-page .project-actions-panel button {
+  justify-content: flex-start;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  text-align: left;
+}
+.home-page .project-actions-panel button:hover {
+  background: #f1f6fb;
+}
+.home-page .project-actions-panel .danger-action {
+  color: #b33749;
 }
 .library-delete {
-  margin: 0 12px 12px;
-  padding: 12px;
-  border: 1px solid #e5bec5;
+  margin: 0 16px 16px;
+  padding: 14px;
+  border: 1px solid #efccd3;
   border-radius: 10px;
   background: #fff8f9;
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 1.6;
 }
 .library-delete button {
   margin: 4px 6px 0 0;
 }
-.home-use-cases {
-  text-align: left;
-  margin: 20px 0;
+.library-empty {
+  text-align: center;
+  padding: 40px 24px;
+  border: 1px dashed #cbd9e8;
+  border-radius: 16px;
+  background: #fff;
 }
-@media (max-width: 700px) {
-  .quick-guide-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+.library-empty > svg {
+  width: 32px;
+  height: 32px;
+  color: #4284c4;
+}
+.library-empty h3 {
+  font-size: 20px;
+  margin: 16px 0 10px;
+}
+.library-empty p {
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 540px;
+  margin: 0 auto 12px;
+  color: #617187;
+}
+.quick-guide {
+  border: 1px solid #e0e6ef;
+  border-radius: 18px;
+  background: #fff;
+  padding: 28px;
+}
+.guide-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.guide-badge {
+  background: #edf5ff;
+  color: #306fb1;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.quick-guide > p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #617187;
+  margin: 8px 0;
+}
+.quick-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin: 28px 0;
+}
+.quick-guide-grid article {
+  min-width: 0;
+}
+.guide-number {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #edf5ff;
+  color: #2264c5;
+}
+.quick-guide-grid h3 {
+  font-size: 18px;
+  margin: 16px 0 10px;
+}
+.quick-guide-grid p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #617187;
+}
+.quick-guide .guide-tip {
+  background: #f5f8fc;
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+.quick-guide .manual-recording {
+  max-width: none;
+  margin: 24px 0 0;
+  padding: 24px 0 0;
+  border: 0;
+  border-top: 1px solid #e6edf4;
+  border-radius: 0;
+}
+.quick-guide .manual-recording p {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.home-help {
+  display: grid;
+  gap: 12px;
+  margin-top: 32px;
+}
+.disclosure {
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e0e6ef;
+  border-radius: 12px;
+}
+.disclosure > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+  cursor: pointer;
+  list-style: none;
+}
+.disclosure > summary strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+}
+.disclosure-description {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #617187;
+}
+.disclosure > summary > svg {
+  flex-shrink: 0;
+  transition: transform 0.18s;
+  color: #617187;
+}
+.disclosure[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.disclosure-content {
+  padding: 0 20px 20px;
+  color: #526578;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.disclosure-content .use-cases {
+  margin: 16px 0 0;
+}
+.disclosure-content .disclosure {
+  margin-top: 16px;
+}
+.home-page :is(button, input, select, summary, a):focus-visible {
+  outline: 3px solid #8ab9ed;
+  outline-offset: 3px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 760px) {
+  .home-page {
+    padding: 28px 18px 40px;
   }
-  .library-heading,
-  .library-tools {
-    align-items: stretch;
+  .home-heading {
+    margin-bottom: 28px;
+  }
+  .home-heading p {
+    font-size: 16px;
+  }
+  .library-heading {
+    align-items: flex-start;
     flex-direction: column;
   }
+  .library-tools {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .library-search {
+    width: 100%;
+  }
   .quick-guide {
-    padding: 16px;
+    padding: 20px;
+  }
+  .guide-heading {
+    align-items: flex-start;
+  }
+  .guide-heading h2 {
+    font-size: 21px;
+  }
+  .guide-badge {
+    display: none;
+  }
+  .quick-guide-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .quick-guide-grid article + article {
+    border-top: 1px solid #edf1f6;
+    padding-top: 20px;
+  }
+  .home-workspace {
+    gap: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-library-item,
+  .disclosure > summary > svg {
+    transition: none;
   }
 }

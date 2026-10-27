@@ -1,3 +1,4 @@
+import { openSample } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import { mkdir } from 'node:fs/promises';
@@ -12,7 +13,7 @@ page.on('pageerror', (e) => errors.push(String(e)));
 try {
   await page.goto('http://127.0.0.1:4173');
   await page.getByText('Opening your studio…').waitFor({ state: 'hidden' });
-  await page.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(page);
   await page.getByLabel('Callout headline').waitFor({ timeout: 30000 });
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
   assert.equal(await page.getByLabel('Callout headline').inputValue(), 'Opening footage');

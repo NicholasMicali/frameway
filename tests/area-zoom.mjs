@@ -1,3 +1,4 @@
+import { openSample } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
@@ -19,7 +20,7 @@ const scale = (locator) =>
   locator.evaluate((e) => new DOMMatrixReadOnly(getComputedStyle(e).transform).a);
 try {
   await page.goto('http://127.0.0.1:4182');
-  await page.getByRole('button', { name: 'Explore a sample walkthrough' }).click();
+  await openSample(page);
   await page.getByLabel('Callout headline').waitFor({ timeout: 30000 });
   await page.locator('.step').nth(2).click();
   await page.getByLabel('Overlay style').selectOption('area');

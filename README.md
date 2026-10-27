@@ -37,7 +37,7 @@ The build creates `dist/`. Generated files and dependencies are intentionally no
 
 The same npm commands work on macOS and Windows (including PowerShell). Install Node.js 24 first; the optional `.sh` helper scripts are for Unix shells and are not required. The owner has confirmed Windows use, HTML delivery to recipients, and export → reinstall → import recovery. Specific managed-browser policies and display configurations still need broader testing.
 
-Your projects and recordings are saved in your own browser's IndexedDB, outside the Git repository. Cloning this source does not include the author's projects. The sample walkthrough uses generated demo content. If saving personal exports inside the repository, use `exports/` or `recordings/`; both are ignored, along with video files and the default walkthrough export filenames. Renamed HTML exports or extracted project folders should also stay in those ignored directories.
+Your projects and recordings are saved in your own browser's IndexedDB, outside the Git repository. Cloning this source does not include the author's projects. Automated tests use generated demo content. If saving personal exports inside the repository, use `exports/` or `recordings/`; both are ignored, along with video files and the default walkthrough export filenames. Renamed HTML exports or extracted project folders should also stay in those ignored directories.
 
 ### Recommended: Chrome extension
 
@@ -59,7 +59,7 @@ Alternatively, unzip a built `frameway-extension-v0.1.0.zip` release artifact an
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173/`. Home includes the installation guide, saved projects, business use cases, and a sample walkthrough. The practice app is at `/demo.html`.
+Open `http://127.0.0.1:5173/`. Home includes a recording/sharing guide, searchable saved projects with backup/delete options, and expandable setup help. The practice app is at `/demo.html`.
 
 **Record my screen** uses the browser picker for a tab, window, or whole screen. It records silent video; mark screenshot moments while recording or insert them later. It cannot automatically detect clicks in other applications. Keep the recorder page open until saving finishes. Recording stops at ten minutes or approximately 90 MB.
 
