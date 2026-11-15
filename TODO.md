@@ -1,6 +1,6 @@
 # Frameway beta TODOs
 
-The next milestone is a dependable first-use experience: record a real workflow, edit it, and send or embed a working walkthrough. These are open tasks, not promised features. Prioritize changes using tester findings before expanding scope.
+The [v0.2.0 beta](https://github.com/NicholasMicali/frameway/releases/tag/v0.2.0) is published. This checklist preserves shipped work and remaining manual validation; [GitHub issues](https://github.com/NicholasMicali/frameway/issues) are the source of truth for feature planning. Prioritize local reliability and editor usability using tester findings. Features are not release promises.
 
 ## Real-use feedback — October 23
 
@@ -21,7 +21,7 @@ The next milestone is a dependable first-use experience: record a real workflow,
 - [x] Verify GitHub Actions checks on macOS, Windows, and Linux and build/test the local extension ZIP. Verification of the published release download remains part of release validation.
 - [ ] Install the packaged extension in a fresh Chrome profile and complete the entire record → edit → export flow.
 - [x] Adopt Apache-2.0 and document contribution and local-only project policies.
-- [ ] Publish a versioned beta release with the extension ZIP and installation instructions after validation.
+- [x] Publish versioned beta releases with the extension ZIP and installation instructions (latest: v0.2.0).
 - [ ] Ask a few testers to follow [the testing guide](docs/BETA-TESTING.md) without live setup help; capture where they get stuck.
 
 ## Windows enterprise validation — owner feedback received
@@ -40,7 +40,7 @@ The next milestone is a dependable first-use experience: record a real workflow,
 
 ## Reliability and trust
 
-- [ ] Improve storage quota errors and make backup guidance actionable before space runs out.
+- [x] Add storage estimates, quota failure guidance, backup status, and save retry ([#7](https://github.com/NicholasMicali/frameway/issues/7)). Large-project and near-limit validation remains open below.
 - [ ] Recover unfinished recordings after browser crashes, tab closure, or interrupted saving.
 - [ ] Test near-limit recordings and large exports for memory use, responsiveness, and useful failure messages.
 - [x] Owner confirmed export → reinstall → import recovery.
@@ -51,14 +51,15 @@ The next milestone is a dependable first-use experience: record a real workflow,
 
 - [ ] Identify confusing editor controls and improve labels, empty states, and keyboard/focus behavior.
 - [ ] Review title/card readability and player controls on small screens and at browser zoom.
-- [ ] Make extension installation, recording status, and return-to-editor steps clearer wherever testers hesitate.
+- [x] Add the extension launcher, installation guide, library-first return experience, project copies, and Share dialog.
+- [ ] Validate those flows with new testers and improve any remaining confusing recording status or setup steps.
 - [ ] Prioritize feature requests by concrete use case, frequency, and workaround cost.
 
 ## Candidate features — not yet committed
 
-- [ ] Evaluate multi-tab/cross-origin recording and iframe click capture.
-- [ ] Evaluate microphone/system audio requirements.
+- [ ] Investigate remaining single-tab capture reliability ([#8](https://github.com/NicholasMicali/frameway/issues/8)); multi-tab capture is deferred.
+- [ ] Consider optional local voiceover recording, richer descriptions, and offline text-to-speech ([#33](https://github.com/NicholasMicali/frameway/issues/33)). Alternate training formats can be provided outside Frameway; this is not a release blocker or a compliance claim.
 - [ ] Evaluate native desktop click capture only if browser recording cannot meet real use cases.
 - [ ] Evaluate reusable branding/templates and richer navigation based on feedback.
 
-Managed hosting and accounts are outside the current milestone. Keep local use and portable exports working independently.
+Frameway remains a local tool for isolated walkthroughs. Managed hosting, accounts, and nested training modules are outside the product direction. Teams can assemble exports into larger modules elsewhere. Keep local use and portable exports working independently.
