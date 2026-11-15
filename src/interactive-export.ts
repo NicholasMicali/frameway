@@ -1,3 +1,5 @@
+import { chaptersFor } from './chapters';
+import contentsCSS from './contents.css?raw';
 import { zoomOut } from './zoom-out';
 import { areaZoomVars } from './area-zoom';
 import zoomCSS from './area-zoom.css?raw';
@@ -18,6 +20,7 @@ function playerDocument(p: Project, video: string, images: string[]) {
   const data = {
     theme: themeVars(p.theme, p.customColor),
     logo: p.logo,
+    chapters: chaptersFor(p.steps),
     title: p.title,
     width: p.width,
     height: p.height,
@@ -30,6 +33,7 @@ function playerDocument(p: Project, video: string, images: string[]) {
   };
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(p.title)}</title><style>${css}
 ${titleCSS}
+${contentsCSS}
 ${zoomCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const zoomOut = ${zoomOut.toString()};\n${runtime}</script></body></html>`;
 }
 function dataURL(blob: Blob) {

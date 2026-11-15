@@ -2688,3 +2688,18 @@ h1 {
     min-width: 0;
   }
 }
+
+.chapter-label {
+  display: block;
+  font-size: 11px;
+  margin: 5px 0 2px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: #eaf2ff;
+  color: #2264c5;
+  overflow-wrap: anywhere;
+}
+.player-bar {
+  flex-wrap: wrap;
+  gap: 10px;
+}

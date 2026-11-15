@@ -13,6 +13,7 @@ type StepBase = {
   id: string;
   title: string;
   body: string;
+  chapter?: string;
   x: number;
   y: number;
   cardX: number;
@@ -177,6 +178,8 @@ export function validateManifest(v: any) {
     ids.add(s.id);
   }
   for (const s of v.steps) {
+    if (s.chapter !== undefined && (typeof s.chapter !== 'string' || s.chapter.length > 120))
+      throw Error('Invalid chapter label');
     if (
       (s.zoomEnabled !== undefined && typeof s.zoomEnabled !== 'boolean') ||
       (s.zoomPercent !== undefined && (!Number.isFinite(s.zoomPercent) || s.zoomPercent < 100))
@@ -231,6 +234,7 @@ export function splitVideo(p: Project, id: string, time: number): Project {
     ...s,
     id: crypto.randomUUID(),
     title: `${s.title} (continued)`.slice(0, 200),
+    chapter: undefined,
     clipStart: time,
   };
   return {
@@ -247,7 +251,12 @@ export function duplicateStep(p: Project, id: string): Project {
   const i = p.steps.findIndex((s) => s.id === id);
   if (i < 0) return p;
   const s = p.steps[i],
-    copy = { ...s, id: crypto.randomUUID(), title: `${s.title} (copy)`.slice(0, 200) };
+    copy = {
+      ...s,
+      chapter: undefined,
+      id: crypto.randomUUID(),
+      title: `${s.title} (copy)`.slice(0, 200),
+    };
   return { ...p, steps: [...p.steps.slice(0, i + 1), copy, ...p.steps.slice(i + 1)] };
 }
 
@@ -257,6 +266,7 @@ export function withTitleSlide(p: Project, image: Blob): Project {
     ...p.steps[0],
     id: crypto.randomUUID(),
     kind: 'title',
+    chapter: undefined,
     title: p.title,
     body: 'Follow along with this interactive walkthrough.',
     buttonText: 'Get started',
