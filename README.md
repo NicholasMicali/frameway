@@ -139,3 +139,7 @@ Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/f
 ## Research notes
 
 REA is optional research tooling, not a runtime dependency. Historical observations and setup notes are in [docs/SOURCES.md](docs/SOURCES.md), [docs/OBSERVED-BEHAVIOR.md](docs/OBSERVED-BEHAVIOR.md), and [docs/SETUP.md](docs/SETUP.md). These describe the original development environment and earlier milestones; this README describes the current beta. Raw private captures, browser profiles, and upstream tooling are ignored.
+
+## Library organization
+
+Use a project's ⋯ menu to rename it without opening the editor. Downloaded files use the project name. **Last edited** sorting uses local content edits (including rename, undo, and redo); opening, previewing, and exporting do not update it. Projects without a known edit date show **Created** and sort using that date. Copies and imported backups start with a new creation date and no local edit history. This local bookkeeping is omitted from portable backups.

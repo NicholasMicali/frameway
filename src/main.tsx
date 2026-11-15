@@ -351,7 +351,7 @@ function App() {
     }
     future.current = [];
     editGroup.current = { key, time: now };
-    setProject({ ...p, localRevision: crypto.randomUUID() });
+    setProject({ ...p, localEditedAt: Date.now(), localRevision: crypto.randomUUID() });
   }
   function travel(direction: 'undo' | 'redo') {
     if (!project || preview || busy) return;
@@ -361,7 +361,7 @@ function App() {
     if (!frame) return;
     to.current.push({ project, selected });
     boundary();
-    setProject({ ...frame.project, localBackup: project.localBackup });
+    setProject({ ...frame.project, localEditedAt: Date.now(), localBackup: project.localBackup });
     select(
       frame.project.steps.some((s) => s.id === frame.selected)
         ? frame.selected
@@ -809,6 +809,15 @@ function App() {
               onOpen={choose}
               onBackup={backup}
               onCopy={makeCopy}
+              onRename={async (p, title) => {
+                if (title === p.title) return;
+                await persist({
+                  ...p,
+                  title,
+                  localEditedAt: Date.now(),
+                  localRevision: crypto.randomUUID(),
+                });
+              }}
               onDelete={(p) => {
                 void task('Deleting project…', async () => {
                   await deleteProject(p.id);

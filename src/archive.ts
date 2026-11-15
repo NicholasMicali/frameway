@@ -3,6 +3,7 @@ import { validateManifest, migrateProject, type Project } from './model';
 export async function exportProject(p: Project) {
   const manifest = {
     ...p,
+    localEditedAt: undefined,
     localRevision: undefined,
     localBackup: undefined,
     video: undefined,
@@ -57,6 +58,7 @@ export async function importProject(file: Blob): Promise<Project> {
   });
   return migrateProject({
     ...p,
+    localEditedAt: undefined,
     localRevision: undefined,
     localBackup: undefined,
     id: crypto.randomUUID(),
