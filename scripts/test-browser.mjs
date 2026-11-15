@@ -14,6 +14,7 @@ for (const test of [
   'ui-polish',
   'storage',
   'home-library',
+  'library-rename',
   'project-copy',
 ]) {
   await new Promise((resolve, reject) => {

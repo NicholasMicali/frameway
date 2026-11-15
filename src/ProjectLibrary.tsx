@@ -9,12 +9,14 @@ function ProjectActions({
   onBackup,
   onCopy,
   onDelete,
+  onRename,
 }: {
   project: Project;
   busy: boolean;
   onBackup: () => void;
   onCopy: () => void;
   onDelete: () => void;
+  onRename: () => void;
 }) {
   const menu = useRef<HTMLDetailsElement>(null);
   const close = () => menu.current?.removeAttribute('open');
@@ -40,6 +42,17 @@ function ProjectActions({
         <Icon name="more" />
       </summary>
       <div className="project-actions-panel">
+        <button
+          disabled={busy}
+          aria-label={`Rename ${project.title}`}
+          onClick={() => {
+            close();
+            menu.current?.querySelector('summary')?.focus();
+            onRename();
+          }}
+        >
+          <Icon name="edit" /> Rename
+        </button>
         <button
           disabled={busy}
           aria-label={`Make a copy of ${project.title}`}
@@ -88,6 +101,7 @@ export function ProjectLibrary({
   onBackup,
   onCopy,
   onDelete,
+  onRename,
   thumbnail,
 }: {
   projects: Project[];
@@ -96,11 +110,13 @@ export function ProjectLibrary({
   onBackup: (p: Project) => void;
   onCopy: (p: Project) => void;
   onDelete: (p: Project) => void;
+  onRename: (p: Project, title: string) => Promise<void>;
   thumbnail: (p: Project) => ReactNode;
 }) {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('newest');
   const [confirm, setConfirm] = useState('');
+  const [renaming, setRenaming] = useState<Project>();
   const visible = projects
     .filter((p) => p.title.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
     .sort((a, b) =>
@@ -108,10 +124,19 @@ export function ProjectLibrary({
         ? a.title.localeCompare(b.title)
         : sort === 'size'
           ? mediaBytes(b) - mediaBytes(a)
-          : b.createdAt - a.createdAt,
+          : sort === 'edited'
+            ? (b.localEditedAt ?? b.createdAt) - (a.localEditedAt ?? a.createdAt)
+            : b.createdAt - a.createdAt,
     );
   return (
     <section className="project-library" aria-labelledby="library-title">
+      {renaming && (
+        <RenameProject
+          project={renaming}
+          onSave={onRename}
+          onClose={() => setRenaming(undefined)}
+        />
+      )}
       <div className="library-heading">
         <div>
           <h2 id="library-title">Your walkthroughs</h2>
@@ -137,6 +162,7 @@ export function ProjectLibrary({
             <span>Sort by</span>
             <select value={sort} onChange={(e) => setSort(e.target.value)}>
               <option value="newest">Newest created</option>
+              <option value="edited">Last edited</option>
               <option value="name">Name A–Z</option>
               <option value="size">Largest media first</option>
             </select>
@@ -156,7 +182,10 @@ export function ProjectLibrary({
                 {p.steps.length} steps · {p.duration.toFixed(1)}s · About{' '}
                 {formatBytes(mediaBytes(p))}
               </span>
-              <span>Created {new Date(p.createdAt).toLocaleDateString()}</span>
+              <span>
+                {p.localEditedAt ? 'Edited' : 'Created'}{' '}
+                {new Date(p.localEditedAt ?? p.createdAt).toLocaleDateString()}
+              </span>
               <span className="project-open">
                 Open walkthrough <Icon name="arrow" />
               </span>
@@ -168,6 +197,7 @@ export function ProjectLibrary({
                 busy={busy}
                 onBackup={() => onBackup(p)}
                 onCopy={() => onCopy(p)}
+                onRename={() => setRenaming(p)}
                 onDelete={() => setConfirm(p.id)}
               />
             </div>
@@ -210,5 +240,95 @@ export function ProjectLibrary({
         )
       )}
     </section>
+  );
+}
+
+function RenameProject({
+  project,
+  onSave,
+  onClose,
+}: {
+  project: Project;
+  onSave: (project: Project, title: string) => Promise<void>;
+  onClose: () => void;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const working = useRef(false);
+  const [title, setTitle] = useState(project.title);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const element = dialog.current;
+    const trigger = document.activeElement;
+    element?.showModal();
+    element?.querySelector('input')?.select();
+    return () => {
+      element?.close();
+      queueMicrotask(() => {
+        if (trigger instanceof HTMLElement && trigger.isConnected) trigger.focus();
+        else document.querySelector<HTMLInputElement>('.library-search input')?.focus();
+      });
+    };
+  }, []);
+  return (
+    <dialog
+      ref={dialog}
+      className="utility-dialog"
+      aria-labelledby="rename-heading"
+      onCancel={(event) => {
+        if (working.current) event.preventDefault();
+        else onClose();
+      }}
+    >
+      <form
+        onSubmit={async (event) => {
+          event.preventDefault();
+          if (working.current) return;
+          const value = title.trim();
+          if (!value || value.length > 200) {
+            setError('Enter a name between 1 and 200 characters.');
+            return;
+          }
+          working.current = true;
+          setPending(true);
+          setError('');
+          try {
+            await onSave(project, value);
+            onClose();
+          } catch {
+            setError(
+              'Could not save the name. The previous name is unchanged. Check available browser storage and try again.',
+            );
+          } finally {
+            working.current = false;
+            setPending(false);
+          }
+        }}
+      >
+        <h2 id="rename-heading">Rename walkthrough</h2>
+        <label>
+          Project name
+          <input
+            value={title}
+            maxLength={200}
+            disabled={pending}
+            onChange={(event) => {
+              setTitle(event.target.value);
+              setError('');
+            }}
+          />
+        </label>
+        <p className="field-note">This name is also used for downloaded files.</p>
+        {error && <p role="alert">{error}</p>}
+        <div className="utility-actions">
+          <button type="button" disabled={pending} onClick={onClose}>
+            Cancel
+          </button>
+          <button className="primary" disabled={pending} type="submit">
+            {pending ? 'Saving…' : 'Save name'}
+          </button>
+        </div>
+      </form>
+    </dialog>
   );
 }

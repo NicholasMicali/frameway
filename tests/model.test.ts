@@ -283,3 +283,11 @@ test('project copies isolate edits, remap branches, reset backups, and preserve 
   assert.equal(source.steps[0].body, 'text');
   assert.equal(source.steps[0].target, 'c');
 });
+
+test('local edit history is reset for portable imports and copies', async () => {
+  const { exportProject, importProject } = await import('../src/archive');
+  const p = { ...project(), localEditedAt: 123, video: new Blob([], { type: 'video/webm' }) };
+  assert.equal(copyProject(p, []).localEditedAt, undefined);
+  const restored = await importProject(await exportProject(p));
+  assert.equal(restored.localEditedAt, undefined);
+});

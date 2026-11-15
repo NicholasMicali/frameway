@@ -2570,3 +2570,35 @@ h1 {
 .header-actions .share-button svg {
   flex-shrink: 0;
 }
+
+.utility-dialog {
+  font: inherit;
+  color: #1e293b;
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 28px;
+  border: 1px solid #dce4ee;
+  border-radius: 18px;
+  box-shadow: 0 24px 80px #182b4526;
+}
+.utility-dialog::backdrop {
+  background: #13233a66;
+}
+.utility-dialog h2 {
+  margin: 0 0 20px;
+}
+.utility-dialog input {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+.utility-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}

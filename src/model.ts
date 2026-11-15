@@ -38,6 +38,7 @@ export type LegacyStep = StepBase & { transition: boolean };
 type ProjectBase = {
   /** Local bookkeeping only; omitted from portable exports. */
   localRevision?: string;
+  localEditedAt?: number;
   localBackup?: { revision: string; exportedAt: number };
   theme?: ThemeName;
   customColor?: string;
@@ -111,6 +112,7 @@ export function copyProject(source: Project, existingTitles: string[] = []): Pro
     id: crypto.randomUUID(),
     title,
     createdAt: Date.now(),
+    localEditedAt: undefined,
     localRevision: undefined,
     localBackup: undefined,
     markers: copy.markers.map((marker) => ({ ...marker, id: crypto.randomUUID() })),
