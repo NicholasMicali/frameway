@@ -70,6 +70,10 @@ try {
   await inspector.evaluate((e) => (e.scrollTop = e.scrollHeight));
   assert.ok(await inspector.evaluate((e) => e.scrollTop > 0));
   assert.equal(await page.evaluate(() => window.scrollY), 0);
+  await inspector.evaluate((e) => (e.scrollTop = 0));
+  assert.equal(await page.getByRole('group', { name: 'Content', exact: true }).count(), 1);
+  assert.equal(await page.getByRole('group', { name: 'Behavior', exact: true }).count(), 1);
+  assert.equal(await page.getByRole('button', { name: /^(Top|Bottom) (left|right)$/ }).count(), 0);
   await page.screenshot({ path: 'test-results/editor-polish.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));

@@ -53,7 +53,7 @@ try {
   await page.getByLabel('Area width').fill('0.4');
   await page.getByLabel('Area height').fill('0.3');
   await page.getByLabel('Card width').fill('0.4');
-  await page.getByRole('button', { name: 'Bottom right', exact: true }).click();
+  assert.equal(await page.getByRole('button', { name: /^(Top|Bottom) (left|right)$/ }).count(), 0);
   assert.ok((await page.locator('.area-hotspot').boundingBox()).width > 100);
   await page.screenshot({ path: 'test-results/editor-enhanced.png', fullPage: true });
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
