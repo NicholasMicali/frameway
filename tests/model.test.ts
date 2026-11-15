@@ -307,6 +307,12 @@ test('chapter labels follow steps and survive backups without creating duplicate
     chaptersFor((await importProject(await exportProject(p))).steps),
     chaptersFor(p.steps),
   );
+  const legacy = {
+    ...p,
+    schemaVersion: 1 as const,
+    steps: p.steps.map((s) => ({ ...s, transition: true })),
+  };
+  assert.equal(chaptersFor(migrateProject(legacy).steps).length, 2);
   p.steps[0].chapter = 'x'.repeat(121);
   assert.throws(() => validateManifest(p), /chapter/);
 });

@@ -52,6 +52,9 @@
   const contentsSummary = element('summary', '', contents, 'Contents');
   contentsSummary.setAttribute('aria-label', 'Walkthrough contents');
   const currentChapter = element('span', '', contentsSummary);
+  currentChapter.id = 'current-chapter-label';
+  currentChapter.setAttribute('aria-live', 'polite');
+  contentsSummary.setAttribute('aria-describedby', currentChapter.id);
   const chapterPanel = element('div', 'contents-panel', contents);
   chapterPanel.setAttribute('role', 'group');
   chapterPanel.setAttribute('aria-label', 'Chapters');

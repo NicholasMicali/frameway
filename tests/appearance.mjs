@@ -64,6 +64,12 @@ try {
     '16px',
   );
   await page.screenshot({ path: 'test-results/appearance/card.png', fullPage: true });
+  await page.setViewportSize({ width: 1024, height: 600 });
+  await open();
+  await page.locator('.appearance-panel').evaluate((e) => (e.scrollTop = e.scrollHeight));
+  const actions = await page.locator('.appearance-actions').boundingBox();
+  assert.ok(actions.y >= 0 && actions.y + actions.height <= 600);
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   await page.setViewportSize({ width: 390, height: 844 });
   await open();
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);

@@ -87,16 +87,18 @@ export function migrateProject(p: Project | LegacyProject): Project {
       openByDefault: true,
       target: play ? clipId : s.target,
     });
-    if (play)
-      steps.push({
+    if (play) {
+      const clip: Step = {
         ...s,
         id: clipId,
         title: `Video · ${s.title}`.slice(0, 200),
         kind: 'video',
-        chapter: undefined,
         autoplay: true,
         target: target!,
-      });
+      };
+      delete clip.chapter;
+      steps.push(clip);
+    }
   }
   return { ...p, schemaVersion: 2, steps };
 }

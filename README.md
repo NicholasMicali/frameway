@@ -145,3 +145,7 @@ REA is optional research tooling, not a runtime dependency. Historical observati
 Use a project's ⋯ menu to rename it without opening the editor. Downloaded files use the project name. **Last edited** sorting uses local content edits (including rename, undo, and redo); opening, previewing, and exporting do not update it. Projects without a known edit date show **Created** and sort using that date. Copies and imported backups start with a new creation date and no local edit history. This local bookkeeping is omitted from portable backups.
 
 Choose **Options → Keyboard shortcuts** for the current editor and timeline controls on Mac, Windows, and Linux. Frameway focuses on individual walkthroughs; combine exported walkthroughs into larger training modules using your existing tools.
+
+## Chapters and appearance
+
+Use a step's **Behavior → Start a chapter** setting to add a named section to the preview and exported Contents menu. See [chapter behavior](docs/CHAPTERS.md). **Project settings** previews shared card/title colors, title layouts, logo sizing, typography, and button shapes before applying them. See [appearance settings](docs/APPEARANCE.md) for compatibility and the separate reusable-kit follow-up.

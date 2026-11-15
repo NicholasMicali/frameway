@@ -2821,3 +2821,9 @@ h1 {
   outline: 3px solid #6ca7d5;
   outline-offset: 2px;
 }
+
+@media (min-width: 801px) {
+  .appearance-panel {
+    max-height: min(760px, calc(100dvh - 200px));
+  }
+}
