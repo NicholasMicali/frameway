@@ -15,6 +15,7 @@ for (const test of [
   'storage',
   'home-library',
   'library-rename',
+  'shortcuts',
   'project-copy',
 ]) {
   await new Promise((resolve, reject) => {

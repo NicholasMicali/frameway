@@ -1,4 +1,5 @@
 type IconName =
+  | 'keyboard'
   | 'copy'
   | 'undo'
   | 'redo'
@@ -17,6 +18,8 @@ type IconName =
   | 'folder'
   | 'arrow';
 const paths: Record<IconName, string> = {
+  keyboard:
+    'M2 5h20v14H2ZM6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 15h10',
   copy: 'M9 9h12v12H9ZM15 9V3H3v12h6',
   search: 'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0',
   download: 'M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5',

@@ -36,6 +36,7 @@ export function ClipTimeline({ step, duration, onPatch, onSeek, onBoundary }: Pr
         className={`trim-handle ${kind}`}
         role="slider"
         aria-label={kind === 'start' ? 'Trim start' : 'Trim end'}
+        title="Arrow keys: 0.05s · Shift + arrows: 0.5s · Home/End: recording boundaries"
         aria-valuemin={kind === 'start' ? 0 : step.clipStart + 0.05}
         aria-valuemax={kind === 'start' ? step.clipEnd - 0.05 : duration}
         aria-valuenow={value}

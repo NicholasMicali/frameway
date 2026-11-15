@@ -140,10 +140,12 @@ export function ProjectNavigation({
 export function WorkspaceOptions({
   busy,
   onStorage,
+  onShortcuts,
   onImport,
 }: {
   busy: boolean;
   onStorage: () => void;
+  onShortcuts: () => void;
   onImport: () => void;
 }) {
   return (
@@ -186,6 +188,20 @@ export function WorkspaceOptions({
             <span>
               <strong>Import project backup</strong>
               <small>Restore an editable project ZIP</small>
+            </span>
+          </button>
+          <button
+            aria-label="Keyboard shortcuts"
+            aria-haspopup="dialog"
+            onClick={() => {
+              close();
+              onShortcuts();
+            }}
+          >
+            <Icon name="keyboard" />
+            <span>
+              <strong>Keyboard shortcuts</strong>
+              <small>Editing, trimming, and navigation keys</small>
             </span>
           </button>
         </>

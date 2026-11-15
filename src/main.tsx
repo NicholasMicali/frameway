@@ -1,3 +1,4 @@
+import { ShortcutHelp } from './ShortcutHelp';
 import { ProjectNavigation, WorkspaceOptions } from './HeaderMenus';
 import { Disclosure } from './Disclosure';
 import { ProjectLibrary } from './ProjectLibrary';
@@ -66,6 +67,7 @@ function App() {
   const [recording, setRecording] = useState(false);
   const copying = useRef(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [storageOpen, setStorageOpen] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [storageEstimate, setStorageEstimate] = useState<StorageEstimate>();
@@ -371,7 +373,9 @@ function App() {
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement;
-      if (el.closest('input,textarea,select,[contenteditable=true]')) return;
+      if (!project || preview || busy || document.querySelector('dialog[open]')) return;
+      if (el.closest('input,textarea,select,[contenteditable]:not([contenteditable=false])'))
+        return;
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
         e.preventDefault();
         travel(e.shiftKey ? 'redo' : 'undo');
@@ -684,6 +688,7 @@ function App() {
           </button>
           <WorkspaceOptions
             busy={!!busy}
+            onShortcuts={() => setShortcutsOpen(true)}
             onStorage={() => setStorageOpen(true)}
             onImport={() => importInput.current?.click()}
           />
@@ -724,6 +729,7 @@ function App() {
           onClose={() => setExportOpen(false)}
         />
       )}
+      {shortcutsOpen && <ShortcutHelp onClose={() => setShortcutsOpen(false)} />}
       {storageOpen && (
         <StorageManager
           projects={project ? [project, ...projects.filter((p) => p.id !== project.id)] : projects}
