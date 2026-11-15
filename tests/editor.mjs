@@ -64,6 +64,7 @@ try {
     .evaluate((e) => getComputedStyle(e).getPropertyValue('--accent'));
   await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Color theme').selectOption('forest');
+  await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
   assert.equal(
     await page.locator('.app').evaluate((e) => getComputedStyle(e).getPropertyValue('--accent')),
     studioAccent,

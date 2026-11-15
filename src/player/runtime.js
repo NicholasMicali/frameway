@@ -19,7 +19,11 @@
   video.muted = true;
   video.playsInline = true;
   video.preload = 'metadata';
-  const titleSlide = element('div', 'title-slide', screen);
+  const titleSlide = element(
+    'div',
+    `title-slide title-layout-${project.titleLayout || 'split'}`,
+    screen,
+  );
   const titleImage = element('img', 'title-preview', titleSlide);
   titleImage.alt = '';
   const titleCopy = element('div', 'title-copy', titleSlide);
@@ -48,6 +52,9 @@
   const contentsSummary = element('summary', '', contents, 'Contents');
   contentsSummary.setAttribute('aria-label', 'Walkthrough contents');
   const currentChapter = element('span', '', contentsSummary);
+  currentChapter.id = 'current-chapter-label';
+  currentChapter.setAttribute('aria-live', 'polite');
+  contentsSummary.setAttribute('aria-describedby', currentChapter.id);
   const chapterPanel = element('div', 'contents-panel', contents);
   chapterPanel.setAttribute('role', 'group');
   chapterPanel.setAttribute('aria-label', 'Chapters');

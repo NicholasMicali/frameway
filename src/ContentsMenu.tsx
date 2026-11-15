@@ -41,8 +41,11 @@ export function ContentsMenu({
         }
       }}
     >
-      <summary aria-label="Walkthrough contents">
-        Contents <span>{current?.title ?? 'Before first chapter'}</span>
+      <summary aria-label="Walkthrough contents" aria-describedby="current-chapter-label">
+        Contents{' '}
+        <span id="current-chapter-label" aria-live="polite">
+          {current?.title ?? 'Before first chapter'}
+        </span>
         <span aria-hidden="true">⌄</span>
       </summary>
       <div className="contents-panel" role="group" aria-label="Chapters">

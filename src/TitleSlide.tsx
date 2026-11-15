@@ -1,20 +1,25 @@
+import type { Appearance } from './appearance';
 import type { Step } from './model';
 export function TitleSlide({
   step,
   src,
   logo,
+  appearance,
   onStart,
   thumbnail = false,
 }: {
   step: Step;
   src: string;
   logo?: string;
+  appearance?: Appearance;
   onStart?: () => void;
   thumbnail?: boolean;
 }) {
   if (step.kind !== 'title') return null;
   return (
-    <div className={`title-slide ${thumbnail ? 'title-thumbnail' : ''}`}>
+    <div
+      className={`title-slide title-layout-${appearance?.titleLayout ?? 'split'} ${thumbnail ? 'title-thumbnail' : ''}`}
+    >
       <img className="title-preview" src={src} alt="" />
       <div className="title-copy">
         {logo && <img className="title-logo" src={logo} alt="Company logo" />}

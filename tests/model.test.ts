@@ -307,6 +307,47 @@ test('chapter labels follow steps and survive backups without creating duplicate
     chaptersFor((await importProject(await exportProject(p))).steps),
     chaptersFor(p.steps),
   );
+  const legacy = {
+    ...p,
+    schemaVersion: 1 as const,
+    steps: p.steps.map((s) => ({ ...s, transition: true })),
+  };
+  assert.equal(chaptersFor(migrateProject(legacy).steps).length, 2);
   p.steps[0].chapter = 'x'.repeat(121);
   assert.throws(() => validateManifest(p), /chapter/);
+});
+
+test('appearance defaults preserve old projects and validated styling survives backup import', async () => {
+  const { appearanceVars, contrastRatio, validateAppearance } = await import('../src/appearance');
+  const { exportProject, importProject } = await import('../src/archive');
+  assert.deepEqual(appearanceVars(), {});
+  assert.equal(contrastRatio('#ffffff', '#000000'), 21);
+  assert.equal(contrastRatio('#ffffff', '#ffffff'), 1);
+  for (const appearance of [
+    null,
+    [],
+    { cardText: 'red' },
+    { titleLayout: 'html' },
+    { logoSize: 100 },
+    { font: 'https://font.test' },
+    { css: 'color:red' },
+  ]) {
+    assert.throws(() => validateAppearance(appearance));
+  }
+  const p = project();
+  p.video = new Blob([], { type: 'video/webm' });
+  p.appearance = {
+    cardBackground: '#112233',
+    cardText: '#ffffff',
+    titleBackground: '#eeeeee',
+    titleText: '#222222',
+    titleLayout: 'centered',
+    logoSize: 8,
+    logoAlignment: 'center',
+    font: 'serif',
+    typography: 'large',
+    buttonShape: 'pill',
+  };
+  validateManifest(p);
+  assert.deepEqual((await importProject(await exportProject(p))).appearance, p.appearance);
 });

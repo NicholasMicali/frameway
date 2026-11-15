@@ -88,13 +88,14 @@ button:disabled {
   overflow: auto;
 }
 .card h2 {
-  font-size: 18px;
+  font-size: var(--card-heading-size, 18px);
   margin: 0 0 10px;
   overflow-wrap: anywhere;
+  color: var(--card-text, inherit);
 }
 .card p {
-  color: #111;
-  font-size: 14px;
+  color: var(--card-text, #111);
+  font-size: var(--card-body-size, 14px);
   line-height: 1.55;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -228,4 +229,12 @@ body {
 }
 .step-dots button:hover:not(:disabled) {
   background: #eaf2ff;
+}
+
+.card {
+  background: var(--card-background, #fff);
+  font-family: var(--walkthrough-font, inherit);
+}
+.card .primary {
+  border-radius: var(--button-radius, 8px);
 }
