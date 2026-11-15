@@ -18,6 +18,7 @@ for (const test of [
   'shortcuts',
   'chapters',
   'appearance',
+  'callout-formatting',
   'project-copy',
 ]) {
   await new Promise((resolve, reject) => {
