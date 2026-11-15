@@ -1,6 +1,6 @@
 # Try Frameway and report feedback
 
-Use [the README](../README.md) to build and install the Chrome extension. The goal is to create a walkthrough you would actually send to a colleague or customer. Start with approved dummy data: the repository and its GitHub issues are public.
+Download the extension ZIP from the [v0.2.0 beta release](https://github.com/NicholasMicali/frameway/releases/tag/v0.2.0), extract it to a folder you will keep, then use Chrome → Extensions → Developer mode → Load unpacked to select the folder containing `manifest.json`. [The README](../README.md) also explains building from source. The goal is to create a walkthrough you would actually send to a colleague or customer. Start with approved dummy data: the repository and its GitHub issues are public.
 
 ## A short test session
 
@@ -17,9 +17,13 @@ Windows enterprise testers should also work through the [Windows checklist](../T
 
 An empty library opens the short Record → Edit → Share guide. Try the practice workspace link, and expand the setup section if you need installation instructions. Once projects exist, Home puts your library first; the recording and sharing guide stays visible below it.
 
-Search by project name or sort by creation date, name, or estimated media size. Click a project to open it. Its three-dot options menu offers Export backup and Delete with confirmation. Import project backup restores an editable project ZIP; HTML exports are for viewing. The header project picker includes Library and a searchable project list. Options contains Storage & backups and Import project backup.
+Search by project name or sort by creation date, last edited, name, or estimated media size. Click a project to open it. Its three-dot options menu offers Rename, Make a copy, Export backup, and Delete with confirmation. Import project backup restores an editable project ZIP; HTML exports are for viewing. The header project picker includes Library and a searchable project list. Options contains Storage & backups, Import project backup, and Keyboard shortcuts.
 
-When testing, create two walkthroughs, find and reopen one, export its backup, and cancel a deletion before trying a confirmed deletion on a disposable test project. Reload and verify the remaining project is intact.
+When testing, create two walkthroughs, rename one from its menu, and try Last edited sorting. Opening or exporting should not change the edit date. Make a copy, edit it, and confirm the original stays unchanged. Find and reopen a project, export its backup, and cancel a deletion before trying a confirmed deletion on a disposable test project. Reload and verify the remaining project is intact.
+
+## Keyboard help
+
+Open **Options → Keyboard shortcuts** using the keyboard. Check that Escape returns focus to Options. Try Undo/Redo outside text fields and the arrow keys on a focused timeline trim handle. Opening a dialog should prevent project Undo/Redo behind it. Inside a text field, normal browser text editing should still work.
 
 ## Report a bug or request
 

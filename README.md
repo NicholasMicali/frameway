@@ -4,7 +4,7 @@ Record a workflow, edit screenshot and video steps, and send or embed an interac
 
 ![Frameway demo: edit a callout, preview a highlighted step, and export an interactive walkthrough](docs/assets/frameway-demo.gif)
 
-_Recorded in Frameway using the built-in sample project. The GIF shows editing, preview, and export; the downloadable HTML remains interactive._
+_Recorded in Frameway using generated demo content. The GIF shows editing, preview, and export; the downloadable HTML remains interactive._
 
 ## Install the packaged extension
 
@@ -134,12 +134,14 @@ Creates `release/frameway-extension-v0.2.0.zip`, with `manifest.json` at its roo
 
 GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `v0.2.0` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
 
-Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. A packaged beta release remains pending maintainer testing.
+Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. The packaged [v0.2.0 beta](https://github.com/NicholasMicali/frameway/releases/tag/v0.2.0) is available. See [open issues](https://github.com/NicholasMicali/frameway/issues) for planned improvements.
 
 ## Research notes
 
 REA is optional research tooling, not a runtime dependency. Historical observations and setup notes are in [docs/SOURCES.md](docs/SOURCES.md), [docs/OBSERVED-BEHAVIOR.md](docs/OBSERVED-BEHAVIOR.md), and [docs/SETUP.md](docs/SETUP.md). These describe the original development environment and earlier milestones; this README describes the current beta. Raw private captures, browser profiles, and upstream tooling are ignored.
 
-## Library organization
+## Library organization and keyboard help
 
 Use a project's ⋯ menu to rename it without opening the editor. Downloaded files use the project name. **Last edited** sorting uses local content edits (including rename, undo, and redo); opening, previewing, and exporting do not update it. Projects without a known edit date show **Created** and sort using that date. Copies and imported backups start with a new creation date and no local edit history. This local bookkeeping is omitted from portable backups.
+
+Choose **Options → Keyboard shortcuts** for the current editor and timeline controls on Mac, Windows, and Linux. Frameway focuses on individual walkthroughs; combine exported walkthroughs into larger training modules using your existing tools.
