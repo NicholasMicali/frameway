@@ -1,3 +1,4 @@
+import { appearanceVars, type Appearance } from './appearance';
 import { ContentsMenu } from './ContentsMenu';
 import { ShortcutHelp } from './ShortcutHelp';
 import { ProjectNavigation, WorkspaceOptions } from './HeaderMenus';
@@ -54,11 +55,11 @@ function useURL(blob?: Blob) {
   }, [blob]);
   return url;
 }
-function Thumb({ step, logo }: { step: Step; logo?: string }) {
+function Thumb({ step, logo, appearance }: { step: Step; logo?: string; appearance?: Appearance }) {
   const src = useURL(step.image);
   return step.kind === 'title' ? (
-    <div className="title-thumb">
-      <TitleSlide step={step} src={src} logo={logo} thumbnail />
+    <div className="title-thumb" style={appearanceVars(appearance)}>
+      <TitleSlide step={step} src={src} logo={logo} appearance={appearance} thumbnail />
     </div>
   ) : (
     <img alt="" src={src} />
@@ -599,10 +600,13 @@ function App() {
         if (step.kind === 'video') {
           if (time - step.clipStart >= 0.05)
             inserted.push({ ...step, clipEnd: time, target: fresh.id });
-          else fresh.id = step.id;
+          else {
+            fresh.id = step.id;
+            fresh.chapter = step.chapter;
+          }
           inserted.push(fresh);
           if (step.clipEnd - time >= 0.05) {
-            const tail = { ...step, id: crypto.randomUUID(), clipStart: time };
+            const tail = { ...step, chapter: undefined, id: crypto.randomUUID(), clipStart: time };
             fresh.target = tail.id;
             inserted.push(tail);
           } else fresh.target = step.target;
@@ -831,7 +835,7 @@ function App() {
                   await refresh();
                 });
               }}
-              thumbnail={(p) => <Thumb step={p.steps[0]} logo={p.logo} />}
+              thumbnail={(p) => <Thumb step={p.steps[0]} logo={p.logo} appearance={p.appearance} />}
             />
             {!!projects.length && <HomeIntro onRecord={() => setRecording(true)} returning />}
           </div>
@@ -958,7 +962,7 @@ function App() {
                         onClick={() => select(s.id)}
                       >
                         <div className="thumb">
-                          <Thumb step={s} logo={project.logo} />
+                          <Thumb step={s} logo={project.logo} appearance={project.appearance} />
                           <span className="step-number">{i + 1}</span>
                           {
                             <span className="clip-pill">
@@ -1066,6 +1070,7 @@ function App() {
                   style={
                     {
                       ...themeVars(project.theme, project.customColor),
+                      ...appearanceVars(project.appearance),
                       aspectRatio: `${project.width}/${project.height}`,
                     } as React.CSSProperties
                   }
@@ -1107,6 +1112,7 @@ function App() {
                       step={step}
                       src={imageURL}
                       logo={project.logo}
+                      appearance={project.appearance}
                       onStart={
                         preview ? () => (nextId(project, step) ? advance() : restart()) : undefined
                       }
@@ -1347,7 +1353,9 @@ function App() {
                         />
                       </label>
                       <p className="field-note">
-                        The image shows the upper-left corner of the recording’s opening frame.
+                        {project.appearance?.titleLayout === 'centered'
+                          ? 'The centered layout hides the recording preview.'
+                          : 'The image shows the upper-left corner of the recording’s opening frame.'}
                       </p>
                     </>
                   )}
@@ -1491,8 +1499,8 @@ function App() {
                       </>
                     )}
                     <p className="field-note">
-                      Drag the card on the canvas to position it. Project settings control shared
-                      colors and styling.
+                      {step.kind === 'image' ? 'Drag the card on the canvas to position it. ' : ''}
+                      Project settings control shared colors and styling.
                     </p>
                   </fieldset>
                 )}

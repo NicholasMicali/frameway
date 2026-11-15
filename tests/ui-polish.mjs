@@ -25,6 +25,7 @@ try {
   assert.equal(await page.getByLabel('Color theme').isVisible(), false);
   await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Color theme').selectOption('rose');
+  await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
   await page.keyboard.press('Escape');
   assert.equal(await page.getByLabel('Color theme').isVisible(), false);
   await page.getByText('Project settings', { exact: true }).click();

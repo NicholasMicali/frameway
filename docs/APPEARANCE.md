@@ -1,0 +1,9 @@
+# Project appearance
+
+Open **Project settings** to preview shared walkthrough styling. Choose preset/custom accents, card background/text and title background/text colors; split or centered title layout; logo size/alignment; system font and card typography presets; and button shape. **Apply appearance** changes the project as one undoable edit. Cancel, Escape, or clicking outside discards the draft. Merely opening the settings does not change the project. Reset controls affect the draft until applied.
+
+Upload a logo from a title slide's Appearance section. Logos remain title-only. Centered introductions hide the recording preview; split introductions retain the original crop. Large/long cards scroll as needed; review at the size your viewers will use. Color contrast feedback compares text and background pairs and flags ratios below 4.5:1; it is guidance, not an accessibility certification. Fonts are system fonts and may differ across devices. Nothing is fetched from a font service.
+
+The optional `appearance` object adds validated colors, bounded logo size, and enumerated choices to the version-2 project manifest. Missing settings preserve original styling. Backups and whole-project copies carry these settings, and both offline HTML and embed exports render them. Older Frameway builds may ignore new styling; use the current build to edit these projects.
+
+This implements the per-project styling increment of #12. A named reusable local kit library, kit-only export/import, and intro/outro defaults remain follow-up work. Project backups already preserve this project's appearance, but they also contain its recording and are not branding-only files.

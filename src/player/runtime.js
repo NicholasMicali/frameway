@@ -19,7 +19,11 @@
   video.muted = true;
   video.playsInline = true;
   video.preload = 'metadata';
-  const titleSlide = element('div', 'title-slide', screen);
+  const titleSlide = element(
+    'div',
+    `title-slide title-layout-${project.titleLayout || 'split'}`,
+    screen,
+  );
   const titleImage = element('img', 'title-preview', titleSlide);
   titleImage.alt = '';
   const titleCopy = element('div', 'title-copy', titleSlide);

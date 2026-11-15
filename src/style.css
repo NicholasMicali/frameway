@@ -382,15 +382,16 @@ header {
   touch-action: none;
 }
 .callout h3 {
-  font-size: 15px;
+  font-size: var(--card-heading-size, 15px);
   letter-spacing: -0.3px;
   line-height: 1.3;
   margin: 0 0 8px;
+  color: var(--card-text, inherit);
 }
 .callout p {
-  font-size: 11px;
+  font-size: var(--card-body-size, 11px);
   line-height: 1.65;
-  color: #111;
+  color: var(--card-text, #111);
   margin: 0 0 13px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -634,10 +635,11 @@ textarea {
   width: min(280px, 42%);
 }
 .preview .callout h3 {
-  font-size: 19px;
+  font-size: var(--card-heading-size, 19px);
+  color: var(--card-text, inherit);
 }
 .preview .callout p {
-  font-size: 13px;
+  font-size: var(--card-body-size, 13px);
 }
 .preview .card-next {
   font-size: 12px;
@@ -773,10 +775,11 @@ h1 {
     padding: 10px;
   }
   .callout h3 {
-    font-size: 12px;
+    font-size: var(--card-heading-size, 12px);
+    color: var(--card-text, inherit);
   }
   .callout p {
-    font-size: 9px;
+    font-size: var(--card-body-size, 9px);
   }
   .project-title {
     width: 350px;
@@ -833,10 +836,11 @@ h1 {
     padding: 8px;
   }
   .callout p {
-    font-size: 8px;
+    font-size: var(--card-body-size, 8px);
   }
   .callout h3 {
-    font-size: 10px;
+    font-size: var(--card-heading-size, 10px);
+    color: var(--card-text, inherit);
   }
   h1 {
     font-size: 36px;
@@ -2702,4 +2706,118 @@ h1 {
 .player-bar {
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.callout {
+  background: var(--card-background, #fff);
+  font-family: var(--walkthrough-font, inherit);
+}
+.card-next {
+  border-radius: var(--button-radius, 8px);
+}
+
+.appearance-panel {
+  width: 480px;
+  max-height: min(760px, 75dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.appearance-panel fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+}
+.appearance-panel legend {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0 6px;
+}
+.appearance-panel label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  font-size: 12px;
+  color: #475569;
+}
+.appearance-panel select {
+  max-width: 60%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font: inherit;
+}
+.appearance-color input {
+  width: 38px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  margin-left: auto;
+  background: white;
+}
+.appearance-color button {
+  padding: 6px 8px;
+  font-size: 11px;
+}
+.appearance-preview {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+.appearance-title {
+  aspect-ratio: 16/10;
+  position: relative;
+  container-type: inline-size;
+}
+.appearance-card {
+  padding: 16px;
+  margin: 12px;
+  background: var(--card-background, white);
+  border-top: 3px solid var(--accent);
+  border-radius: 8px;
+  font-family: var(--walkthrough-font, inherit);
+}
+.appearance-card h3 {
+  color: var(--card-text, #334155);
+  font-size: var(--card-heading-size, 18px);
+  margin: 0 0 8px;
+}
+.appearance-panel .appearance-card p {
+  color: var(--card-text, #111);
+  font-size: var(--card-body-size, 14px);
+  margin: 0 0 12px;
+}
+.appearance-button {
+  display: block;
+  padding: 10px;
+  text-align: center;
+  background: var(--accent);
+  color: var(--accent-text);
+  border-radius: var(--button-radius, 8px);
+}
+.appearance-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: sticky;
+  bottom: -18px;
+  background: white;
+  padding: 12px 0;
+  border-top: 1px solid #e2e8f0;
+}
+.appearance-panel .contrast-feedback {
+  padding-top: 10px;
+}
+.appearance-panel .contrast-warning {
+  color: #9a3412;
+}
+.appearance-panel :focus-visible {
+  outline: 3px solid #6ca7d5;
+  outline-offset: 2px;
 }

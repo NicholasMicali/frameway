@@ -1,3 +1,4 @@
+import { validateAppearance, type Appearance } from './appearance';
 import { themes, isHexColor, type ThemeName } from './themes';
 export type Marker = {
   id: string;
@@ -41,6 +42,7 @@ type ProjectBase = {
   localRevision?: string;
   localEditedAt?: number;
   localBackup?: { revision: string; exportedAt: number };
+  appearance?: Appearance;
   theme?: ThemeName;
   customColor?: string;
   logo?: string;
@@ -91,6 +93,7 @@ export function migrateProject(p: Project | LegacyProject): Project {
         id: clipId,
         title: `Video · ${s.title}`.slice(0, 200),
         kind: 'video',
+        chapter: undefined,
         autoplay: true,
         target: target!,
       });
@@ -141,6 +144,7 @@ export function moveStep(p: Project, id: string, delta: number): Project {
   return { ...p, steps };
 }
 export function validateManifest(v: any) {
+  validateAppearance(v?.appearance);
   if (v?.theme !== undefined && v.theme !== 'custom' && !Object.hasOwn(themes, v.theme))
     throw Error('Invalid color theme');
   if (v?.customColor !== undefined && !isHexColor(v.customColor))

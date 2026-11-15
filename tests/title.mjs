@@ -40,6 +40,7 @@ try {
   await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Color theme').selectOption('custom');
   await page.getByLabel('Custom theme color').fill('#ffd500');
+  await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
   assert.equal(
     await page.locator('.stage').evaluate((e) => getComputedStyle(e).getPropertyValue('--accent')),
     '#ffd500',
