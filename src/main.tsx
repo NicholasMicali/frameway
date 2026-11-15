@@ -1255,6 +1255,7 @@ function App() {
                       key={step.id}
                       step={step}
                       duration={project.duration}
+                      playhead={frameTime}
                       onPatch={patch}
                       onSeek={seek}
                       onBoundary={boundary}
