@@ -1,3 +1,5 @@
+import { formattedText } from './formatted-text';
+import formattedCSS from './formatted-text.css?raw';
 import { appearanceVars } from './appearance';
 import { chaptersFor } from './chapters';
 import contentsCSS from './contents.css?raw';
@@ -30,11 +32,13 @@ function playerDocument(p: Project, video: string, images: string[]) {
     steps: p.steps.map(({ image, ...s }, i) => ({
       ...s,
       image: images[i],
+      bodyHTML: formattedText(s.body, s.bodyFormat === 'basic'),
       zoomVars: areaZoomVars(p.steps[i]),
     })),
   };
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(p.title)}</title><style>${css}
 ${titleCSS}
+${formattedCSS}
 ${contentsCSS}
 ${zoomCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const zoomOut = ${zoomOut.toString()};\n${runtime}</script></body></html>`;
 }

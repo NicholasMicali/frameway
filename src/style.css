@@ -2829,3 +2829,20 @@ h1 {
     max-height: min(760px, calc(100dvh - 200px));
   }
 }
+
+.format-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 6px;
+}
+.format-tools button {
+  min-width: 34px;
+  padding: 6px 10px;
+}
+.callout .formatted-body {
+  font-size: var(--card-body-size, 11px);
+}
+.callout .formatted-body p {
+  font-size: inherit;
+}

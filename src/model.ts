@@ -1,4 +1,5 @@
 import { validateAppearance, type Appearance } from './appearance';
+import { safeActionURL } from './formatted-text';
 import { themes, isHexColor, type ThemeName } from './themes';
 export type Marker = {
   id: string;
@@ -14,6 +15,9 @@ type StepBase = {
   id: string;
   title: string;
   body: string;
+  bodyFormat?: 'basic';
+  actionLabel?: string;
+  actionUrl?: string;
   chapter?: string;
   x: number;
   y: number;
@@ -184,6 +188,17 @@ export function validateManifest(v: any) {
     ids.add(s.id);
   }
   for (const s of v.steps) {
+    if (s.bodyFormat !== undefined && s.bodyFormat !== 'basic') throw Error('Invalid body format');
+    if (
+      s.actionLabel !== undefined &&
+      (typeof s.actionLabel !== 'string' || s.actionLabel.length > 80)
+    )
+      throw Error('Invalid action label');
+    if (
+      s.actionUrl !== undefined &&
+      (typeof s.actionUrl !== 'string' || s.actionUrl.length > 2048 || !safeActionURL(s.actionUrl))
+    )
+      throw Error('Invalid action URL');
     if (s.chapter !== undefined && (typeof s.chapter !== 'string' || s.chapter.length > 120))
       throw Error('Invalid chapter label');
     if (

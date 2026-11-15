@@ -42,7 +42,10 @@
     card.style.setProperty(name, value);
   }
   const heading = element('h2', '', card);
-  const body = element('p', '', card);
+  const body = element('div', 'formatted-body', card);
+  const action = element('a', 'callout-action', card);
+  action.target = '_blank';
+  action.rel = 'noopener noreferrer';
   const continueButton = element('button', 'primary', card, 'Continue →');
   const nav = element('nav', '', root);
   nav.setAttribute('aria-label', 'Walkthrough controls');
@@ -272,7 +275,10 @@
     }
     card.hidden = s.kind !== 'image' || (s.style !== 'callout' && !s.openByDefault);
     heading.textContent = s.title;
-    body.textContent = s.body;
+    body.innerHTML = s.bodyHTML;
+    action.hidden = !s.actionUrl;
+    action.href = s.actionUrl || '';
+    action.textContent = `${s.actionLabel || 'Learn more'} ↗`;
     card.scrollTop = 0;
     progressLabel.textContent = `Step ${index + 1} of ${project.steps.length}`;
     updateNavigation();
