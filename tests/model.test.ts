@@ -291,3 +291,22 @@ test('local edit history is reset for portable imports and copies', async () => 
   const restored = await importProject(await exportProject(p));
   assert.equal(restored.localEditedAt, undefined);
 });
+
+test('chapter labels follow steps and survive backups without creating duplicate section starts', async () => {
+  const { chaptersFor } = await import('../src/chapters');
+  const { exportProject, importProject } = await import('../src/archive');
+  const p = project();
+  p.video = new Blob([], { type: 'video/webm' });
+  p.steps[0].chapter = 'Introduction';
+  p.steps[2].chapter = 'Finish';
+  assert.equal(chaptersFor(moveStep(p, 'c', -1).steps)[1].index, 1);
+  assert.equal(chaptersFor(deleteStep(p, 'c').steps).length, 1);
+  assert.equal(chaptersFor(duplicateStep(p, 'a').steps).length, 2);
+  assert.equal(chaptersFor(withTitleSlide(p, new Blob()).steps).length, 2);
+  assert.deepEqual(
+    chaptersFor((await importProject(await exportProject(p))).steps),
+    chaptersFor(p.steps),
+  );
+  p.steps[0].chapter = 'x'.repeat(121);
+  assert.throws(() => validateManifest(p), /chapter/);
+});

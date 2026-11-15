@@ -1,0 +1,82 @@
+.contents-menu {
+  position: relative;
+  max-width: 100%;
+  font:
+    13px system-ui,
+    sans-serif;
+  color: #334155;
+}
+.contents-menu summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+.contents-menu summary::-webkit-details-marker {
+  display: none;
+}
+.contents-menu summary > span:first-child {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #64748b;
+}
+.contents-panel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  width: min(300px, 80vw);
+  max-height: min(360px, 60vh);
+  overflow: auto;
+  background: white;
+  padding: 8px;
+  border: 1px solid #dce4ee;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px #17202e26;
+}
+.contents-panel p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 8px;
+  line-height: 1.5;
+}
+.contents-panel button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: white;
+  border: 0;
+  padding: 12px;
+  border-radius: 6px;
+  font: inherit;
+  color: #334155;
+}
+.contents-panel button span {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.contents-panel small {
+  flex-shrink: 0;
+  color: #64748b;
+}
+.contents-panel button[aria-current] {
+  background: #eaf2ff;
+  font-weight: 650;
+}
+.contents-panel button:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+.contents-menu :focus-visible {
+  outline: 3px solid #6ca7d5;
+  outline-offset: 2px;
+}

@@ -1,3 +1,4 @@
+import { ContentsMenu } from './ContentsMenu';
 import { ShortcutHelp } from './ShortcutHelp';
 import { ProjectNavigation, WorkspaceOptions } from './HeaderMenus';
 import { Disclosure } from './Disclosure';
@@ -970,6 +971,11 @@ function App() {
                           }
                         </div>
                         <span className="step-label">{s.title}</span>
+                        {s.chapter !== undefined && (
+                          <span className="chapter-label">
+                            {s.chapter.trim() || s.title || 'Untitled chapter'}
+                          </span>
+                        )}
                       </button>
                       <details
                         className="step-menu"
@@ -1184,6 +1190,14 @@ function App() {
                 </div>
               </div>
               <div className="player-bar">
+                {preview && (
+                  <ContentsMenu
+                    steps={project.steps}
+                    selected={selected}
+                    locked={playing || leaving}
+                    onJump={navigate}
+                  />
+                )}
                 <button onClick={restart} disabled={!preview || playing || leaving}>
                   ↺ Restart
                 </button>
@@ -1484,6 +1498,31 @@ function App() {
                 )}
                 <fieldset className="settings-section">
                   <legend>Behavior</legend>
+                  <label className="toggle">
+                    <input
+                      type="checkbox"
+                      aria-label="Start a chapter"
+                      checked={step.chapter !== undefined}
+                      onChange={(event) =>
+                        patch({
+                          chapter: event.target.checked ? step.title.slice(0, 120) : undefined,
+                        })
+                      }
+                    />
+                    Start a chapter
+                  </label>
+                  {step.chapter !== undefined && (
+                    <label>
+                      Chapter name
+                      <input
+                        aria-label="Chapter name"
+                        maxLength={120}
+                        value={step.chapter}
+                        placeholder={step.title || 'Untitled chapter'}
+                        onChange={(event) => patch({ chapter: event.target.value })}
+                      />
+                    </label>
+                  )}
                   {step.kind === 'video' && (
                     <>
                       {' '}

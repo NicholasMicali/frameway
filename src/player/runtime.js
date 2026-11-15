@@ -42,6 +42,41 @@
   const continueButton = element('button', 'primary', card, 'Continue →');
   const nav = element('nav', '', root);
   nav.setAttribute('aria-label', 'Walkthrough controls');
+  const chapters = project.chapters || [];
+  const contents = element('details', 'contents-menu', nav);
+  contents.hidden = !chapters.length;
+  const contentsSummary = element('summary', '', contents, 'Contents');
+  contentsSummary.setAttribute('aria-label', 'Walkthrough contents');
+  const currentChapter = element('span', '', contentsSummary);
+  const chapterPanel = element('div', 'contents-panel', contents);
+  chapterPanel.setAttribute('role', 'group');
+  chapterPanel.setAttribute('aria-label', 'Chapters');
+  const chapterStatus = element('p', '', chapterPanel);
+  chapterStatus.setAttribute('role', 'status');
+  const closeContents = () => {
+    contents.open = false;
+    contentsSummary.focus();
+  };
+  contents.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.stopPropagation();
+      closeContents();
+    }
+  });
+  document.addEventListener('pointerdown', (event) => {
+    if (!contents.contains(event.target)) contents.open = false;
+  });
+  const chapterButtons = chapters.map((chapter) => {
+    const button = element('button', '', chapterPanel);
+    element('span', '', button, chapter.title);
+    element('small', '', button, `Step ${chapter.index + 1}`);
+    button.onclick = () => {
+      if (navigationLocked()) return;
+      closeContents();
+      if (chapter.index !== index) move(chapter.index);
+    };
+    return button;
+  });
   const back = element('button', '', nav, '← Back');
   const restart = element('button', '', nav, 'Restart');
   const progress = element('div', 'progress', nav);
@@ -88,6 +123,16 @@
   }
   function updateNavigation() {
     const locked = navigationLocked();
+    const current = chapters.filter((chapter) => chapter.index <= index).at(-1);
+    currentChapter.textContent = current?.title || 'Before first chapter';
+    chapterStatus.textContent = locked
+      ? 'Chapter jumps are available when playback stops.'
+      : `Current: ${current?.title || 'Before first chapter'}`;
+    chapterButtons.forEach((button, i) => {
+      button.disabled = locked;
+      if (chapters[i].id === current?.id) button.setAttribute('aria-current', 'step');
+      else button.removeAttribute('aria-current');
+    });
     back.disabled = locked || history.length === 0;
     next.disabled = restart.disabled = continueButton.disabled = hotspot.disabled = locked;
     dotButtons.forEach((button, i) => {
@@ -270,7 +315,7 @@
       'A screenshot could not load. Keep the exported media folder beside index.html.';
   });
   document.addEventListener('keydown', (e) => {
-    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.target.closest('details')) return;
     if (e.key === 'ArrowRight') {
       e.preventDefault();
       go();
