@@ -914,6 +914,7 @@ function App() {
               <div className="mode">
                 <button
                   className={!preview ? 'active' : ''}
+                  aria-pressed={!preview}
                   onClick={() => {
                     setPreview(false);
                     setPlaying(false);
@@ -925,6 +926,7 @@ function App() {
                 </button>
                 <button
                   className={preview ? 'active' : ''}
+                  aria-pressed={preview}
                   onClick={() => {
                     editOrigin.current = selected;
                     history.current = [];
@@ -950,6 +952,7 @@ function App() {
                     <div className="step-row" key={s.id}>
                       <button
                         className={`step ${selected === s.id ? 'selected' : ''}`}
+                        aria-current={selected === s.id ? 'step' : undefined}
                         key={s.id}
                         onClick={() => select(s.id)}
                       >
@@ -1289,7 +1292,7 @@ function App() {
             {!preview && step && (
               <aside className="inspector">
                 <div className="section-heading">
-                  MAKE IT CLEAR <span>✦</span>
+                  STEP {project.steps.indexOf(step) + 1} OF {project.steps.length}
                 </div>
                 <h2 className="inspector-heading">
                   {step.kind === 'title'
@@ -1298,298 +1301,319 @@ function App() {
                       ? 'Image & callout'
                       : 'Video clip'}
                 </h2>
-                <label>
-                  Headline
-                  <input
-                    aria-label="Callout headline"
-                    value={step.title}
-                    maxLength={200}
-                    onChange={(e) => patch({ title: e.target.value })}
-                  />
-                </label>
-                {step.kind === 'title' && (
-                  <>
-                    <LogoUpload
-                      logo={project.logo}
-                      disabled={!!busy}
-                      onRemove={() => update({ ...project, logo: undefined })}
-                      onUpload={(file) =>
-                        void task('Preparing logo…', async () =>
-                          update({ ...project, logo: await prepareLogo(file) }),
-                        )
-                      }
+                <fieldset className="settings-section">
+                  <legend>Content</legend>
+                  <label>
+                    Headline
+                    <input
+                      aria-label="Callout headline"
+                      value={step.title}
+                      maxLength={200}
+                      onChange={(e) => patch({ title: e.target.value })}
                     />
-                    <label>
-                      Description
-                      <textarea
-                        aria-label="Title description"
-                        value={step.body}
-                        maxLength={5000}
-                        onChange={(e) => patch({ body: e.target.value })}
-                      />
-                    </label>
-                    <label>
-                      Button label
-                      <input
-                        aria-label="Title button label"
-                        value={step.buttonText}
-                        maxLength={80}
-                        onChange={(e) => patch({ buttonText: e.target.value })}
-                      />
-                    </label>
-                    <p className="field-note">
-                      The image shows the upper-left corner of the recording’s opening frame.
-                    </p>
-                  </>
-                )}
-                {step.kind === 'image' && (
-                  <>
-                    <div className="placement-controls">
-                      <span>Card placement</span>
-                      <div>
-                        {[
-                          ['Top left', 0.03, 0.03],
-                          ['Top right', 0.97, 0.03],
-                          ['Bottom left', 0.03, 0.97],
-                          ['Bottom right', 0.97, 0.97],
-                        ].map(([label, x, y]) => (
-                          <button
-                            key={label}
-                            onClick={() => patch({ cardX: Number(x), cardY: Number(y) })}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <label>
-                      Display style
-                      <select
-                        aria-label="Overlay style"
-                        value={step.style}
-                        onChange={(e) =>
-                          patch({
-                            style: e.target.value as 'hotspot' | 'callout' | 'area',
-                            ...(e.target.value === 'area'
-                              ? { zoomEnabled: step.zoomEnabled ?? true }
-                              : {}),
-                          })
-                        }
-                      >
-                        <option value="hotspot">Hotspot</option>
-                        <option value="callout">Callout</option>
-                        <option value="area">Area hotspot</option>
-                      </select>
-                    </label>
-                    {step.style !== 'callout' && (
-                      <label className="toggle">
-                        <input
-                          aria-label="Open by default"
-                          type="checkbox"
-                          checked={step.openByDefault}
-                          onChange={(e) => patch({ openByDefault: e.target.checked })}
+                  </label>
+                  {step.kind === 'title' && (
+                    <>
+                      <label>
+                        Description
+                        <textarea
+                          aria-label="Title description"
+                          value={step.body}
+                          maxLength={5000}
+                          onChange={(e) => patch({ body: e.target.value })}
                         />
-                        Open by default
                       </label>
-                    )}
-                    <label>
-                      Card width
-                      <input
-                        aria-label="Card width"
-                        type="range"
-                        min="0.18"
-                        max="0.6"
-                        step="0.01"
-                        value={step.cardWidth ?? 0.32}
-                        onChange={(e) => patch({ cardWidth: Number(e.target.value) })}
-                      />
-                    </label>
-                    {step.style === 'area' && (
+                      <label>
+                        Button label
+                        <input
+                          aria-label="Title button label"
+                          value={step.buttonText}
+                          maxLength={80}
+                          onChange={(e) => patch({ buttonText: e.target.value })}
+                        />
+                      </label>
+                      <p className="field-note">
+                        The image shows the upper-left corner of the recording’s opening frame.
+                      </p>
+                    </>
+                  )}
+                  {step.kind === 'image' && (
+                    <>
+                      <label>
+                        A little context
+                        <textarea
+                          aria-label="Callout body"
+                          value={step.body}
+                          maxLength={5000}
+                          onChange={(e) => patch({ body: e.target.value })}
+                        />
+                      </label>
+                      <div className="field-note">
+                        Keep it short. Let the product do the talking.
+                      </div>
+                    </>
+                  )}
+                  {step.kind === 'video' && (
+                    <>
+                      <div className="range-fields">
+                        <label>
+                          Clip start (s)
+                          <input
+                            aria-label="Clip start"
+                            type="number"
+                            min="0"
+                            max={step.clipEnd - 0.05}
+                            step="0.01"
+                            value={Number(step.clipStart.toFixed(2))}
+                            onChange={(e) =>
+                              patch({
+                                clipStart: clamp(Number(e.target.value), 0, step.clipEnd - 0.05),
+                              })
+                            }
+                          />
+                        </label>
+                        <label>
+                          Clip end (s)
+                          <input
+                            aria-label="Clip end"
+                            type="number"
+                            min={step.clipStart + 0.05}
+                            max={project.duration}
+                            step="0.01"
+                            value={Number(step.clipEnd.toFixed(2))}
+                            onChange={(e) =>
+                              patch({
+                                clipEnd: clamp(
+                                  Number(e.target.value),
+                                  step.clipStart + 0.05,
+                                  project.duration,
+                                ),
+                              })
+                            }
+                          />
+                        </label>
+                      </div>
+                    </>
+                  )}
+                </fieldset>
+                {step.kind !== 'video' && (
+                  <fieldset className="settings-section">
+                    <legend>Appearance</legend>
+                    {step.kind === 'title' && (
                       <>
-                        <label className="toggle">
-                          <input
-                            aria-label="Zoom into highlighted area"
-                            type="checkbox"
-                            checked={step.zoomEnabled ?? false}
-                            onChange={(e) => patch({ zoomEnabled: e.target.checked })}
-                          />
-                          Zoom into highlighted area
-                        </label>
-                        {step.zoomEnabled && (
-                          <>
-                            <label>
-                              Zoom (%)
-                              <input
-                                aria-label="Area zoom percentage"
-                                type="number"
-                                min="100"
-                                step="any"
-                                value={step.zoomPercent ?? automaticZoom(step)}
-                                onChange={(e) => {
-                                  const n = e.target.valueAsNumber;
-                                  if (Number.isFinite(n) && n >= 100) patch({ zoomPercent: n });
-                                }}
-                              />
-                            </label>
-                            <button
-                              disabled={step.zoomPercent === undefined}
-                              onClick={() => patch({ zoomPercent: undefined })}
-                            >
-                              Use automatic zoom
-                            </button>
-                            <p className="field-note">
-                              {step.zoomPercent === undefined
-                                ? 'Automatic: smaller areas get a little more zoom.'
-                                : 'Custom zoom.'}{' '}
-                              100% is original size. Preview to see the animation; the callout stays
-                              its normal size. Large values may crop the highlighted area.
-                            </p>
-                          </>
-                        )}
-                        <label>
-                          Area width
-                          <input
-                            aria-label="Area width"
-                            type="range"
-                            min="0.05"
-                            max="1"
-                            step="0.01"
-                            value={step.areaWidth ?? 0.25}
-                            onChange={(e) => patch({ areaWidth: Number(e.target.value) })}
-                          />
-                        </label>
-                        <label>
-                          Area height
-                          <input
-                            aria-label="Area height"
-                            type="range"
-                            min="0.05"
-                            max="1"
-                            step="0.01"
-                            value={step.areaHeight ?? 0.2}
-                            onChange={(e) => patch({ areaHeight: Number(e.target.value) })}
-                          />
-                        </label>
+                        <LogoUpload
+                          logo={project.logo}
+                          disabled={!!busy}
+                          onRemove={() => update({ ...project, logo: undefined })}
+                          onUpload={(file) =>
+                            void task('Preparing logo…', async () =>
+                              update({ ...project, logo: await prepareLogo(file) }),
+                            )
+                          }
+                        />
                       </>
                     )}
-                    <label>
-                      A little context
-                      <textarea
-                        aria-label="Callout body"
-                        value={step.body}
-                        maxLength={5000}
-                        onChange={(e) => patch({ body: e.target.value })}
-                      />
-                    </label>
-                    <div className="field-note">Keep it short. Let the product do the talking.</div>
-                  </>
+                    {step.kind === 'image' && (
+                      <>
+                        <label>
+                          Display style
+                          <select
+                            aria-label="Overlay style"
+                            value={step.style}
+                            onChange={(e) =>
+                              patch({
+                                style: e.target.value as 'hotspot' | 'callout' | 'area',
+                                ...(e.target.value === 'area'
+                                  ? { zoomEnabled: step.zoomEnabled ?? true }
+                                  : {}),
+                              })
+                            }
+                          >
+                            <option value="hotspot">Hotspot</option>
+                            <option value="callout">Callout</option>
+                            <option value="area">Area hotspot</option>
+                          </select>
+                        </label>
+                        <label>
+                          Card width
+                          <input
+                            aria-label="Card width"
+                            type="range"
+                            min="0.18"
+                            max="0.6"
+                            step="0.01"
+                            value={step.cardWidth ?? 0.32}
+                            onChange={(e) => patch({ cardWidth: Number(e.target.value) })}
+                          />
+                        </label>
+                        {step.style === 'area' && (
+                          <>
+                            <label>
+                              Area width
+                              <input
+                                aria-label="Area width"
+                                type="range"
+                                min="0.05"
+                                max="1"
+                                step="0.01"
+                                value={step.areaWidth ?? 0.25}
+                                onChange={(e) => patch({ areaWidth: Number(e.target.value) })}
+                              />
+                            </label>
+                            <label>
+                              Area height
+                              <input
+                                aria-label="Area height"
+                                type="range"
+                                min="0.05"
+                                max="1"
+                                step="0.01"
+                                value={step.areaHeight ?? 0.2}
+                                onChange={(e) => patch({ areaHeight: Number(e.target.value) })}
+                              />
+                            </label>
+                          </>
+                        )}
+                      </>
+                    )}
+                    <p className="field-note">
+                      Drag the card on the canvas to position it. Project settings control shared
+                      colors and styling.
+                    </p>
+                  </fieldset>
                 )}
-                <hr />
-                <div className="section-heading">NAVIGATION</div>
-                <label>
-                  Continue to
-                  <select
-                    aria-label="Navigation target"
-                    value={step.target}
-                    onChange={(e) => patch({ target: e.target.value })}
-                  >
-                    <option value="next">Next step</option>
-                    <option value="end">End walkthrough</option>
-                    {project.steps
-                      .filter((s) => s.id !== step.id)
-                      .map((s) => (
-                        <option value={s.id} key={s.id}>
-                          {s.title}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-                {step.kind === 'video' && (
-                  <>
-                    <label className="toggle">
-                      <input
-                        aria-label="Autoplay video"
-                        type="checkbox"
-                        checked={step.autoplay}
-                        onChange={(e) => patch({ autoplay: e.target.checked })}
-                      />
-                      Autoplay video
-                    </label>
-                    <div className="range-fields">
-                      <label>
-                        Clip start (s)
+                <fieldset className="settings-section">
+                  <legend>Behavior</legend>
+                  {step.kind === 'video' && (
+                    <>
+                      {' '}
+                      <label className="toggle">
                         <input
-                          aria-label="Clip start"
-                          type="number"
-                          min="0"
-                          max={step.clipEnd - 0.05}
-                          step="0.01"
-                          value={Number(step.clipStart.toFixed(2))}
-                          onChange={(e) =>
-                            patch({
-                              clipStart: clamp(Number(e.target.value), 0, step.clipEnd - 0.05),
-                            })
-                          }
+                          aria-label="Autoplay video"
+                          type="checkbox"
+                          checked={step.autoplay}
+                          onChange={(e) => patch({ autoplay: e.target.checked })}
                         />
+                        Autoplay video
                       </label>
-                      <label>
-                        Clip end (s)
-                        <input
-                          aria-label="Clip end"
-                          type="number"
-                          min={step.clipStart + 0.05}
-                          max={project.duration}
-                          step="0.01"
-                          value={Number(step.clipEnd.toFixed(2))}
-                          onChange={(e) =>
-                            patch({
-                              clipEnd: clamp(
-                                Number(e.target.value),
-                                step.clipStart + 0.05,
-                                project.duration,
-                              ),
-                            })
-                          }
-                        />
-                      </label>
-                    </div>
-                  </>
-                )}
-                <hr />
-                <div className="section-heading">ARRANGE STEP</div>
-                <button onClick={() => update(duplicateStep(project, step.id))}>
-                  Duplicate step
-                </button>
-                <div className="arrange">
-                  <button
-                    aria-label="Move step up"
-                    disabled={project.steps[0].id === step.id}
-                    onClick={() => update(moveStep(project, step.id, -1))}
-                  >
-                    ↑ Move up
+                    </>
+                  )}
+                  {step.kind === 'image' && (
+                    <>
+                      {' '}
+                      {step.style !== 'callout' && (
+                        <label className="toggle">
+                          <input
+                            aria-label="Open by default"
+                            type="checkbox"
+                            checked={step.openByDefault}
+                            onChange={(e) => patch({ openByDefault: e.target.checked })}
+                          />
+                          Open by default
+                        </label>
+                      )}
+                      {step.style === 'area' && (
+                        <>
+                          {' '}
+                          <label className="toggle">
+                            <input
+                              aria-label="Zoom into highlighted area"
+                              type="checkbox"
+                              checked={step.zoomEnabled ?? false}
+                              onChange={(e) => patch({ zoomEnabled: e.target.checked })}
+                            />
+                            Zoom into highlighted area
+                          </label>
+                          {step.zoomEnabled && (
+                            <>
+                              <label>
+                                Zoom (%)
+                                <input
+                                  aria-label="Area zoom percentage"
+                                  type="number"
+                                  min="100"
+                                  step="any"
+                                  value={step.zoomPercent ?? automaticZoom(step)}
+                                  onChange={(e) => {
+                                    const n = e.target.valueAsNumber;
+                                    if (Number.isFinite(n) && n >= 100) patch({ zoomPercent: n });
+                                  }}
+                                />
+                              </label>
+                              <button
+                                disabled={step.zoomPercent === undefined}
+                                onClick={() => patch({ zoomPercent: undefined })}
+                              >
+                                Use automatic zoom
+                              </button>
+                              <p className="field-note">
+                                {step.zoomPercent === undefined
+                                  ? 'Automatic: smaller areas get a little more zoom.'
+                                  : 'Custom zoom.'}{' '}
+                                100% is original size. Preview to see the animation; the callout
+                                stays its normal size. Large values may crop the highlighted area.
+                              </p>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </>
+                  )}
+                  <label>
+                    Continue to
+                    <select
+                      aria-label="Navigation target"
+                      value={step.target}
+                      onChange={(e) => patch({ target: e.target.value })}
+                    >
+                      <option value="next">Next step</option>
+                      <option value="end">End walkthrough</option>
+                      {project.steps
+                        .filter((s) => s.id !== step.id)
+                        .map((s) => (
+                          <option value={s.id} key={s.id}>
+                            {s.title}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                </fieldset>
+                <fieldset className="settings-section">
+                  <legend>Arrange step</legend>
+                  <button onClick={() => update(duplicateStep(project, step.id))}>
+                    Duplicate step
                   </button>
+                  <div className="arrange">
+                    <button
+                      aria-label="Move step up"
+                      disabled={project.steps[0].id === step.id}
+                      onClick={() => update(moveStep(project, step.id, -1))}
+                    >
+                      ↑ Move up
+                    </button>
+                    <button
+                      aria-label="Move step down"
+                      disabled={project.steps.at(-1)?.id === step.id}
+                      onClick={() => update(moveStep(project, step.id, 1))}
+                    >
+                      ↓ Move down
+                    </button>
+                  </div>
+                  <p className="field-note">
+                    Video clips move with their own ranges. Check navigation after rearranging.
+                  </p>
                   <button
-                    aria-label="Move step down"
-                    disabled={project.steps.at(-1)?.id === step.id}
-                    onClick={() => update(moveStep(project, step.id, 1))}
+                    className="delete"
+                    disabled={project.steps.length <= 1}
+                    onClick={() => {
+                      const p = deleteStep(project, step.id);
+                      update(p);
+                      select(p.steps[0].id);
+                    }}
                   >
-                    ↓ Move down
+                    Delete step
                   </button>
-                </div>
-                <p className="field-note">
-                  Video clips move with their own ranges. Check navigation after rearranging.
-                </p>
-                <button
-                  className="delete"
-                  disabled={project.steps.length <= 1}
-                  onClick={() => {
-                    const p = deleteStep(project, step.id);
-                    update(p);
-                    select(p.steps[0].id);
-                  }}
-                >
-                  Delete step
-                </button>
+                </fieldset>
               </aside>
             )}
           </div>

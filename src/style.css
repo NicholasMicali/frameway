@@ -2632,3 +2632,59 @@ h1 {
   padding: 2px 5px;
   white-space: nowrap;
 }
+
+/* Contextual settings remain expanded so controls are discoverable and reachable. */
+.settings-section {
+  min-width: 0;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  padding: 20px 0 4px;
+  margin: 22px 0 0;
+}
+.settings-section legend {
+  padding: 0 10px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+}
+.inspector .settings-section label {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.5;
+}
+.inspector .settings-section input:not([type='checkbox']),
+.inspector .settings-section select,
+.inspector .settings-section textarea {
+  font-size: 13px;
+  background: #f8fafc;
+  border-color: #dce4ee;
+  color: #1e293b;
+}
+.inspector .field-note {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #64748b;
+}
+.inspector .settings-section button {
+  margin-bottom: 8px;
+}
+.step[aria-current='step'] {
+  outline: 2px solid #337ab7;
+  outline-offset: -2px;
+}
+.inspector :focus-visible {
+  outline: 3px solid #6ca7d5;
+  outline-offset: 2px;
+}
+@media (min-width: 801px) and (max-width: 1200px) {
+  .workspace {
+    grid-template-columns: 160px minmax(0, 1fr) 260px;
+  }
+  .inspector {
+    padding: 20px 16px;
+  }
+  .canvas-area {
+    padding: 16px;
+    min-width: 0;
+  }
+}
