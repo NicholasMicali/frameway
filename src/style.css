@@ -2846,3 +2846,49 @@ h1 {
 .callout .formatted-body p {
   font-size: inherit;
 }
+
+.clip-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 11px;
+  color: #64748b;
+  margin: 10px 0;
+}
+.clip-summary strong {
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+.time-ruler {
+  position: relative;
+  min-height: 24px;
+}
+.time-ruler span {
+  white-space: nowrap;
+}
+.clip-range,
+.clip-range-label {
+  pointer-events: none;
+}
+.timeline-playhead {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 2px;
+  background: #e05236;
+  pointer-events: none;
+  z-index: 2;
+}
+.timeline-playhead::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 10px;
+  height: 7px;
+  border-radius: 2px;
+  background: #e05236;
+}
+.clip-track {
+  touch-action: none;
+}

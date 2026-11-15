@@ -18,6 +18,7 @@ for (const test of [
   'shortcuts',
   'chapters',
   'appearance',
+  'timeline-navigation',
   'callout-formatting',
   'project-copy',
 ]) {
