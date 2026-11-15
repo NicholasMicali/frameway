@@ -42,6 +42,7 @@ try {
     c.getContext('2d').fillRect(0, 0, 80, 40);
     return c.toDataURL().split(',')[1];
   });
+  await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Company logo', { exact: true }).setInputFiles({
     name: 'logo.png',
     mimeType: 'image/png',
@@ -51,7 +52,10 @@ try {
   const actions = await page.locator('.logo-upload-actions').boundingBox(),
     note = await page.locator('.logo-upload .field-note').boundingBox();
   assert.ok(note.y >= actions.y + actions.height + 5);
+  await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
+  await page.getByText('Project settings', { exact: true }).click();
   await page.getByRole('button', { name: 'Remove logo', exact: true }).click();
+  await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
   assert.equal(await page.locator('.stage .title-logo').count(), 0);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   assert.equal(await page.locator('.stage .title-logo').count(), 1);

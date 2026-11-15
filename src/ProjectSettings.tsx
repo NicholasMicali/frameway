@@ -4,6 +4,8 @@ import { themes, themeVars, type ThemeName } from './themes';
 import { appearanceChoices, appearanceVars, contrastRatio, type Appearance } from './appearance';
 import { TitleSlide } from './TitleSlide';
 import { Icon } from './Icon';
+import { LogoUpload } from './LogoUpload';
+import { prepareLogo } from './branding';
 
 export function ProjectSettings({
   project,
@@ -15,6 +17,9 @@ export function ProjectSettings({
   const menu = useRef<HTMLDetailsElement>(null);
   const [draft, setDraft] = useState(project);
   const [image, setImage] = useState('');
+  const uploadVersion = useRef(0);
+  const [uploading, setUploading] = useState(false);
+  const [logoError, setLogoError] = useState('');
   const intro =
     draft.steps.find((s) => s.kind === 'title') ??
     ({ ...draft.steps[0], kind: 'title', title: draft.title, buttonText: 'Get started' } as Step);
@@ -27,12 +32,16 @@ export function ProjectSettings({
     if (!menu.current?.open) setDraft(project);
   }, [project]);
   const close = () => {
+    uploadVersion.current++;
     menu.current?.removeAttribute('open');
     menu.current?.querySelector('summary')?.focus();
   };
   useEffect(() => {
     const outside = (e: PointerEvent) => {
-      if (!menu.current?.contains(e.target as Node)) menu.current?.removeAttribute('open');
+      if (!menu.current?.contains(e.target as Node)) {
+        uploadVersion.current++;
+        menu.current?.removeAttribute('open');
+      }
     };
     document.addEventListener('pointerdown', outside);
     return () => document.removeEventListener('pointerdown', outside);
@@ -52,7 +61,7 @@ export function ProjectSettings({
     ],
     ['Button text', contrastRatio(palette['--accent-text'], palette['--accent'])],
   ] as const;
-  const snapshot = (p: Project) => JSON.stringify([p.theme, p.customColor, p.appearance]);
+  const snapshot = (p: Project) => JSON.stringify([p.theme, p.customColor, p.appearance, p.logo]);
   return (
     <details
       className="project-settings"
@@ -66,7 +75,12 @@ export function ProjectSettings({
     >
       <summary
         onClick={() => {
-          if (!menu.current?.open) setDraft(project);
+          uploadVersion.current++;
+          if (!menu.current?.open) {
+            setDraft(project);
+            setUploading(false);
+            setLogoError('');
+          }
         }}
       >
         <Icon name="settings" />
@@ -92,6 +106,33 @@ export function ProjectSettings({
             <span className="appearance-button">Continue →</span>
           </div>
         </div>
+        <fieldset>
+          <legend>Brand logo</legend>
+          <LogoUpload
+            logo={draft.logo}
+            disabled={uploading}
+            onRemove={() => setDraft((current) => ({ ...current, logo: undefined }))}
+            onUpload={async (file) => {
+              const version = ++uploadVersion.current;
+              setUploading(true);
+              setLogoError('');
+              try {
+                const logo = await prepareLogo(file);
+                if (version === uploadVersion.current && menu.current?.open)
+                  setDraft((current) => ({ ...current, logo }));
+              } catch (error) {
+                if (version === uploadVersion.current)
+                  setLogoError(
+                    error instanceof Error ? error.message : 'Could not read this logo.',
+                  );
+              } finally {
+                if (version === uploadVersion.current) setUploading(false);
+              }
+            }}
+          />
+          {uploading && <p role="status">Preparing logo…</p>}
+          {logoError && <p role="alert">{logoError}</p>}
+        </fieldset>
         <fieldset>
           <legend>Colors</legend>
           <label className="theme-picker">
@@ -213,8 +254,8 @@ export function ProjectSettings({
             />
           </label>
           <p>
-            Logo size and alignment apply to title slides only. Upload your logo in the title
-            slide’s Appearance section. Fonts use this device’s installed system fonts.
+            Logo size and alignment apply to title slides only. Fonts use this device’s installed
+            system fonts.
           </p>
         </fieldset>
         <div className="appearance-actions">
@@ -228,10 +269,12 @@ export function ProjectSettings({
           <button onClick={close}>Cancel</button>
           <button
             className="primary"
+            disabled={uploading}
             onClick={() => {
               if (snapshot(draft) !== snapshot(project))
                 onChange({
                   ...project,
+                  logo: draft.logo,
                   appearance: draft.appearance,
                   theme: draft.theme,
                   customColor: draft.customColor,

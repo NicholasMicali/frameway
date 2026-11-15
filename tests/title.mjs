@@ -31,11 +31,14 @@ try {
     x.fillText('TEST CO', 15, 40);
     return c.toDataURL('image/png').split(',')[1];
   });
+  await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Company logo', { exact: true }).setInputFiles({
     name: 'logo.png',
     mimeType: 'image/png',
     buffer: Buffer.from(logoBase64, 'base64'),
   });
+  await page.locator('.appearance-preview .title-logo').waitFor();
+  await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
   await page.locator('.stage .title-logo').waitFor();
   await page.getByText('Project settings', { exact: true }).click();
   await page.getByLabel('Color theme').selectOption('custom');

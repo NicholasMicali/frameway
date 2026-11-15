@@ -2743,7 +2743,9 @@ h1 {
   font-size: 12px;
   color: #475569;
 }
-.appearance-panel select {
+.project-settings .appearance-panel select {
+  display: block;
+  min-width: 0;
   max-width: 60%;
   padding: 8px;
   border-radius: 6px;

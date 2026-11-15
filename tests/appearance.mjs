@@ -20,11 +20,30 @@ try {
     .locator('.app')
     .evaluate((e) => getComputedStyle(e).getPropertyValue('--accent'));
   await open();
+  const logo = await page.evaluate(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 80;
+    canvas.height = 40;
+    canvas.getContext('2d').fillRect(0, 0, 80, 40);
+    return canvas.toDataURL().split(',')[1];
+  });
+  const uploadLogo = () =>
+    page.getByLabel('Company logo', { exact: true }).setInputFiles({
+      name: 'logo.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from(logo, 'base64'),
+    });
+  await uploadLogo();
+  await page.locator('.appearance-preview .title-logo').waitFor();
+  assert.equal(await page.locator('.stage .title-logo').count(), 0);
   await page.getByLabel('Card text', { exact: true }).fill('#ffffff');
   await page.getByText(/Card text: 1.0:1 — low contrast/).waitFor();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   assert.equal(await page.getByRole('button', { name: 'Undo', exact: true }).isDisabled(), true);
   await open();
+  assert.equal(await page.locator('.appearance-preview .title-logo').count(), 0);
+  await uploadLogo();
+  await page.locator('.appearance-preview .title-logo').waitFor();
   assert.equal(await page.getByLabel('Card text', { exact: true }).inputValue(), '#111111');
   await page.getByLabel('Card background', { exact: true }).fill('#17202e');
   await page.getByLabel('Card text', { exact: true }).fill('#ffffff');
@@ -37,6 +56,7 @@ try {
   await page.getByLabel('Logo alignment', { exact: true }).selectOption('center');
   await page.getByLabel('Title logo size', { exact: true }).fill('8');
   await page.locator('.appearance-panel').evaluate((e) => (e.scrollTop = 0));
+  assert.ok((await page.locator('.appearance-title .title-copy').boundingBox()).height > 0);
   await page.screenshot({ path: 'test-results/appearance/draft.png', fullPage: true });
   await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
   assert.equal(
@@ -54,6 +74,7 @@ try {
   await page.getByText('Saved locally', { exact: true }).waitFor();
   await page.reload();
   await page.locator('.stage .title-layout-centered').waitFor();
+  await page.locator('.stage .title-logo').waitFor();
   await page.locator('.step-list .step').nth(2).click();
   assert.equal(
     await page.locator('.callout p').evaluate((e) => getComputedStyle(e).color),
@@ -66,12 +87,26 @@ try {
   await page.screenshot({ path: 'test-results/appearance/card.png', fullPage: true });
   await page.setViewportSize({ width: 1024, height: 600 });
   await open();
+  for (const label of [
+    'Title layout',
+    'Font family',
+    'Card typography',
+    'Button shape',
+    'Logo alignment',
+  ]) {
+    const control = page.getByLabel(label, { exact: true });
+    assert.equal(await control.isVisible(), true, `${label} must remain visible on narrow screens`);
+    await control.click();
+    await page.keyboard.press('Enter');
+  }
   await page.locator('.appearance-panel').evaluate((e) => (e.scrollTop = e.scrollHeight));
+  await page.screenshot({ path: 'test-results/appearance/layout-controls.png' });
   const actions = await page.locator('.appearance-actions').boundingBox();
   assert.ok(actions.y >= 0 && actions.y + actions.height <= 600);
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   await page.setViewportSize({ width: 390, height: 844 });
   await open();
+  assert.equal(await page.getByLabel('Title layout', { exact: true }).isVisible(), true);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await page.getByRole('button', { name: 'Reset appearance', exact: true }).click();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
@@ -102,6 +137,7 @@ try {
     await viewer.context().setOffline(true);
     await viewer.goto(pathToFileURL(path.join(folder, 'index.html')).href);
     assert.equal(await viewer.locator('.title-preview').isVisible(), false);
+    await viewer.locator('.title-logo').waitFor();
     assert.equal(
       await viewer.locator('.title-slide').evaluate((e) => getComputedStyle(e).backgroundColor),
       'rgb(237, 247, 255)',

@@ -33,8 +33,6 @@ import './title-slide.css';
 import { TitleSlide } from './TitleSlide';
 import { themeVars } from './themes';
 import { ProjectSettings } from './ProjectSettings';
-import { LogoUpload } from './LogoUpload';
-import { prepareLogo } from './branding';
 import { automaticZoom, areaZoomVars } from './area-zoom';
 import './area-zoom.css';
 import { zoomOut } from './zoom-out';
@@ -1421,20 +1419,6 @@ function App() {
                 {step.kind !== 'video' && (
                   <fieldset className="settings-section">
                     <legend>Appearance</legend>
-                    {step.kind === 'title' && (
-                      <>
-                        <LogoUpload
-                          logo={project.logo}
-                          disabled={!!busy}
-                          onRemove={() => update({ ...project, logo: undefined })}
-                          onUpload={(file) =>
-                            void task('Preparing logo…', async () =>
-                              update({ ...project, logo: await prepareLogo(file) }),
-                            )
-                          }
-                        />
-                      </>
-                    )}
                     {step.kind === 'image' && (
                       <>
                         <label>
@@ -1500,7 +1484,7 @@ function App() {
                     )}
                     <p className="field-note">
                       {step.kind === 'image' ? 'Drag the card on the canvas to position it. ' : ''}
-                      Project settings control shared colors and styling.
+                      Project settings control your logo, shared colors, and styling.
                     </p>
                   </fieldset>
                 )}
