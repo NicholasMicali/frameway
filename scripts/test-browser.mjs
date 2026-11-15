@@ -3,6 +3,8 @@ import { mkdir } from 'node:fs/promises';
 await mkdir('test-results', { recursive: true });
 for (const test of [
   'extension-popup',
+  'pause-worker',
+  'pause-resume',
   'e2e',
   'recording',
   'editor',

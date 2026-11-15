@@ -1,3 +1,5 @@
+const pauseButton = document.querySelector<HTMLButtonElement>('#pause')!;
+let paused = false;
 export {};
 const record = document.querySelector<HTMLButtonElement>('#record')!;
 const label = document.querySelector<HTMLElement>('#record-label')!;
@@ -11,24 +13,39 @@ function showError(e: unknown) {
 }
 async function refresh() {
   const capture = (await chrome.storage.session.get('capture')).capture as
-    { state: 'starting' | 'recording' | 'stopping' } | undefined;
+    | { state: 'starting' | 'recording' | 'pausing' | 'paused' | 'resuming' | 'stopping' }
+    | undefined;
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  recording = capture?.state === 'recording';
+  paused = capture?.state === 'paused';
+  recording = capture?.state === 'recording' || paused;
   const transitioning = capture && !recording;
+  pauseButton.hidden = !capture || capture.state === 'starting' || capture.state === 'stopping';
+  pauseButton.disabled = busy || !!transitioning;
+  pauseButton.textContent = paused
+    ? 'Resume recording'
+    : capture?.state === 'pausing'
+      ? 'Pausing…'
+      : capture?.state === 'resuming'
+        ? 'Resuming…'
+        : 'Pause recording';
   const supported = !!tab?.url && /^https?:\/\//.test(tab.url);
   label.textContent = recording
-    ? 'Stop recording'
+    ? 'Finish recording'
     : transitioning
       ? capture.state === 'starting'
         ? 'Starting…'
-        : 'Finishing…'
+        : capture.state === 'stopping'
+          ? 'Finishing…'
+          : 'Please wait…'
       : 'Record this tab';
   document.querySelector('#record-icon')!.textContent = recording ? '■' : '●';
   record.dataset.recording = String(recording);
   record.disabled = busy || !!transitioning || (!capture && !supported);
   status.textContent = capture
     ? recording
-      ? 'Recording in progress. Stop to open the editor.'
+      ? paused
+        ? 'Paused. Video and clicks are not being added. Resume when ready, or finish to open the editor.'
+        : 'Recording video and clicks. Pause to prepare your next step.'
       : 'Please wait while your recording is prepared.'
     : supported
       ? 'Capture this tab’s video and clicks.'
@@ -37,6 +54,7 @@ async function refresh() {
 record.addEventListener('click', async () => {
   busy = true;
   record.disabled = true;
+  pauseButton.disabled = true;
   error.hidden = true;
   try {
     const result = await chrome.runtime.sendMessage({
@@ -64,3 +82,23 @@ chrome.storage.onChanged.addListener((_changes, area) => {
   if (area === 'session') void refresh().catch(showError);
 });
 void refresh().catch(showError);
+
+pauseButton.addEventListener('click', async () => {
+  busy = true;
+  record.disabled = true;
+  pauseButton.disabled = true;
+  error.hidden = true;
+  try {
+    const result = await chrome.runtime.sendMessage({
+      to: 'worker',
+      type: paused ? 'resume-capture' : 'pause-capture',
+    });
+    if (!result?.ok) throw Error(result?.error || 'Could not update recording.');
+    window.close();
+  } catch (e) {
+    showError(e);
+  } finally {
+    busy = false;
+    await refresh().catch(showError);
+  }
+});
