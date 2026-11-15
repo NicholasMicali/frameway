@@ -1,3 +1,4 @@
+import { formattedText, safeActionURL } from '../src/formatted-text';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -350,4 +351,22 @@ test('appearance defaults preserve old projects and validated styling survives b
   };
   validateManifest(p);
   assert.deepEqual((await importProject(await exportProject(p))).appearance, p.appearance);
+});
+
+test('basic formatting escapes HTML and permits only explicit web actions', () => {
+  assert.equal(formattedText('**literal**'), '<p>**literal**</p>');
+  assert.equal(
+    formattedText('**Bold** and *italic*\n- First\n- Second\n1. Ordered', true),
+    '<p><strong>Bold</strong> and <em>italic</em></p><ul><li>First</li><li>Second</li></ul><ol><li>Ordered</li></ol>',
+  );
+  assert.ok(!formattedText('<img src=x onerror=alert(1)>', true).includes('<img'));
+  for (const url of [
+    'javascript:alert(1)',
+    'data:text/html,x',
+    'file:///tmp/x',
+    '//example.com',
+    'https://user:pass@example.com',
+  ])
+    assert.equal(safeActionURL(url), false);
+  assert.equal(safeActionURL('https://example.com/docs?a=1'), true);
 });

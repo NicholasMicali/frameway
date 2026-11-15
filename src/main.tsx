@@ -1,3 +1,6 @@
+import { BodyEditor } from './BodyEditor';
+import { formattedText, safeActionURL } from './formatted-text';
+import './formatted-text.css';
 import { appearanceVars, type Appearance } from './appearance';
 import { ContentsMenu } from './ContentsMenu';
 import { ShortcutHelp } from './ShortcutHelp';
@@ -1167,7 +1170,23 @@ function App() {
                             <span>{preview ? '✦' : '⠿'}</span>
                           </div>
                           <h3>{step.title}</h3>
-                          <p>{step.body}</p>
+                          <div
+                            className="formatted-body"
+                            dangerouslySetInnerHTML={{
+                              __html: formattedText(step.body, step.bodyFormat === 'basic'),
+                            }}
+                          />
+                          {step.actionUrl && safeActionURL(step.actionUrl) && (
+                            <a
+                              className="callout-action"
+                              href={step.actionUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onPointerDown={(e) => e.stopPropagation()}
+                            >
+                              {step.actionLabel || 'Learn more'} ↗
+                            </a>
+                          )}
                           {preview ? (
                             <button
                               className="card-next"
@@ -1360,18 +1379,7 @@ function App() {
                   )}
                   {step.kind === 'image' && (
                     <>
-                      <label>
-                        A little context
-                        <textarea
-                          aria-label="Callout body"
-                          value={step.body}
-                          maxLength={5000}
-                          onChange={(e) => patch({ body: e.target.value })}
-                        />
-                      </label>
-                      <div className="field-note">
-                        Keep it short. Let the product do the talking.
-                      </div>
+                      <BodyEditor key={step.id} step={step} onPatch={patch} />
                     </>
                   )}
                   {step.kind === 'video' && (
