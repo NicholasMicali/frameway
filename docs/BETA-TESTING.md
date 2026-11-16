@@ -1,6 +1,6 @@
 # Try Frameway and report feedback
 
-Download the extension ZIP from the [v0.2.0 beta release](https://github.com/NicholasMicali/frameway/releases/tag/v0.2.0), extract it to a folder you will keep, then use Chrome → Extensions → Developer mode → Load unpacked to select the folder containing `manifest.json`. [The README](../README.md) also explains building from source. The goal is to create a walkthrough you would actually send to a colleague or customer. Start with approved dummy data: the repository and its GitHub issues are public.
+Download the extension ZIP from the [v0.3.0 beta release](https://github.com/NicholasMicali/frameway/releases/tag/v0.3.0), extract it to a folder you will keep, then use Chrome → Extensions → Developer mode → Load unpacked to select the folder containing `manifest.json`. [The README](../README.md) also explains building from source. The goal is to create a walkthrough you would actually send to a colleague or customer. Start with approved dummy data: the repository and its GitHub issues are public.
 
 ## A short test session
 
