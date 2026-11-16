@@ -1,3 +1,4 @@
+import { RecordingClock } from '../src/recording-clock';
 import { formattedText, safeActionURL } from '../src/formatted-text';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -369,4 +370,21 @@ test('basic formatting escapes HTML and permits only explicit web actions', () =
   ])
     assert.equal(safeActionURL(url), false);
   assert.equal(safeActionURL('https://example.com/docs?a=1'), true);
+});
+
+test('recording clock excludes repeated pauses and rejects delayed paused clicks', () => {
+  const clock = new RecordingClock(1000);
+  assert.equal(clock.time(900), undefined);
+  clock.pause(2000);
+  assert.equal(clock.duration(5000), 1);
+  clock.resume(5000);
+  assert.equal(clock.time(3000), undefined);
+  assert.equal(clock.time(5100), 1.1);
+  clock.pause(6000);
+  clock.pause(6500);
+  assert.equal(clock.duration(8000), 2);
+  clock.resume(9000);
+  assert.equal(clock.time(7000), undefined);
+  assert.equal(clock.time(9500), 2.5);
+  assert.equal(clock.duration(10000), 3);
 });

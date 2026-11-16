@@ -1,9 +1,10 @@
+import { RecordingClock } from '../src/recording-clock';
 import { put } from '../src/db';
 import { normalizedPoint, type Marker } from '../src/model';
 let recorder: MediaRecorder | undefined,
   stream: MediaStream | undefined,
   active: any,
-  epoch = 0,
+  clock = new RecordingClock(0),
   index = 0,
   markers: Marker[] = [],
   writes = Promise.resolve(),
@@ -12,7 +13,7 @@ let recorder: MediaRecorder | undefined,
 function enqueue(fn: () => Promise<void>) {
   writes = writes.then(fn).catch((e) => {
     failure = String(e);
-    if (recorder?.state === 'recording') recorder.stop();
+    if (recorder && recorder.state !== 'inactive') recorder.stop();
   });
 }
 async function start(m: any) {
@@ -63,7 +64,7 @@ async function start(m: any) {
     failure = 'MediaRecorder failed';
   };
   recorder.onstop = async () => {
-    const duration = (performance.timeOrigin + performance.now() - epoch) / 1000;
+    const duration = clock.duration(performance.timeOrigin + performance.now());
     stream?.getTracks().forEach((t) => t.stop());
     await writes;
     try {
@@ -91,14 +92,49 @@ async function start(m: any) {
   };
   stream.getVideoTracks()[0].onended = () => {
     warning = 'Sharing stopped. Review the last step.';
-    if (recorder?.state === 'recording') recorder.stop();
+    if (recorder && recorder.state !== 'inactive') recorder.stop();
   };
   await new Promise<void>((resolve) => {
     recorder!.onstart = () => {
-      epoch = performance.timeOrigin + performance.now();
+      clock = new RecordingClock(performance.timeOrigin + performance.now());
       resolve();
     };
     recorder!.start(1000);
+  });
+  return { ok: true };
+}
+async function changeState(type: 'pause' | 'resume') {
+  const current = recorder;
+  if (!current || current.state !== (type === 'pause' ? 'recording' : 'paused'))
+    throw Error('Recording is not ready for this action. Reopen the recording menu.');
+  await new Promise<void>((resolve, reject) => {
+    const cleanup = () => {
+      clearTimeout(timer);
+      current.removeEventListener(type, done);
+      current.removeEventListener('stop', ended);
+      current.removeEventListener('error', ended);
+    };
+    const done = () => {
+      cleanup();
+      const now = performance.timeOrigin + performance.now();
+      if (type === 'pause') clock.pause(now);
+      else clock.resume(now);
+      resolve();
+    };
+    const ended = () => {
+      cleanup();
+      reject(Error('Recording ended before the action completed.'));
+    };
+    const timer = setTimeout(ended, 5000);
+    current.addEventListener(type, done);
+    current.addEventListener('stop', ended);
+    current.addEventListener('error', ended);
+    try {
+      current[type]();
+    } catch (error) {
+      cleanup();
+      reject(error);
+    }
   });
   return { ok: true };
 }
@@ -106,18 +142,21 @@ chrome.runtime.onMessage.addListener((m, _sender, reply) => {
   if (m.to !== 'recorder') return;
   (async () => {
     if (m.type === 'start') return start(m);
+    if (m.type === 'pause' || m.type === 'resume') return changeState(m.type);
     if (m.type === 'stop') {
       warning = m.reason || warning;
-      if (recorder?.state === 'recording') recorder.stop();
+      if (recorder && recorder.state !== 'inactive') recorder.stop();
       else if (!recorder) throw Error('No active recorder');
       return { ok: true };
     }
     if (m.type === 'marker' && recorder?.state === 'recording') {
+      const time = clock.time(m.epoch);
+      if (time === undefined || !Number.isFinite(time)) return { ok: false };
       const received = performance.timeOrigin + performance.now();
       const p = normalizedPoint(m.x, m.y, m.width, m.height);
       markers.push({
         id: crypto.randomUUID(),
-        time: Math.max(0, (m.epoch - epoch) / 1000),
+        time,
         ...p,
         label: m.label,
         viewportWidth: m.width,
@@ -129,7 +168,7 @@ chrome.runtime.onMessage.addListener((m, _sender, reply) => {
     }
     return { ok: false };
   })().then(reply, (e) => {
-    stream?.getTracks().forEach((t) => t.stop());
+    if (m.type === 'start') stream?.getTracks().forEach((t) => t.stop());
     reply({ ok: false, error: String(e) });
   });
   return true;

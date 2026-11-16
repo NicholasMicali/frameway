@@ -76,3 +76,10 @@ small {
   color: #aa253c;
   margin-top: 12px;
 }
+
+[hidden] {
+  display: none !important;
+}
+#pause {
+  margin-top: 8px;
+}

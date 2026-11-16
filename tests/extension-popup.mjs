@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 const browser = await chromium.launch({ headless: true });
 try {
-  const page = await browser.newPage();
-  const html = await readFile('dist/popup.html', 'utf8');
+  const page = await browser.newPage({ viewport: { width: 360, height: 450 } });
+  await mkdir('test-results/pause', { recursive: true });
+  const html = (await readFile('dist/popup.html', 'utf8')).replace(
+    'icons/frameway-48.png',
+    `data:image/png;base64,${(await readFile('dist/icons/frameway-48.png')).toString('base64')}`,
+  );
   const script = await readFile('dist/popup.js', 'utf8');
   async function scenario(state, url = 'https://example.com', failure = false) {
     await page.goto('about:blank');
@@ -33,6 +37,7 @@ try {
       },
       { state, url, failure },
     );
+    await page.addStyleTag({ content: await readFile('dist/popup.css', 'utf8') });
     await page.addScriptTag({ content: script });
     await page.waitForFunction(
       () => document.querySelector('#record-label').textContent !== 'Loading…',
@@ -49,10 +54,26 @@ try {
   await page.locator('#record').click();
   assert.equal((await page.evaluate(() => window.calls))[0].type, 'start-capture');
   await scenario('recording', 'chrome://extensions');
-  assert.equal(await page.locator('#record-label').textContent(), 'Stop recording');
+  assert.equal(await page.locator('#record-label').textContent(), 'Finish recording');
   await page.locator('#record').click();
   assert.equal((await page.evaluate(() => window.calls))[0].type, 'stop-capture');
-  for (const state of ['starting', 'stopping']) {
+  await scenario('recording');
+  await page.screenshot({ path: 'test-results/pause/recording.png' });
+  await page.getByRole('button', { name: 'Pause recording', exact: true }).click();
+  assert.equal((await page.evaluate(() => window.calls))[0].type, 'pause-capture');
+  await scenario('paused');
+  await page.screenshot({ path: 'test-results/pause/paused.png' });
+  assert.equal(await page.locator('#record-label').textContent(), 'Finish recording');
+  await page.getByRole('button', { name: 'Resume recording', exact: true }).click();
+  assert.equal((await page.evaluate(() => window.calls))[0].type, 'resume-capture');
+  await scenario('paused');
+  await page.locator('#record').click();
+  assert.equal((await page.evaluate(() => window.calls))[0].type, 'stop-capture');
+  await scenario('recording', 'https://example.com', true);
+  await page.locator('#pause').click();
+  assert.match(await page.locator('#error').textContent(), /Capture failed/);
+  assert.equal(await page.locator('#pause').isEnabled(), true);
+  for (const state of ['starting', 'stopping', 'pausing', 'resuming']) {
     await scenario(state);
     assert.equal(await page.locator('#record').isDisabled(), true);
     assert.equal(await page.locator('#open').isEnabled(), true);

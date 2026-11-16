@@ -1,9 +1,10 @@
+let controlBusy = false;
 type Session = {
   id: string;
   tabId: number;
   origin: string;
   title: string;
-  state: 'starting' | 'recording' | 'stopping';
+  state: 'starting' | 'recording' | 'pausing' | 'paused' | 'resuming' | 'stopping';
 };
 const session = async () =>
   (await chrome.storage.session.get('capture')).capture as Session | undefined;
@@ -72,7 +73,7 @@ async function fail(e: unknown) {
 chrome.tabs.onUpdated.addListener((id, info, tab) => {
   (async () => {
     const s = await session();
-    if (!s || s.tabId !== id || s.state !== 'recording') return;
+    if (!s || s.tabId !== id || s.state === 'starting' || s.state === 'stopping') return;
     if (info.url && new URL(info.url).origin !== s.origin) {
       await stop('Recording ended at an origin change. Review the final step.');
       return;
@@ -92,20 +93,52 @@ chrome.tabs.onRemoved.addListener((id) => {
 chrome.runtime.onMessage.addListener((m, sender, reply) => {
   if (m.to !== 'worker') return;
   (async () => {
-    if (m.type === 'start-capture' || m.type === 'stop-capture') {
+    if (['start-capture', 'stop-capture', 'pause-capture', 'resume-capture'].includes(m.type)) {
       if (sender.url !== chrome.runtime.getURL('popup.html')) return { ok: false };
-      const current = await session();
-      if (m.type === 'start-capture') {
-        if (current) return { ok: false, error: 'A recording is already in progress.' };
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (!tab) return { ok: false, error: 'Open a web page before recording.' };
-        await start(tab);
-      } else {
-        if (current?.state !== 'recording')
-          return { ok: false, error: 'Recording is not ready to stop.' };
-        await stop();
+      if (controlBusy) return { ok: false, error: 'Recording is busy. Please try again.' };
+      controlBusy = true;
+      try {
+        const current = await session();
+        if (m.type === 'start-capture') {
+          if (current) return { ok: false, error: 'A recording is already in progress.' };
+          const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          if (!tab) return { ok: false, error: 'Open a web page before recording.' };
+          await start(tab);
+        } else if (m.type === 'pause-capture' || m.type === 'resume-capture') {
+          const pausing = m.type === 'pause-capture';
+          if (!current || current.state !== (pausing ? 'recording' : 'paused'))
+            return { ok: false, error: 'Recording is busy. Please try again.' };
+          await chrome.storage.session.set({
+            capture: { ...current, state: pausing ? 'pausing' : 'resuming' },
+          });
+          try {
+            const response = await chrome.runtime.sendMessage({
+              to: 'recorder',
+              type: pausing ? 'pause' : 'resume',
+            });
+            if (!response?.ok) throw Error(response?.error || 'Could not update recording');
+            const latest = await session();
+            if (latest?.id === current.id && latest.state !== 'stopping') {
+              await chrome.storage.session.set({
+                capture: { ...current, state: pausing ? 'paused' : 'recording' },
+              });
+              await badge(pausing ? 'Ⅱ' : 'REC', pausing ? '#b7791f' : '#1685e6');
+            }
+          } catch (error) {
+            const latest = await session();
+            if (latest?.id === current.id && latest.state !== 'stopping')
+              await chrome.storage.session.set({ capture: current });
+            throw error;
+          }
+        } else {
+          if (current?.state !== 'recording' && current?.state !== 'paused')
+            return { ok: false, error: 'Recording is not ready to stop.' };
+          await stop();
+        }
+        return { ok: true };
+      } finally {
+        controlBusy = false;
       }
-      return { ok: true };
     }
     if (m.type === 'marker') {
       const s = await session();
