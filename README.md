@@ -134,7 +134,7 @@ Creates `release/frameway-extension-v0.3.0.zip`, with `manifest.json` at its roo
 
 GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `v0.3.0` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
 
-Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. Version 0.3.0 beta is prepared for release; see [Releases](https://github.com/NicholasMicali/frameway/releases) for currently published packages. See [open issues](https://github.com/NicholasMicali/frameway/issues) for planned improvements.
+Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. Download the packaged [v0.3.0 beta](https://github.com/NicholasMicali/frameway/releases/tag/v0.3.0) from Releases. See [open issues](https://github.com/NicholasMicali/frameway/issues) for planned improvements.
 
 ## Research notes
 

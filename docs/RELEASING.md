@@ -1,6 +1,6 @@
 # Release preparation
 
-The next prepared beta is v0.3.0; it is not published yet. The current published beta is [v0.2.0](https://github.com/NicholasMicali/frameway/releases/tag/v0.2.0). Source is published at [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). Each new packaged release requires a separate maintainer decision; track validation in [TODO.md](../TODO.md).
+The current release version is [v0.3.0 beta](https://github.com/NicholasMicali/frameway/releases/tag/v0.3.0). Source is published at [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). Each new packaged release requires a separate maintainer decision; track validation in [TODO.md](../TODO.md).
 
 1. The repository is public and the source uses Apache-2.0; `private: true` prevents npm publication, not GitHub visibility.
 2. Review the prospective commit files (`git ls-files --cached --others --exclude-standard`). Keep recordings, private research captures, profiles, `.env` files, dependencies, and build artifacts out of Git.
