@@ -5,8 +5,6 @@ import { appearanceVars, type Appearance } from './appearance';
 import { ContentsMenu } from './ContentsMenu';
 import { ShortcutHelp } from './ShortcutHelp';
 import { ProjectNavigation, WorkspaceOptions } from './HeaderMenus';
-import { Disclosure } from './Disclosure';
-import { ProjectLibrary } from './ProjectLibrary';
 import { StorageManager } from './StorageManager';
 import { revision, saveFailure, storageSummary } from './storage-health';
 import React, { useEffect, useRef, useState } from 'react';
@@ -29,8 +27,12 @@ import {
 import { createProject, eventOnce, fixDuration, frameAt, openVideo, releaseVideo } from './media';
 import { exportName } from './export-name';
 import { download, exportProject, importProject } from './archive';
+import './styles/tokens.css';
 import './style.css';
-import { HomeIntro, UseCases } from './HomeIntro';
+import './ui/controls.css';
+import { Button } from './ui/Button';
+import { Tooltip } from './ui/Tooltip';
+import { HomePage } from './HomePage';
 import packageInfo from '../package.json';
 import './title-slide.css';
 import { TitleSlide } from './TitleSlide';
@@ -680,18 +682,20 @@ function App() {
           <span className="save-state" role="status">
             {saved}
           </span>
-          <button
-            className={project ? 'primary' : ''}
-            disabled={!!busy}
-            onClick={() =>
-              task('Preparing recorder…', async () => {
-                if (project) await persist(project);
-                setRecording(true);
-              })
-            }
-          >
-            Record screen
-          </button>
+          <Tooltip label="Capture a window or screen; add screenshot steps in the editor">
+            <Button
+              variant="ghost"
+              disabled={!!busy}
+              onClick={() =>
+                task('Preparing recorder…', async () => {
+                  if (project) await persist(project);
+                  setRecording(true);
+                })
+              }
+            >
+              Record screen
+            </Button>
+          </Tooltip>
           <WorkspaceOptions
             busy={!!busy}
             onShortcuts={() => setShortcutsOpen(true)}
@@ -795,86 +799,30 @@ function App() {
         <ScreenRecorder onClose={() => setRecording(false)} onComplete={finishRecording} />
       )}
       {!project ? (
-        <main className="welcome home-page">
-          <div className="home-heading">
-            <div>
-              <div className="eyebrow">WELCOME TO FRAMEWAY</div>
-              <h1>
-                {projects.length
-                  ? 'Pick up where you left off.'
-                  : 'Show a workflow. Let people try it.'}
-              </h1>
-              <p>
-                {projects.length
-                  ? 'Open a project below, or start a new recording from the Frameway toolbar icon.'
-                  : 'Record your screen, edit the steps, and share a walkthrough anyone can open.'}
-              </p>
-            </div>
-          </div>
-          <div className={`home-workspace ${projects.length ? 'has-projects' : ''}`}>
-            {!projects.length && (
-              <HomeIntro onRecord={() => setRecording(true)} returning={false} />
-            )}
-            <ProjectLibrary
-              projects={projects}
-              busy={!!busy}
-              onOpen={choose}
-              onBackup={backup}
-              onCopy={makeCopy}
-              onRename={async (p, title) => {
-                if (title === p.title) return;
-                await persist({
-                  ...p,
-                  title,
-                  localEditedAt: Date.now(),
-                  localRevision: crypto.randomUUID(),
-                });
-              }}
-              onDelete={(p) => {
-                void task('Deleting project…', async () => {
-                  await deleteProject(p.id);
-                  await refresh();
-                });
-              }}
-              thumbnail={(p) => <Thumb step={p.steps[0]} logo={p.logo} appearance={p.appearance} />}
-            />
-            {!!projects.length && <HomeIntro onRecord={() => setRecording(true)} returning />}
-          </div>
-          <div className="home-help">
-            <Disclosure
-              title="Ideas for your next walkthrough"
-              description="Product demos, training, support, and more."
-            >
-              <UseCases />
-            </Disclosure>
-            <Disclosure
-              title="Keeping your work safe"
-              description="Projects are saved on this device. Back them up to keep a copy."
-            >
-              <p>
-                Use Export backup on a project to save an editable ZIP. Import that backup to
-                restore your work or move it to another computer. Keep a backup before removing or
-                reinstalling Frameway.
-              </p>
-            </Disclosure>
-            {location.protocol !== 'chrome-extension:' && (
-              <Disclosure
-                title="Can’t find a recording?"
-                description="Open Frameway from Chrome’s toolbar to find extension recordings."
-              >
-                <p>
-                  This is the local development app. To find walkthroughs recorded with the Chrome
-                  extension, click the Frameway icon in Chrome and choose Open Frameway. Opening a
-                  project here does not switch apps.
-                </p>
-                <p>
-                  To bring a project here, export its project backup there, then choose Options →
-                  Import project backup.
-                </p>
-              </Disclosure>
-            )}
-          </div>
-        </main>
+        <HomePage
+          projects={projects}
+          busy={!!busy}
+          onRecord={() => setRecording(true)}
+          onOpen={choose}
+          onBackup={backup}
+          onCopy={makeCopy}
+          onRename={async (p, title) => {
+            if (title === p.title) return;
+            await persist({
+              ...p,
+              title,
+              localEditedAt: Date.now(),
+              localRevision: crypto.randomUUID(),
+            });
+          }}
+          onDelete={(p) => {
+            void task('Deleting project…', async () => {
+              await deleteProject(p.id);
+              await refresh();
+            });
+          }}
+          thumbnail={(p) => <Thumb step={p.steps[0]} logo={p.logo} appearance={p.appearance} />}
+        />
       ) : (
         <>
           <div className="toolbar">

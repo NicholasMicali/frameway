@@ -1,11 +1,5 @@
+import type { CaptureSession as Session } from './protocol';
 let controlBusy = false;
-type Session = {
-  id: string;
-  tabId: number;
-  origin: string;
-  title: string;
-  state: 'starting' | 'recording' | 'pausing' | 'paused' | 'resuming' | 'stopping';
-};
 const session = async () =>
   (await chrome.storage.session.get('capture')).capture as Session | undefined;
 async function badge(text: string, color = '#1685e6') {

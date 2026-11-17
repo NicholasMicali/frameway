@@ -49,7 +49,7 @@ try {
   await exportBackup();
   await saved();
   await page.getByLabel('Workspace options', { exact: true }).click();
-  await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Storage & backups', exact: true }).click();
   await page
     .getByRole('dialog')
     .getByText('Backup exported for these edits', { exact: false })
@@ -58,7 +58,7 @@ try {
   await page.getByLabel('Walkthrough title').fill('Changed after backup');
   await saved();
   await page.getByLabel('Workspace options', { exact: true }).click();
-  await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Storage & backups', exact: true }).click();
   await page
     .getByRole('dialog')
     .getByText(/Changed since last backup export/)
@@ -70,7 +70,7 @@ try {
   await page.getByLabel('Callout headline').waitFor();
   await saved();
   await page.getByLabel('Workspace options', { exact: true }).click();
-  await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Storage & backups', exact: true }).click();
   await page
     .getByRole('dialog')
     .getByText(/Backup exported for these edits/)
@@ -120,7 +120,7 @@ try {
     await put('chunks', new Blob(['sample']), 'completed-test:0');
   });
   await page.getByLabel('Workspace options', { exact: true }).click();
-  await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Storage & backups', exact: true }).click();
   await page.screenshot({ path: 'test-results/storage-manager.png' });
   await page.getByRole('button', { name: 'Delete project', exact: true }).click();
   assert.equal((await stored()).length, 1);
@@ -146,7 +146,7 @@ try {
   });
   await other.goto('http://127.0.0.1:4185');
   await other.getByLabel('Workspace options', { exact: true }).click();
-  await other.getByRole('button', { name: 'Storage & backups', exact: true }).click();
+  await other.getByRole('menuitem', { name: 'Storage & backups', exact: true }).click();
   await other
     .getByRole('dialog')
     .getByText('Browser storage estimate unavailable', { exact: true })

@@ -11,7 +11,12 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 const openHelp = async () => {
   await page.getByLabel('Workspace options', { exact: true }).focus();
   await page.keyboard.press('Enter');
-  await page.getByRole('button', { name: 'Keyboard shortcuts', exact: true }).focus();
+  await page.getByRole('menuitem', { name: 'Storage & backups', exact: true }).waitFor();
+  await page.waitForFunction(() => document.activeElement?.getAttribute('role') === 'menuitem');
+  await page.keyboard.press('End');
+  await page.waitForFunction(
+    () => document.activeElement?.getAttribute('aria-label') === 'Keyboard shortcuts',
+  );
   await page.keyboard.press('Enter');
   await page.getByRole('dialog', { name: 'Keyboard shortcuts' }).waitFor();
 };

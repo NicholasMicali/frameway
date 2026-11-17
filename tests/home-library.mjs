@@ -108,17 +108,17 @@ try {
     () => document.querySelector('[aria-label="Walkthrough title"]').value === 'Support revised',
   );
   await page.getByLabel('Workspace options', { exact: true }).click();
-  const bounds = await page.locator('.workspace-options .header-menu-panel').boundingBox();
+  const bounds = await page.getByRole('menu', { name: 'Workspace options' }).boundingBox();
   assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= 390);
   assert.equal(
-    await page.getByRole('button', { name: 'Import project backup', exact: true }).isVisible(),
+    await page.getByRole('menuitem', { name: 'Import project backup', exact: true }).isVisible(),
     true,
   );
   await page.screenshot({ path: 'test-results/header-mobile.png', fullPage: true });
   await page.keyboard.press('Escape');
-  assert.equal(await page.locator('.workspace-options[open]').count(), 0);
+  assert.equal(await page.getByRole('menu', { name: 'Workspace options' }).count(), 0);
   await page.getByLabel('Workspace options', { exact: true }).click();
-  await page.getByRole('button', { name: 'Storage & backups', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Storage & backups', exact: true }).click();
   await page.getByRole('dialog').waitFor();
   await page.getByRole('button', { name: 'Close', exact: true }).click();
   await page.setViewportSize({ width: 1440, height: 1000 });

@@ -29,3 +29,13 @@ Rendering changes often need corresponding editor and player changes. Keep share
 Project profiles, private captures, dependency caches, exports, and build output are not source. See `.gitignore` and [privacy](../PRIVACY.md).
 
 Local backup bookkeeping uses optional `localRevision` and `localBackup` fields on stored projects. Edits receive a revision token; undo/redo restores the content revision while retaining the most recent export record. Portable backups omit both fields, and imports discard them. No IndexedDB version upgrade or project schema bump is needed. `storage-health.ts` provides estimates/status labels; `StorageManager.tsx` manages the library. Project deletion atomically removes the project and any completed linked capture session/chunks, preserving unrelated or unfinished sessions.
+
+## Shared interface foundation
+
+`src/HomePage.tsx` owns library-page composition; `src/main.tsx` retains project persistence, recording, and editor state. `src/styles/tokens.css` defines application-only visual tokens, `src/ui/controls.css` styles reusable controls, and `src/styles/navigation.css` owns workspace navigation layout. Walkthrough appearance remains separate.
+
+`src/ui/Button.tsx` provides primary, secondary, ghost, danger, and icon-only variants using native button semantics. `Menu.tsx` wraps Radix Dropdown Menu and restores trigger focus before invoking actions that may open a dialog. Project navigation uses a Radix Popover because it contains a search input rather than only menu items. `Tooltip.tsx` provides supplementary help; callers must still supply accessible names for icon-only controls. Avoid replacing useful native controls just for uniformity.
+
+Radix dependencies are bundled into the editor; they require no runtime service. The plain HTML/TypeScript extension popup and standalone exported player do not import React or Radix. Shared capture session and popup control message types live in `extension/protocol.ts`; runtime sender validation remains in the background worker.
+
+The phased Store preparation work is documented in [the unlisted release plan](UNLISTED-RELEASE-PLAN.md) and tracked in [issue #45](https://github.com/NicholasMicali/frameway/issues/45).

@@ -1,3 +1,4 @@
+import type { CaptureSession, CaptureControl } from './protocol';
 const pauseButton = document.querySelector<HTMLButtonElement>('#pause')!;
 let paused = false;
 export {};
@@ -13,8 +14,7 @@ function showError(e: unknown) {
 }
 async function refresh() {
   const capture = (await chrome.storage.session.get('capture')).capture as
-    | { state: 'starting' | 'recording' | 'pausing' | 'paused' | 'resuming' | 'stopping' }
-    | undefined;
+    CaptureSession | undefined;
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   paused = capture?.state === 'paused';
   recording = capture?.state === 'recording' || paused;
@@ -60,7 +60,7 @@ record.addEventListener('click', async () => {
     const result = await chrome.runtime.sendMessage({
       to: 'worker',
       type: recording ? 'stop-capture' : 'start-capture',
-    });
+    } satisfies CaptureControl);
     if (!result?.ok) throw Error(result?.error || 'Could not update recording. Please try again.');
     window.close();
   } catch (e) {
@@ -92,7 +92,7 @@ pauseButton.addEventListener('click', async () => {
     const result = await chrome.runtime.sendMessage({
       to: 'worker',
       type: paused ? 'resume-capture' : 'pause-capture',
-    });
+    } satisfies CaptureControl);
     if (!result?.ok) throw Error(result?.error || 'Could not update recording.');
     window.close();
   } catch (e) {
