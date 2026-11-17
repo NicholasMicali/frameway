@@ -24,7 +24,7 @@ try {
   await page.locator('.project-card').nth(1).waitFor();
   await page.screenshot({ path: 'test-results/library-before-rename.png', fullPage: true });
   await page.getByLabel('Options for Original').click();
-  await page.getByRole('button', { name: 'Rename Original', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Rename Original', exact: true }).click();
   await page.getByLabel('Project name').fill('   ');
   await page.getByRole('button', { name: 'Save name', exact: true }).click();
   assert.match(await page.getByRole('alert').innerText(), /1 and 200/);
@@ -58,7 +58,7 @@ try {
   await page.screenshot({ path: 'test-results/library-renamed.png', fullPage: true });
   await page.getByLabel('Options for Renamed').click();
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export backup of Renamed', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Export backup of Renamed', exact: true }).click();
   assert.equal((await download).suggestedFilename(), 'Renamed.frameway.zip');
   await page.getByText('Exporting editable backup…', { exact: true }).waitFor({ state: 'hidden' });
   assert.equal((await read()).localEditedAt, saved.localEditedAt);

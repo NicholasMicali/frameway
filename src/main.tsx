@@ -33,6 +33,7 @@ import './ui/controls.css';
 import { Button } from './ui/Button';
 import { Tooltip } from './ui/Tooltip';
 import { HomePage } from './HomePage';
+import framewayLogo from '../extension/icons/frameway.svg';
 import packageInfo from '../package.json';
 import './title-slide.css';
 import { TitleSlide } from './TitleSlide';
@@ -666,7 +667,7 @@ function App() {
           }}
           aria-label="Library"
         >
-          <span className="brand-icon">◈</span> frameway
+          <img className="brand-mark" src={framewayLogo} width="32" height="32" alt="" /> frameway
           <span className="app-version" title="Beta version">
             v{packageInfo.version}
           </span>

@@ -1,86 +1,125 @@
 import type { ComponentProps } from 'react';
-import { Disclosure } from './Disclosure';
 import { HomeIntro, UseCases } from './HomeIntro';
 import { ProjectLibrary } from './ProjectLibrary';
+import { Icon } from './Icon';
+import { Button } from './ui/Button';
+import './styles/home.css';
 
 type HomePageProps = ComponentProps<typeof ProjectLibrary> & { onRecord: () => void };
 
-export function HomePage({
-  projects,
-  busy,
-  onOpen,
-  onBackup,
-  onCopy,
-  onRename,
-  onDelete,
-  thumbnail,
-  onRecord,
-}: HomePageProps) {
+export function HomePage({ onRecord, ...library }: HomePageProps) {
   return (
     <main className="welcome home-page">
       <div className="home-heading">
         <div>
-          <div className="eyebrow">WELCOME TO FRAMEWAY</div>
-          <h1>
-            {projects.length
-              ? 'Pick up where you left off.'
-              : 'Show a workflow. Let people try it.'}
-          </h1>
+          <div className="eyebrow">YOUR LOCAL WORKSPACE</div>
+          <h1>Your walkthroughs</h1>
           <p>
-            {projects.length
-              ? 'Open a project below, or start a new recording from the Frameway toolbar icon.'
-              : 'Record your screen, edit the steps, and share a walkthrough anyone can open.'}
+            Turn what’s on your screen into a walkthrough. Capture websites, desktop apps, or an
+            entire screen, then edit and share.
           </p>
         </div>
+        <span className="local-badge">
+          <Icon name="shield" /> Local by design
+        </span>
       </div>
-      <div className={`home-workspace ${projects.length ? 'has-projects' : ''}`}>
-        {!projects.length && <HomeIntro onRecord={() => onRecord()} returning={false} />}
-        <ProjectLibrary
-          projects={projects}
-          busy={busy}
-          onOpen={onOpen}
-          onBackup={onBackup}
-          onCopy={onCopy}
-          onRename={onRename}
-          onDelete={onDelete}
-          thumbnail={thumbnail}
-        />
-        {!!projects.length && <HomeIntro onRecord={() => onRecord()} returning />}
-      </div>
-      <div className="home-help">
-        <Disclosure
-          title="Ideas for your next walkthrough"
-          description="Product demos, training, support, and more."
-        >
-          <UseCases />
-        </Disclosure>
-        <Disclosure
-          title="Keeping your work safe"
-          description="Projects are saved on this device. Back them up to keep a copy."
-        >
-          <p>
-            Use Export backup on a project to save an editable ZIP. Import that backup to restore
-            your work or move it to another computer. Keep a backup before removing or reinstalling
-            Frameway.
-          </p>
-        </Disclosure>
-        {location.protocol !== 'chrome-extension:' && (
-          <Disclosure
-            title="Can’t find a recording?"
-            description="Open Frameway from Chrome’s toolbar to find extension recordings."
-          >
+      <section className="capture-choices" aria-label="Ways to record">
+        <div className="capture-recommended">
+          <span className="home-section-icon">
+            <Icon name="record" />
+          </span>
+          <div>
+            <h2>
+              Recording a website? <span className="recommended-label">Recommended</span>
+            </h2>
             <p>
-              This is the local development app. To find walkthroughs recorded with the Chrome
-              extension, click the Frameway icon in Chrome and choose Open Frameway. Opening a
-              project here does not switch apps.
+              Open the page, then choose <strong>Frameway → Record this tab</strong> in Chrome’s
+              toolbar. Video and click-by-click screenshot steps are captured together.
             </p>
-            <p>
-              To bring a project here, export its project backup there, then choose Options → Import
-              project backup.
-            </p>
-          </Disclosure>
-        )}
+          </div>
+        </div>
+        <div className="capture-screen">
+          <div>
+            <h2>Anything beyond your browser</h2>
+            <p>Capture a window or your screen, then add screenshot steps in the editor.</p>
+          </div>
+          <Button onClick={onRecord} disabled={library.busy}>
+            <Icon name="monitor" /> Record my screen
+          </Button>
+        </div>
+      </section>
+      <div className="home-workspace">
+        <ProjectLibrary {...library} />
       </div>
+      <HomeIntro />
+      <section className="home-sharing" aria-labelledby="sharing-title">
+        <div className="home-section-heading">
+          <span className="home-section-icon">
+            <Icon name="share" />
+          </span>
+          <div>
+            <h2 id="sharing-title">Share the walkthrough. Keep the editable original.</h2>
+            <p>Choose the file that fits what you want to do.</p>
+          </div>
+        </div>
+        <div className="sharing-grid">
+          <article>
+            <h3>
+              <Icon name="share" /> Send or embed
+            </h3>
+            <p>
+              Choose <strong>Share → Send a walkthrough → Download HTML</strong>. Your recipient
+              opens the downloaded file in a browser—no Frameway installation needed. Embed exports
+              are available in Share too.
+            </p>
+          </article>
+          <article>
+            <h3>
+              <Icon name="download" /> Back up or move a project
+            </h3>
+            <p>
+              Choose <strong>Export backup</strong> from a project’s menu. Restore its editable ZIP
+              through <strong>Options → Import project backup</strong>. Keep backups before removing
+              Frameway or clearing browser data.
+            </p>
+          </article>
+        </div>
+        <p className="home-note">
+          <Icon name="shield" /> Recordings and edits stay in this browser until you export or share
+          them. A saved project is not a separate backup.
+        </p>
+      </section>
+      <UseCases />
+      <div className="home-resources">
+        <a
+          href="https://github.com/NicholasMicali/frameway/blob/main/docs/BETA-TESTING.md"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Help & installation <Icon name="external" />
+        </a>
+        <a
+          href="https://github.com/NicholasMicali/frameway/blob/main/PRIVACY.md"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Privacy <Icon name="external" />
+        </a>
+        <a
+          href="https://github.com/NicholasMicali/frameway/issues"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Report an issue <Icon name="external" />
+        </a>
+      </div>
+      {location.protocol !== 'chrome-extension:' && (
+        <aside className="development-note">
+          <strong>Using the development app?</strong> Recordings made with the extension are in its
+          library. Open Frameway from Chrome’s toolbar to find them, or use a project backup to move
+          work here.
+        </aside>
+      )}
     </main>
   );
 }

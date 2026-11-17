@@ -32,10 +32,12 @@ Local backup bookkeeping uses optional `localRevision` and `localBackup` fields 
 
 ## Shared interface foundation
 
-`src/HomePage.tsx` owns library-page composition; `src/main.tsx` retains project persistence, recording, and editor state. `src/styles/tokens.css` defines application-only visual tokens, `src/ui/controls.css` styles reusable controls, and `src/styles/navigation.css` owns workspace navigation layout. Walkthrough appearance remains separate.
+`src/HomePage.tsx` owns library-page composition and `src/styles/home.css` owns its layout; `src/main.tsx` retains project persistence, recording, and editor state. `src/styles/tokens.css` defines application-only visual tokens, `src/ui/controls.css` styles reusable controls, and `src/styles/navigation.css` owns workspace navigation layout. Walkthrough appearance remains separate.
 
 `src/ui/Button.tsx` provides primary, secondary, ghost, danger, and icon-only variants using native button semantics. `Menu.tsx` wraps Radix Dropdown Menu and restores trigger focus before invoking actions that may open a dialog. Project navigation uses a Radix Popover because it contains a search input rather than only menu items. `Tooltip.tsx` provides supplementary help; callers must still supply accessible names for icon-only controls. Avoid replacing useful native controls just for uniformity.
 
 Radix dependencies are bundled into the editor; they require no runtime service. The plain HTML/TypeScript extension popup and standalone exported player do not import React or Radix. Shared capture session and popup control message types live in `extension/protocol.ts`; runtime sender validation remains in the background worker.
 
 The phased Store preparation work is documented in [the unlisted release plan](UNLISTED-RELEASE-PLAN.md) and tracked in [issue #45](https://github.com/NicholasMicali/frameway/issues/45).
+
+The header uses `extension/icons/frameway.svg`, the same source used for extension icons. Regenerate the PNG sizes with `node scripts/generate-icons.mjs` after installing Playwright Chromium. The generator uses local SVG content only.

@@ -18,11 +18,11 @@ const library = async () => {
 };
 const makeCopy = async (title) => {
   await page.getByLabel(`Options for ${title}`, { exact: true }).click();
-  await page.getByRole('button', { name: `Make a copy of ${title}`, exact: true }).click();
+  await page.getByRole('menuitem', { name: `Make a copy of ${title}`, exact: true }).click();
 };
 const remove = async (title) => {
   await page.getByLabel(`Options for ${title}`, { exact: true }).click();
-  await page.getByRole('button', { name: `Delete ${title}`, exact: true }).click();
+  await page.getByRole('menuitem', { name: `Delete ${title}`, exact: true }).click();
   await page.getByRole('button', { name: 'Confirm delete', exact: true }).click();
   await page.getByText('Deleting project…', { exact: true }).waitFor({ state: 'hidden' });
 };

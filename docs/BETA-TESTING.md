@@ -15,7 +15,7 @@ Windows enterprise testers should also work through the [Windows checklist](../T
 
 ## Home and project library
 
-An empty library opens the short Record → Edit → Share guide. Try the practice workspace link, and expand the setup section if you need installation instructions. Once projects exist, Home puts your library first; the recording and sharing guide stays visible below it.
+The Library shows two ways to capture a workflow: use Frameway → Record this tab from Chrome’s toolbar for automatic click-by-click steps, or choose Record my screen for a desktop window or an entire screen and add screenshot steps in the editor. Both paths currently record silent video. Your project library comes before the visible Record → Edit → Share guide, sharing/backup guidance, and use cases. Help & installation links to this guide; developer setup instructions are kept out of the everyday workspace.
 
 Search by project name or sort by creation date, last edited, name, or estimated media size. Click a project to open it. Its three-dot options menu offers Rename, Make a copy, Export backup, and Delete with confirmation. Import project backup restores an editable project ZIP; HTML exports are for viewing. The header project picker includes Library and a searchable project list. Options contains Storage & backups, Import project backup, and Keyboard shortcuts.
 
