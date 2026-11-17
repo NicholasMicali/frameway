@@ -4,6 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   withTitleSlide,
+  withClosingSlide,
   normalizedPoint,
   splitVideo,
   duplicateStep,
@@ -387,4 +388,35 @@ test('recording clock excludes repeated pauses and rejects delayed paused clicks
   assert.equal(clock.time(7000), undefined);
   assert.equal(clock.time(9500), 2.5);
   assert.equal(clock.duration(10000), 3);
+});
+
+test('closing slides are optional terminal steps with portable editing behavior', async () => {
+  const { exportProject, importProject } = await import('../src/archive');
+  const original = project();
+  original.video = new Blob([], { type: 'video/webm' });
+  const p = withClosingSlide(original);
+  const closing = p.steps.at(-1)!;
+  validateManifest(p);
+  assert.equal(original.steps.length, 3);
+  assert.equal(p.steps[0].target, 'c');
+  assert.equal(nextId(p, p.steps[2]), closing.id);
+  assert.equal(nextId(p, closing), undefined);
+  assert.equal(withClosingSlide(p), p);
+  const moved = moveStep(p, closing.id, -1);
+  assert.equal(nextId(moved, closing), undefined);
+  const copied = duplicateStep(p, closing.id);
+  assert.equal(copied.steps.at(-1)?.kind, 'closing');
+  validateManifest(copied);
+  assert.equal(deleteStep(p, closing.id).steps.length, 3);
+  const restored = await importProject(await exportProject(p));
+  assert.equal(restored.steps.at(-1)?.kind, 'closing');
+  assert.equal(restored.steps.at(-1)?.body, closing.body);
+  assert.throws(() =>
+    validateManifest({
+      ...p,
+      steps: p.steps.map((s) => (s.id === closing.id ? { ...s, target: 'next' } : s)),
+    }),
+  );
+  original.steps[2].target = 'a';
+  assert.equal(withClosingSlide(original).steps[2].target, 'a');
 });

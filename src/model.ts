@@ -39,6 +39,7 @@ export type Step = StepBase &
     | { kind: 'image'; style: 'hotspot' | 'callout' | 'area'; openByDefault: boolean }
     | { kind: 'video'; autoplay: boolean }
     | { kind: 'title'; buttonText: string }
+    | { kind: 'closing' }
   );
 export type LegacyStep = StepBase & { transition: boolean };
 type ProjectBase = {
@@ -69,6 +70,7 @@ export function normalizedPoint(x: number, y: number, width: number, height: num
   return { x: clamp(x / width), y: clamp(y / height) };
 }
 export function nextId(p: Project, s: Step) {
+  if (s.kind === 'closing') return undefined;
   return s.target === 'next'
     ? p.steps[p.steps.findIndex((x) => x.id === s.id) + 1]?.id
     : s.target === 'end'
@@ -231,11 +233,13 @@ export function validateManifest(v: any) {
         : s.kind === 'image'
           ? !['hotspot', 'callout', 'area'].includes(s.style) ||
             typeof s.openByDefault !== 'boolean'
-          : s.kind === 'title'
-            ? typeof s.buttonText !== 'string' || s.buttonText.length > 80
-            : s.kind === 'video'
-              ? typeof s.autoplay !== 'boolean' || s.clipEnd - s.clipStart < 0.05 - 1e-8
-              : true
+          : s.kind === 'closing'
+            ? s.target !== 'end'
+            : s.kind === 'title'
+              ? typeof s.buttonText !== 'string' || s.buttonText.length > 80
+              : s.kind === 'video'
+                ? typeof s.autoplay !== 'boolean' || s.clipEnd - s.clipStart < 0.05 - 1e-8
+                : true
     )
       throw Error('Invalid step type or settings');
   }
@@ -298,4 +302,30 @@ export function withTitleSlide(p: Project, image: Blob): Project {
     target: 'next',
   };
   return { ...p, steps: [title, ...p.steps] };
+}
+
+/** Explicit ending; only connect the last step's ordinary end to the new slide. */
+export function withClosingSlide(p: Project): Project {
+  if (p.steps.some((s) => s.kind === 'closing')) return p;
+  const last = p.steps[p.steps.length - 1];
+  const closing: Step = {
+    ...last,
+    id: crypto.randomUUID(),
+    kind: 'closing',
+    chapter: undefined,
+    title: 'You’re all set',
+    body: 'Thanks for following along. Replay the walkthrough whenever you need.',
+    target: 'end',
+    clipStart: last.stillTime,
+    clipEnd: last.stillTime,
+  };
+  return {
+    ...p,
+    steps: [
+      ...p.steps.map((s, i) =>
+        i === p.steps.length - 1 && s.target === 'end' ? { ...s, target: 'next' } : s,
+      ),
+      closing,
+    ],
+  };
 }

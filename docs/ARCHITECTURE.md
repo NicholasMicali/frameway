@@ -41,3 +41,9 @@ Radix dependencies are bundled into the editor; they require no runtime service.
 The phased Store preparation work is documented in [the unlisted release plan](UNLISTED-RELEASE-PLAN.md) and tracked in [issue #45](https://github.com/NicholasMicali/frameway/issues/45).
 
 The header uses `extension/icons/frameway.svg`, the same source used for extension icons. Regenerate the PNG sizes with `node scripts/generate-icons.mjs` after installing Playwright Chromium. The generator uses local SVG content only.
+
+## Optional closing slide
+
+Schema 2 now accepts an explicit `kind: 'closing'` step, with the same bounded title/body/media fields as other steps and a required `target: 'end'`. Existing schema 1/2 projects still import unchanged; old app versions cannot import new backups containing a closing step. There is no automatic insertion into existing projects.
+
+Adding a closing slide appends it and changes only a final step's ordinary `end` target to `next`, making the ending reachable without rewriting explicit branches or earlier endings. Closing slides always replay from the first step, including when moved or duplicated. The centered title-slide presentation is reused in the editor and exported player, with project branding and a fixed Replay walkthrough action. Removing the slide uses existing navigation repair and undo.
