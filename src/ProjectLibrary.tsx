@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Button } from './ui/Button';
+import { Menu, MenuItem } from './ui/Menu';
 import { Icon } from './Icon';
 import type { Project } from './model';
 import { backupStatus, formatBytes, mediaBytes } from './storage-health';
@@ -18,79 +20,28 @@ function ProjectActions({
   onDelete: () => void;
   onRename: () => void;
 }) {
-  const menu = useRef<HTMLDetailsElement>(null);
-  const close = () => menu.current?.removeAttribute('open');
-  useEffect(() => {
-    const outside = (e: PointerEvent) => {
-      if (!menu.current?.contains(e.target as Node)) close();
-    };
-    document.addEventListener('pointerdown', outside);
-    return () => document.removeEventListener('pointerdown', outside);
-  }, []);
   return (
-    <details
-      ref={menu}
-      className="project-actions"
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          close();
-          menu.current?.querySelector('summary')?.focus();
-        }
-      }}
+    <Menu
+      label={`Options for ${project.title}`}
+      trigger={
+        <Button variant="ghost" iconOnly aria-label={`Options for ${project.title}`}>
+          <Icon name="more" />
+        </Button>
+      }
     >
-      <summary aria-label={`Options for ${project.title}`} title="Project options">
-        <Icon name="more" />
-      </summary>
-      <div className="project-actions-panel">
-        <button
-          disabled={busy}
-          aria-label={`Rename ${project.title}`}
-          onClick={() => {
-            close();
-            menu.current?.querySelector('summary')?.focus();
-            onRename();
-          }}
-        >
-          <Icon name="edit" /> Rename
-        </button>
-        <button
-          disabled={busy}
-          aria-label={`Make a copy of ${project.title}`}
-          onClick={() => {
-            close();
-            menu.current?.querySelector('summary')?.focus();
-            onCopy();
-          }}
-        >
-          <Icon name="copy" /> Make a copy
-        </button>
-        <button
-          disabled={busy}
-          onClick={() => {
-            close();
-            menu.current?.querySelector('summary')?.focus();
-            onBackup();
-          }}
-          aria-label={`Export backup of ${project.title}`}
-        >
-          <Icon name="download" />
-          Export backup
-        </button>
-        <button
-          disabled={busy}
-          className="danger-action"
-          onClick={() => {
-            close();
-            menu.current?.querySelector('summary')?.focus();
-            onDelete();
-          }}
-          aria-label={`Delete ${project.title}`}
-        >
-          <Icon name="trash" />
-          Delete project
-        </button>
-      </div>
-    </details>
+      <MenuItem label={`Rename ${project.title}`} disabled={busy} onSelect={onRename}>
+        <Icon name="edit" /> Rename
+      </MenuItem>
+      <MenuItem label={`Make a copy of ${project.title}`} disabled={busy} onSelect={onCopy}>
+        <Icon name="copy" /> Make a copy
+      </MenuItem>
+      <MenuItem label={`Export backup of ${project.title}`} disabled={busy} onSelect={onBackup}>
+        <Icon name="download" /> Export backup
+      </MenuItem>
+      <MenuItem label={`Delete ${project.title}`} disabled={busy} danger onSelect={onDelete}>
+        <Icon name="trash" /> Delete project
+      </MenuItem>
+    </Menu>
   );
 }
 
@@ -139,10 +90,11 @@ export function ProjectLibrary({
       )}
       <div className="library-heading">
         <div>
-          <h2 id="library-title">Your walkthroughs</h2>
+          <h2 id="library-title">Project library</h2>
           <p className="field-note">
-            {projects.length} {projects.length === 1 ? 'project' : 'projects'} · Open a walkthrough
-            to pick up where you left off.
+            {projects.length
+              ? `${projects.length} ${projects.length === 1 ? 'project' : 'projects'} · Pick up where you left off.`
+              : 'Your recordings will appear here, ready to edit.'}
           </p>
         </div>
       </div>
@@ -211,12 +163,12 @@ export function ProjectLibrary({
                   Delete “{p.title}” from this browser? This cannot be undone. Keep an exported
                   backup if you need it later.
                 </p>
-                <button disabled={busy} onClick={() => onDelete(p)}>
+                <Button variant="danger" disabled={busy} onClick={() => onDelete(p)}>
                   Confirm delete
-                </button>
-                <button disabled={busy} onClick={() => setConfirm('')}>
+                </Button>
+                <Button variant="ghost" disabled={busy} onClick={() => setConfirm('')}>
                   Keep project
-                </button>
+                </Button>
               </div>
             )}
           </article>
@@ -227,8 +179,9 @@ export function ProjectLibrary({
           <Icon name="folder" />
           <h3>Your next walkthrough starts here</h3>
           <p>
-            Record with the extension to create your first project, or choose Options → Import
-            project backup to restore an editable project ZIP.
+            Record a Chrome tab for automatic click-by-click steps, or use Record my screen for a
+            window or your whole screen. Already have an editable backup? Restore it through Options
+            → Import project backup.
           </p>
         </div>
       ) : (

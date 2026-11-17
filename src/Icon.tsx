@@ -1,4 +1,7 @@
 type IconName =
+  | 'shield'
+  | 'monitor'
+  | 'external'
   | 'keyboard'
   | 'copy'
   | 'undo'
@@ -18,6 +21,9 @@ type IconName =
   | 'folder'
   | 'arrow';
 const paths: Record<IconName, string> = {
+  shield: 'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM8 12l3 3 5-6',
+  monitor: 'M3 4h18v13H3ZM8 21h8m-4-4v4',
+  external: 'M14 3h7v7m0-7L10 14M10 3H3v18h18v-7',
   keyboard:
     'M2 5h20v14H2ZM6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 15h10',
   copy: 'M9 9h12v12H9ZM15 9V3H3v12h6',

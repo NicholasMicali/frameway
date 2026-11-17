@@ -1,164 +1,79 @@
-import { Disclosure } from './Disclosure';
 import { Icon } from './Icon';
-import packageInfo from '../package.json';
 
-export function HomeIntro({ onRecord, returning }: { onRecord: () => void; returning: boolean }) {
-  const extension = location.protocol === 'chrome-extension:';
+export function HomeIntro() {
   return (
-    <section className="home-start" aria-label="Getting started">
+    <section className="home-start" aria-labelledby="guide-title">
       <div className="quick-guide">
-        <div className="guide-heading">
-          <h2>
-            {returning ? 'From recording to sharing' : 'Your first walkthrough, in three steps'}
-          </h2>
-          <span className="guide-badge">Quick guide</span>
+        <div className="home-section-heading">
+          <span className="home-section-icon">
+            <Icon name="edit" />
+          </span>
+          <div>
+            <h2 id="guide-title">From recording to sharing</h2>
+            <p>Three steps to a walkthrough people can follow at their own pace.</p>
+          </div>
         </div>
-        <p>
-          Capture a short workflow, add context, and send an interactive file. Everything stays
-          local until you share it.
-        </p>
         <div className="quick-guide-grid">
           <article>
-            <span className="guide-number">
-              <Icon name="record" />
-            </span>
-            <h3>Record your clicks</h3>
+            <span className="guide-step">01 / CAPTURE</span>
+            <h3>Record your workflow</h3>
             <p>
-              Open the page you want to show. In Chrome’s toolbar, click Frameway →{' '}
-              <strong>Record this tab</strong>. Wait for <strong>REC</strong>, then choose{' '}
-              <strong>Stop recording</strong> when done.
+              Pin Frameway from Chrome’s Extensions menu. For a website, choose{' '}
+              <strong>Record this tab</strong> from the toolbar and wait for <strong>REC</strong>.
+              Pause when needed; choose <strong>Finish recording</strong> to open the editor.
             </p>
-            <a href="demo.html" target="_blank" rel="noreferrer">
-              Open the practice workspace ↗
-            </a>
+            <p>
+              Use <strong>Record my screen</strong> for desktop apps or a whole screen. Both options
+              record video without audio.
+            </p>
           </article>
           <article>
-            <span className="guide-number">
-              <Icon name="edit" />
-            </span>
+            <span className="guide-step">02 / EDIT</span>
             <h3>Make the steps clear</h3>
             <p>
-              The editor opens automatically. Select a slide to edit its title and callout.
-              Screenshot slides wait for a click; video slides show the action between clicks. Use
-              Preview to try the walkthrough.
+              Arrange screenshot and video slides, add callouts, and highlight what matters.
+              Screenshot slides wait for a click; video slides show the action between steps.
+            </p>
+            <p>
+              Use <strong>Preview</strong> to try the experience before sharing.
             </p>
           </article>
           <article>
-            <span className="guide-number">
-              <Icon name="share" />
-            </span>
+            <span className="guide-step">03 / SHARE</span>
             <h3>Send it to someone</h3>
             <p>
-              Choose <strong>Share → Send a walkthrough → Download HTML</strong>. Send that file;
-              your recipient downloads it and opens it in a browser. Use{' '}
-              <strong>Export project backup</strong> for an editable backup.
+              Use <strong>Share</strong> to download a walkthrough or prepare an embed. Export a
+              project backup when someone needs to edit it or you want to keep a separate copy.
             </p>
+            <p>Come back through Chrome’s Frameway menu to open your saved projects.</p>
           </article>
-        </div>
-        <p className="guide-tip">
-          Coming back later? Choose <strong>Open Frameway</strong> from the extension menu. Your
-          projects are saved in this browser.
-        </p>
-        <Disclosure
-          id="extension-setup"
-          title={extension ? 'Setup & updates' : 'Install the Chrome extension'}
-          description="Automatic screenshots and video between your clicks."
-        >
-          <h3>Install from the extension ZIP</h3>
-          <a
-            className="primary home-cta"
-            href="https://github.com/NicholasMicali/frameway/releases"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Find the beta package ↗
-          </a>
-          <p>No Node.js or build tools needed. Works with Chrome on macOS and Windows.</p>
-          <ol>
-            <li>
-              Download <strong>frameway-extension-v{packageInfo.version}.zip</strong> from the
-              release’s <strong>Assets</strong> list. Choose the extension package, not GitHub’s
-              “Source code” ZIP.
-            </li>
-            <li>
-              Unzip it into a folder you’ll keep. On Windows, right-click the ZIP and choose{' '}
-              <strong>Extract All</strong>.
-            </li>
-            <li>
-              Open <code>chrome://extensions</code> in Chrome and turn on{' '}
-              <strong>Developer mode</strong>.
-            </li>
-            <li>
-              Click <strong>Load unpacked</strong>. Select the extracted folder containing{' '}
-              <code>manifest.json</code>—not the ZIP file or its parent folder.
-            </li>
-            <li>
-              Pin Frameway from Chrome’s Extensions menu, open the page you want to demonstrate, and
-              choose Frameway → Record this tab.
-            </li>
-          </ol>
-          <p>
-            Already installed? Export important projects before replacing the extension. After
-            updating files in the same folder, click <strong>Reload</strong> on its Chrome card and
-            reopen the editor. Keep that folder in place.
-          </p>
-          <Disclosure title="Building from source?">
-            <p>
-              Run <code>npm ci</code> and <code>npm run build</code>, then load the generated{' '}
-              <code>dist</code> folder. There is no Chrome Web Store listing yet.
-            </p>
-          </Disclosure>
-        </Disclosure>
-        <div className="manual-recording">
-          <div>
-            <h3>Need a window or your whole screen?</h3>
-            <p>
-              The browser recorder captures video; you add screenshot steps manually. The Chrome
-              extension creates click-by-click steps automatically.
-            </p>
-          </div>
-          <button onClick={onRecord}>
-            <Icon name="record" />
-            Record my screen
-          </button>
         </div>
       </div>
     </section>
   );
 }
+
 export function UseCases() {
   return (
-    <section className="use-cases">
-      <div className="eyebrow">LESS EXPLAINING. MORE UNDERSTANDING.</div>
-      <h2>Give every workflow a walkthrough.</h2>
+    <section className="use-cases" aria-labelledby="use-cases-title">
+      <h2 id="use-cases-title">A clearer way to show how things work</h2>
       <div className="use-case-grid">
-        {[
-          [
-            'Product demos',
-            'Let prospects explore a key workflow at their own pace. Embed a demo on your website or send a standalone file.',
-          ],
-          [
-            'Customer onboarding',
-            'Guide new customers through their first successful task with clear steps and focused callouts.',
-          ],
-          [
-            'Team training & SOPs',
-            'Document repeatable processes so teammates can follow along without another meeting.',
-          ],
-          [
-            'Support & handoffs',
-            'Show exactly where to click when answering a question or handing a workflow to another team.',
-          ],
-        ].map(([title, body]) => (
-          <article key={title}>
-            <h3>{title}</h3>
-            <p>{body}</p>
-          </article>
-        ))}
+        <article>
+          <Icon name="record" />
+          <h3>Product demos</h3>
+          <p>Give people a guided look at a workflow they can explore at their own pace.</p>
+        </article>
+        <article>
+          <Icon name="folder" />
+          <h3>Training & onboarding</h3>
+          <p>Make everyday processes easier to learn, revisit, and share with a team.</p>
+        </article>
+        <article>
+          <Icon name="share" />
+          <h3>Support & handoffs</h3>
+          <p>Show the steps behind an answer, across websites and desktop applications.</p>
+        </article>
       </div>
-      <p className="local-promise">
-        Local by design. Recordings and edits stay in your browser until you export or share them.
-      </p>
     </section>
   );
 }

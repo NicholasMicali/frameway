@@ -12,19 +12,22 @@ page.on('pageerror', (e) => errors.push(String(e)));
 try {
   await page.goto('http://127.0.0.1:4186');
   await page.getByText('Opening your studio…').waitFor({ state: 'hidden' });
-  assert.equal(await page.getByRole('heading', { name: 'Record your clicks' }).isVisible(), true);
+  await page.getByRole('heading', { name: 'Record your workflow' }).waitFor();
   assert.equal(await page.getByRole('button', { name: /sample/i }).count(), 0);
-  await page.locator('#extension-setup > summary').click();
+  assert.equal(await page.locator('.home-page details').count(), 0);
   assert.equal(
-    await page.getByRole('heading', { name: 'Install from the extension ZIP' }).isVisible(),
+    await page
+      .getByRole('heading', { name: 'Share the walkthrough. Keep the editable original.' })
+      .isVisible(),
     true,
   );
-  await page.locator('#extension-setup > summary').focus();
-  await page.keyboard.press('Enter');
   assert.equal(
-    await page.getByRole('heading', { name: 'Install from the extension ZIP' }).isVisible(),
-    false,
+    await page.getByRole('button', { name: 'Record my screen', exact: true }).isVisible(),
+    true,
   );
+  assert.equal(await page.getByText('Developer mode', { exact: true }).count(), 0);
+  const emptyLibrary = await page.locator('.project-library').boundingBox();
+  assert.ok(emptyLibrary.y < (await page.locator('.quick-guide').boundingBox()).y);
   await page.screenshot({ path: 'test-results/home-first-run.png', fullPage: true });
   await page.evaluate(async () => {
     const { sampleProject } = await import('/src/sample.ts');
@@ -59,23 +62,23 @@ try {
   await page.keyboard.press('Escape');
   assert.equal(
     await page
-      .getByRole('button', { name: 'Export backup of Alpha demo', exact: true })
+      .getByRole('menuitem', { name: 'Export backup of Alpha demo', exact: true })
       .isVisible(),
     false,
   );
   await page.getByLabel('Options for Alpha demo').click();
-  await page.getByRole('button', { name: 'Export backup of Alpha demo', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Export backup of Alpha demo', exact: true }).click();
   assert.match((await download).suggestedFilename(), /Alpha demo/);
   await page
     .getByText(/Creating.*backup|Exporting/, { exact: false })
     .waitFor({ state: 'hidden' })
     .catch(() => {});
   await page.getByLabel('Options for Alpha demo').click();
-  await page.getByRole('button', { name: 'Delete Alpha demo', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Delete Alpha demo', exact: true }).click();
   await page.getByRole('button', { name: 'Keep project', exact: true }).click();
   assert.equal(await page.locator('.project-card').count(), 3);
   await page.getByLabel('Options for Alpha demo').click();
-  await page.getByRole('button', { name: 'Delete Alpha demo', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Delete Alpha demo', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm delete', exact: true }).click();
   await page.waitForFunction(() => document.querySelectorAll('.project-card').length === 2);
   await page.reload();
@@ -86,11 +89,15 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await page.getByLabel('Options for Support demo').click();
   assert.ok(
-    (await page.locator('.project-actions[open] .project-actions-panel').boundingBox()).x >= 0,
+    (await page.getByRole('menu', { name: 'Options for Support demo', exact: true }).boundingBox())
+      .x >= 0,
   );
   await page.screenshot({ path: 'test-results/home-mobile.png', fullPage: true });
-  await page.getByRole('heading', { name: 'Your walkthroughs' }).click();
-  assert.equal(await page.locator('.project-actions[open]').count(), 0);
+  await page.keyboard.press('Escape');
+  assert.equal(
+    await page.getByRole('menu', { name: 'Options for Support demo', exact: true }).count(),
+    0,
+  );
   await page.locator('.project-card').first().click();
   await page.getByLabel('Walkthrough title').waitFor();
   assert.equal(await page.locator('.workspace a[href="demo.html"]').count(), 0);

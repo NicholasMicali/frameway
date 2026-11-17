@@ -59,7 +59,7 @@ Alternatively, unzip a built `frameway-extension-v0.3.0.zip` release artifact an
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173/`. Home includes a recording/sharing guide, searchable saved projects with backup/delete options, and expandable setup help. The practice app is at `/demo.html`.
+Open `http://127.0.0.1:5173/`. The Library includes tab and screen recording guidance, searchable saved projects with backup/delete options, and visible sharing and backup help. The practice app is at `/demo.html`.
 
 **Record my screen** uses the browser picker for a tab, window, or whole screen. It records silent video; mark screenshot moments while recording or insert them later. It cannot automatically detect clicks in other applications. Keep the recorder page open until saving finishes. Recording stops at ten minutes or approximately 90 MB.
 
