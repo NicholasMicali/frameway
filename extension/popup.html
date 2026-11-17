@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Frameway</title>
+    <link rel="stylesheet" href="ui-tokens.css" />
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
@@ -11,21 +12,64 @@
       <img src="icons/frameway-48.png" width="36" height="36" alt="" />
       <div>
         <h1>Frameway</h1>
-        <p>Your local walkthrough studio</p>
+        <p>Record. Edit. Share.</p>
       </div>
     </header>
     <main>
       <button id="record" disabled>
-        <span id="record-icon" aria-hidden="true">●</span><span id="record-label">Loading…</span>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
+          <circle class="record-dot" cx="12" cy="12" r="7" fill="currentColor" />
+          <rect
+            class="record-stop"
+            x="5"
+            y="5"
+            width="14"
+            height="14"
+            rx="2"
+            fill="currentColor"
+          /></svg
+        ><span id="record-label">Loading…</span>
       </button>
-      <button id="pause" hidden disabled>Pause recording</button>
+      <button id="pause" hidden disabled>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path class="pause-bars" d="M6 4h4v16H6zm8 0h4v16h-4z" />
+          <path class="resume-play" d="m7 4 13 8-13 8z" /></svg
+        ><span id="pause-label">Pause recording</span>
+      </button>
       <p id="status" role="status">Checking recording status…</p>
       <button id="open">
-        <span aria-hidden="true">▦</span
-        ><span>Open Frameway<small>My projects & editor</small></span>
+        <svg
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        >
+          <path d="M3 5h7l2 3h9v12H3Z" /></svg
+        ><span>Open library<small>Your saved walkthroughs & editor</small></span>
       </button>
       <p id="error" role="alert" hidden></p>
+      <p class="screen-tip">
+        Need a desktop app or whole screen? Choose <strong>Record my screen</strong> in the library.
+      </p>
     </main>
+    <footer>
+      <span>Local by design</span
+      ><a
+        href="https://github.com/NicholasMicali/frameway/blob/main/docs/BETA-TESTING.md"
+        target="_blank"
+        rel="noreferrer"
+        >Help</a
+      ><a
+        href="https://github.com/NicholasMicali/frameway/blob/main/PRIVACY.md"
+        target="_blank"
+        rel="noreferrer"
+        >Privacy</a
+      >
+    </footer>
     <script src="popup.js"></script>
   </body>
 </html>

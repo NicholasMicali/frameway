@@ -1,4 +1,6 @@
 type IconName =
+  | 'up'
+  | 'down'
   | 'shield'
   | 'monitor'
   | 'external'
@@ -21,6 +23,8 @@ type IconName =
   | 'folder'
   | 'arrow';
 const paths: Record<IconName, string> = {
+  up: 'M12 20V4m-6 6 6-6 6 6',
+  down: 'M12 4v16m-6-6 6 6 6-6',
   shield: 'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM8 12l3 3 5-6',
   monitor: 'M3 4h18v13H3ZM8 21h8m-4-4v4',
   external: 'M14 3h7v7m0-7L10 14M10 3H3v18h18v-7',

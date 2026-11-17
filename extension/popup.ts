@@ -21,7 +21,9 @@ async function refresh() {
   const transitioning = capture && !recording;
   pauseButton.hidden = !capture || capture.state === 'starting' || capture.state === 'stopping';
   pauseButton.disabled = busy || !!transitioning;
-  pauseButton.textContent = paused
+  document.body.dataset.capture = capture?.state ?? 'idle';
+  pauseButton.dataset.paused = String(paused);
+  document.querySelector('#pause-label')!.textContent = paused
     ? 'Resume recording'
     : capture?.state === 'pausing'
       ? 'Pausing…'
@@ -38,7 +40,6 @@ async function refresh() {
           ? 'Finishing…'
           : 'Please wait…'
       : 'Record this tab';
-  document.querySelector('#record-icon')!.textContent = recording ? '■' : '●';
   record.dataset.recording = String(recording);
   record.disabled = busy || !!transitioning || (!capture && !supported);
   status.textContent = capture
@@ -46,7 +47,9 @@ async function refresh() {
       ? paused
         ? 'Paused. Video and clicks are not being added. Resume when ready, or finish to open the editor.'
         : 'Recording video and clicks. Pause to prepare your next step.'
-      : 'Please wait while your recording is prepared.'
+      : capture?.state === 'stopping'
+        ? 'Finishing your recording. The editor will open when it is ready.'
+        : 'Please wait while your recording is prepared.'
     : supported
       ? 'Capture this tab’s video and clicks.'
       : 'Open a regular web page to record. Your projects are always available below.';
