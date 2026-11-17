@@ -1,6 +1,10 @@
 /* Application controls only: walkthrough colors and exported player stay separate. */
 .editor-app .step-row > .ui-button-icon {
-  flex-shrink: 0;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--ui-surface);
+  box-shadow: 0 1px 4px #17263814;
   width: 30px;
   min-height: 32px;
   padding: 6px;
@@ -32,4 +36,43 @@
 }
 .editor-app .toolbar-right > .ui-button-icon {
   color: var(--ui-text);
+}
+
+.editor-app .canvas-meta {
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+.editor-app .section-heading span {
+  color: var(--ui-muted);
+}
+.editor-app .step-row {
+  isolation: isolate;
+}
+.editor-app .step-row .thumb {
+  isolation: isolate;
+}
+.editor-app .step-row > .ui-button-icon {
+  z-index: 1;
+}
+.editor-app .step-number,
+.editor-app .clip-pill {
+  z-index: 5;
+}
+
+.editor-app .slide-add {
+  width: 100%;
+  flex-shrink: 0;
+  min-height: 38px;
+  border: 1px dashed var(--ui-border);
+  background: var(--ui-surface);
+  color: var(--ui-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+.editor-app .slide-add:hover:not(:disabled) {
+  background: var(--ui-primary-soft);
+  border-color: var(--ui-primary);
+}
+.editor-app .slide-add-closing {
+  margin-top: 16px;
 }

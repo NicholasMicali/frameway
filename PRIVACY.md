@@ -14,8 +14,16 @@ The extension requests `activeTab` for the tab you activate it on, `scripting` t
 
 ## Sharing and export
 
-Exporting creates a file on your computer; you decide how and with whom to share it. Anyone receiving a walkthrough may extract its screenshots and recording. **Trimming changes playback ranges, not the underlying media: exported walkthroughs retain the original recording.** Review the full recording for sensitive information before sharing. Uploaded logos are embedded in title slides and exported artifacts.
+Exporting creates a file on your computer; you decide how and with whom to share it. Anyone receiving a walkthrough may extract its screenshots and recording. **Trimming changes playback ranges, not the underlying media: exported walkthroughs retain the original recording.** Review the full recording for sensitive information before sharing. Uploaded logos are embedded in title/closing slides and exported artifacts.
 
 The embedded player does not send data to Frameway. If you host an export elsewhere, that host's logging and privacy practices apply. GitHub and any future extension store handle software distribution under their own policies; that does not upload your walkthroughs.
 
 Report security concerns through [SECURITY.md](SECURITY.md). Public issue reports should contain only sanitized reproduction material.
+
+## Installation identity and updates
+
+Projects belong to the current browser profile and extension installation. An unpacked extension, a Store installation, and the localhost editor can have separate libraries. Export editable `.frameway.zip` backups from the old installation, then import them into the new one before removing anything.
+
+Normal updates of the same extension identity retain browser storage. Uninstalling, clearing data, changing profiles, or moving to a different extension identity can remove access to it. Keep backups outside the extension folder.
+
+Frameway does not sell, transmit to its developers, or use recorded content for advertising, analytics, or model training. Recording starts only after a user action. A recording can contain anything visible in the selected surface, including personal or confidential data. Users control recording, deletion, and export. Data remains local until users choose to share exported files. Public help links open GitHub; GitHub's policies apply to those visits.

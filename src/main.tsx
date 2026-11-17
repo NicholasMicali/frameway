@@ -906,6 +906,11 @@ function App() {
                   YOUR STORY <span>{project.steps.length}</span>
                 </div>
                 <div className="step-list">
+                  {!project.steps.some((s) => s.kind === 'title') && (
+                    <Button className="slide-add" onClick={() => void addTitle()} disabled={!!busy}>
+                      <Icon name="plus" /> Add title slide
+                    </Button>
+                  )}
                   {project.steps.map((s, i) => (
                     <div className="step-row" key={s.id}>
                       <button
@@ -947,14 +952,9 @@ function App() {
                     </div>
                   ))}
                 </div>
-                {!project.steps.some((s) => s.kind === 'title') && (
-                  <button className="sample-link" onClick={() => void addTitle()} disabled={!!busy}>
-                    ＋ Add title slide
-                  </button>
-                )}
                 {!project.steps.some((s) => s.kind === 'closing') && (
                   <Button
-                    variant="ghost"
+                    className="slide-add slide-add-closing"
                     onClick={() => {
                       const next = withClosingSlide(project);
                       update(next);
@@ -974,7 +974,13 @@ function App() {
                 </span>
                 <span>
                   {preview
-                    ? 'Click the card or hotspot to continue'
+                    ? step?.kind === 'closing'
+                      ? 'Replay to start the walkthrough again'
+                      : step?.kind === 'title'
+                        ? 'Select the start button to begin'
+                        : step?.kind === 'video'
+                          ? 'Watch the clip, then continue'
+                          : 'Click the card or hotspot to continue'
                     : step?.kind === 'closing'
                       ? 'Edit your closing message in the panel on the right'
                       : step?.kind === 'title'

@@ -67,3 +67,13 @@ The owner reports successful Windows use, delivery of standalone HTML to other p
 | Environment / version          | Scenario                                          | Result                | Follow-up                                                                                                    |
 | ------------------------------ | ------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
 | Windows — versions unspecified | Use Frameway and send exported HTML to recipients | Owner reports success | Editable recovery also confirmed; ZIP delivery and specific enterprise policy constraints remain unconfirmed |
+
+## v0.4.0 candidate checks
+
+- Open the Library from the popup without recording. Check empty/populated/search states, project menus, visible help, and keyboard focus.
+- Record this tab, pause/resume, finish, and reopen the saved project. Check the popup's recording/error states.
+- Use Record my screen for a real desktop window. Capture remains silent and desktop clicks require manual steps.
+- Add a closing slide, edit its message, preview and Replay. Repeat without a title slide; test video/highlight transitions, undo/delete, HTML/embed playback, and backup/import.
+- Before migrating installations, export `.frameway.zip` backups. Keep the old installation until you have verified the imported projects in the new one.
+
+See [Store readiness](STORE-READINESS.md) for release gates. Local automated tests use synthetic data; real Windows/macOS picker checks remain manual.
