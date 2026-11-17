@@ -2272,12 +2272,6 @@ h1 {
   }
 }
 
-/* Shared workspace navigation and secondary actions. */
-.project-navigation {
-  min-width: 0;
-  flex: 1;
-}
-
 .export-dialog {
   box-sizing: border-box;
   width: min(760px, calc(100vw - 32px));

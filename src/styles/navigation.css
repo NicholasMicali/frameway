@@ -1,3 +1,7 @@
+.project-navigation {
+  min-width: 0;
+  flex: 1;
+}
 .header-menu {
   position: relative;
   width: fit-content;
