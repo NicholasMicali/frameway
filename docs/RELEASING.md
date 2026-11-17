@@ -17,3 +17,9 @@ GitHub-hosted CI execution and real installation of a release artifact must be v
 ## README demo
 
 `scripts/record-demo.mjs` records the real editor in a fresh Playwright profile using only generated sample content. It writes source videos and screenshots to ignored `test-results/readme-demo/`. Run it with the installed Playwright Chromium; its Vite server uses port 4184. The reviewed GIF is committed at `docs/assets/frameway-demo.gif`; source recordings remain ignored. The demo illustrates editing, preview, and HTML export, not native recording-picker interactions.
+
+## v0.4.0 / Chrome Web Store preparation
+
+The source candidate is v0.4.0; v0.3.0 remains the published GitHub release until separately approved. Follow [Store readiness](STORE-READINESS.md) for listing text, migration, permission explanations, and owner submission gates. GitHub release publication does not publish a Chrome Web Store item. Build the final artifact from merged main, not an intermediate stacked PR branch.
+
+The build includes Frameway LICENSE/NOTICE and generated THIRD_PARTY_NOTICES.txt. Review new dependencies and missing-license errors before packaging; do not omit notices to get a release out.

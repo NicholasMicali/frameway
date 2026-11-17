@@ -1223,55 +1223,6 @@ h1 {
 .step-row .step-label {
   padding-right: 30px;
 }
-.step-menu {
-  position: relative;
-  margin-top: -32px;
-  margin-left: auto;
-  width: 28px;
-}
-.step-menu summary {
-  list-style: none;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  min-height: 28px;
-  border-radius: 6px;
-  color: #526175;
-  background: #fff;
-}
-.step-menu summary::-webkit-details-marker {
-  display: none;
-}
-.step-menu summary:hover {
-  background: #eff7fd;
-}
-.step-menu summary:focus-visible {
-  outline: 3px solid #aecbf2;
-  outline-offset: 2px;
-}
-.step-menu-actions {
-  display: grid;
-  gap: 3px;
-  background: #fff;
-  border: 1px solid #d7e7f3;
-  border-radius: 8px;
-  padding: 6px;
-  margin-top: 4px;
-  box-shadow: 0 4px 12px #17253612;
-  width: 100%;
-}
-.step-menu[open] {
-  width: 100%;
-  margin-top: 0;
-}
-.step-menu[open] summary {
-  width: 28px;
-  margin-left: auto;
-}
-.step-menu-actions button {
-  text-align: left;
-  border: 0;
-}
 .danger-text {
   color: #b42338;
 }

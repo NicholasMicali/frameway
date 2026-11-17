@@ -126,3 +126,19 @@ This plan does not close broad reliability/accessibility issues merely because r
 - [Chrome distribution settings](https://developer.chrome.com/docs/webstore/cws-dashboard-distribution): unlisted visibility and review requirements.
 - [Chrome Web Store best practices](https://developer.chrome.com/docs/webstore/best-practices).
 - [Privacy disclosures](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy).
+
+## Implementation status
+
+The work is prepared as a dependent PR stack, awaiting maintainer review and merge:
+
+| Chunk                                | PR / branch                                               |
+| ------------------------------------ | --------------------------------------------------------- |
+| Shared foundation                    | [#46](https://github.com/NicholasMicali/frameway/pull/46) |
+| Library and logo                     | [#47](https://github.com/NicholasMicali/frameway/pull/47) |
+| Popup and editor                     | [#48](https://github.com/NicholasMicali/frameway/pull/48) |
+| Optional closing slide               | [#49](https://github.com/NicholasMicali/frameway/pull/49) |
+| v0.4.0 candidate and Store materials | `chore/store-release-prep`                                |
+
+The current editor has add-slide buttons below its step list, so Closing slide uses that area alongside Add title slide rather than introducing a new menu. Native dialogs remain where appropriate; Radix covers the migrated menus/popovers/tooltips. The popup remains plain HTML/TypeScript and the exported player remains independent of React/Radix.
+
+See [Store readiness](STORE-READINESS.md) for remaining owner and publication gates. The Store listing is not live, and local candidate packaging does not constitute release approval.

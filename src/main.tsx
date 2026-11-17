@@ -974,7 +974,13 @@ function App() {
                 </span>
                 <span>
                   {preview
-                    ? 'Click the card or hotspot to continue'
+                    ? step?.kind === 'closing'
+                      ? 'Replay to start the walkthrough again'
+                      : step?.kind === 'title'
+                        ? 'Select the start button to begin'
+                        : step?.kind === 'video'
+                          ? 'Watch the clip, then continue'
+                          : 'Click the card or hotspot to continue'
                     : step?.kind === 'closing'
                       ? 'Edit your closing message in the panel on the right'
                       : step?.kind === 'title'

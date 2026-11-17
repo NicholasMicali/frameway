@@ -1,10 +1,12 @@
-# Frameway — 0.3.0 beta
+# Frameway
 
 Record a workflow, edit screenshot and video steps, and send or embed an interactive walkthrough. Frameway is a local-first Chrome extension and editor built with original code. It does not require a Frameway account or backend.
 
 ![Frameway demo: edit a callout, preview a highlighted step, and export an interactive walkthrough](docs/assets/frameway-demo.gif)
 
 _Recorded in Frameway using generated demo content. The GIF shows editing, preview, and export; the downloadable HTML remains interactive._
+
+The current downloadable release is **v0.3.0 beta**. This branch prepares **v0.4.0** and an unlisted Chrome Web Store release; neither has been published yet. See the [release preparation checklist](docs/STORE-READINESS.md).
 
 ## Install the packaged extension
 
@@ -14,7 +16,7 @@ No Node.js or build tools are needed for the packaged version.
 2. Unzip it into a permanent folder. On Windows, use **Extract All**.
 3. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
-5. Open a page, click Frameway → **Record this tab**, wait for **REC**, and choose **Stop recording** when finished. The editor opens automatically.
+5. Open a page, click Frameway → **Record this tab**, wait for **REC**, and choose **Finish recording** when finished. The editor opens automatically.
 
 Keep the extracted folder in place. Back up editable work with **Export project backup** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Share → Send a walkthrough → Download HTML** creates the file to send to viewers. The export dialog explains each format and shows next steps after starting the download.
 
@@ -47,9 +49,9 @@ The extension records a tab's video and clicks, then creates screenshot/video st
 2. Enable **Developer mode**, click **Load unpacked**, and select this repository's `dist` folder.
 3. Pin **Frameway · Walkthrough recorder** in Chrome's Extensions menu.
 4. Open the page you want to demonstrate. Click Frameway → **Record this tab** and wait for the **REC** badge.
-5. Perform your workflow; click Frameway → **Stop recording**. Its editor opens automatically.
+5. Perform your workflow; click Frameway → **Finish recording**. Its editor opens automatically.
 
-Open the toolbar menu with **Command+Shift+Y** on macOS or **Ctrl+Shift+Y** elsewhere. Choose **Open Frameway** to access saved projects without recording. The extension's **Options** page also opens the editor. After updating the source, rebuild, click **Reload** on the extension's Chrome card, and reopen the editor. Export important projects before replacing or removing an extension installation.
+Open the toolbar menu with **Command+Shift+Y** on macOS or **Ctrl+Shift+Y** elsewhere. Choose **Open library** to access saved projects without recording. The extension's **Options** page also opens the editor. After updating the source, rebuild, click **Reload** on the extension's Chrome card, and reopen the editor. Export important projects before replacing or removing an extension installation.
 
 Alternatively, unzip a built `frameway-extension-v0.3.0.zip` release artifact and load the extracted folder containing `manifest.json`. There is no Chrome Web Store listing. Use the Releases page for packaged builds; developers can create one locally with `npm run package:extension`.
 
@@ -130,9 +132,9 @@ On the original development machine, `./scripts/dev.sh` can use the ignored proj
 npm run package:extension
 ```
 
-Creates `release/frameway-extension-v0.3.0.zip`, with `manifest.json` at its root. Source maps are excluded. `release/` and `dist/` stay ignored.
+Creates `release/frameway-extension-v0.4.0.zip`, with `manifest.json` at its root. Source maps are excluded. `release/` and `dist/` stay ignored.
 
-GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `v0.3.0` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
+GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `vX.Y.Z` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
 
 Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. Download the packaged [v0.3.0 beta](https://github.com/NicholasMicali/frameway/releases/tag/v0.3.0) from Releases. See [open issues](https://github.com/NicholasMicali/frameway/issues) for planned improvements.
 
@@ -149,3 +151,7 @@ Choose **Options → Keyboard shortcuts** for the current editor and timeline co
 ## Chapters and appearance
 
 Use a step's **Behavior → Start a chapter** setting to add a named section to the preview and exported Contents menu. See [chapter behavior](docs/CHAPTERS.md). **Project settings** previews shared card/title colors, title layouts, logo sizing, typography, and button shapes before applying them. See [appearance settings](docs/APPEARANCE.md) for compatibility and the separate reusable-kit follow-up.
+
+## Completion screens
+
+Add an optional [closing slide](docs/CLOSING-SLIDE.md) with your project branding, a completion message, and Replay walkthrough. Existing walkthroughs keep their current ending until you add one.

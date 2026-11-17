@@ -47,6 +47,7 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - run: node tests/extension-update.mjs
       - run: node scripts/package-extension.mjs
       - uses: actions/upload-artifact@v4
         with:

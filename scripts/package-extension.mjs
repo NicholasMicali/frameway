@@ -17,6 +17,10 @@ const manifest = JSON.parse(new TextDecoder().decode(entries['manifest.json']));
 if (manifest.version !== pkg.version) throw Error('Build version mismatch; run npm run build');
 for (const name of [
   'index.html',
+  'ui-tokens.css',
+  'LICENSE',
+  'NOTICE',
+  'THIRD_PARTY_NOTICES.txt',
   'background.js',
   'offscreen.js',
   'offscreen.html',

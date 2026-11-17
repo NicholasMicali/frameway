@@ -25,3 +25,5 @@ await copyFile('extension/popup.html', 'dist/popup.html');
 await copyFile('extension/popup.css', 'dist/popup.css');
 await copyFile('src/styles/tokens.css', 'dist/ui-tokens.css');
 await cp('extension/icons', 'dist/icons', { recursive: true });
+
+await import('./license-notices.mjs');
