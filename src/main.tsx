@@ -14,6 +14,7 @@ import {
   clamp,
   migrateProject,
   withTitleSlide,
+  withClosingSlide,
   splitVideo,
   duplicateStep,
   copyProject,
@@ -63,7 +64,7 @@ function useURL(blob?: Blob) {
 }
 function Thumb({ step, logo, appearance }: { step: Step; logo?: string; appearance?: Appearance }) {
   const src = useURL(step.image);
-  return step.kind === 'title' ? (
+  return step.kind === 'title' || step.kind === 'closing' ? (
     <div className="title-thumb" style={appearanceVars(appearance)}>
       <TitleSlide step={step} src={src} logo={logo} appearance={appearance} thumbnail />
     </div>
@@ -918,11 +919,13 @@ function App() {
                           <span className="step-number">{i + 1}</span>
                           {
                             <span className="clip-pill">
-                              {s.kind === 'title'
-                                ? 'T title'
-                                : s.kind === 'video'
-                                  ? '▷ video'
-                                  : '▧ image'}
+                              {s.kind === 'closing'
+                                ? '✓ closing'
+                                : s.kind === 'title'
+                                  ? 'T title'
+                                  : s.kind === 'video'
+                                    ? '▷ video'
+                                    : '▧ image'}
                             </span>
                           }
                         </div>
@@ -949,6 +952,19 @@ function App() {
                     ＋ Add title slide
                   </button>
                 )}
+                {!project.steps.some((s) => s.kind === 'closing') && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      const next = withClosingSlide(project);
+                      update(next);
+                      select(next.steps[next.steps.length - 1].id);
+                    }}
+                    disabled={!!busy}
+                  >
+                    <Icon name="plus" /> Add closing slide
+                  </Button>
+                )}
               </aside>
             )}
             <main className="canvas-area">
@@ -959,11 +975,13 @@ function App() {
                 <span>
                   {preview
                     ? 'Click the card or hotspot to continue'
-                    : step?.kind === 'title'
-                      ? 'Edit your introduction in the panel on the right'
-                      : step?.kind === 'video'
-                        ? 'Trim this video step below'
-                        : 'Drag the dot or card to reposition'}
+                    : step?.kind === 'closing'
+                      ? 'Edit your closing message in the panel on the right'
+                      : step?.kind === 'title'
+                        ? 'Edit your introduction in the panel on the right'
+                        : step?.kind === 'video'
+                          ? 'Trim this video step below'
+                          : 'Drag the dot or card to reposition'}
                 </span>
               </div>
               {project.warning && !preview && (
@@ -984,7 +1002,7 @@ function App() {
                   <img
                     key={`${selected}:${preview}:${visit}`}
                     style={zooming ? (areaZoomVars(step) as React.CSSProperties) : undefined}
-                    hidden={step?.kind === 'title'}
+                    hidden={step?.kind === 'title' || step?.kind === 'closing'}
                     className={`still ${zooming ? 'area-zoom-image' : ''}`}
                     src={imageURL}
                     alt={step?.title}
@@ -1013,7 +1031,7 @@ function App() {
                       setError('The recording could not be decoded. Check the imported media.')
                     }
                   />
-                  {step?.kind === 'title' && (
+                  {(step?.kind === 'title' || step?.kind === 'closing') && (
                     <TitleSlide
                       step={step}
                       src={imageURL}
@@ -1163,7 +1181,7 @@ function App() {
                   </button>
                 </div>
               </div>
-              {!preview && step && step.kind !== 'title' && (
+              {!preview && step && step.kind !== 'title' && step.kind !== 'closing' && (
                 <section className="timeline">
                   <div className="timeline-head">
                     <strong>{step.kind === 'video' ? 'Video clip' : 'Still frame'}</strong>
@@ -1238,11 +1256,13 @@ function App() {
                   STEP {project.steps.indexOf(step) + 1} OF {project.steps.length}
                 </div>
                 <h2 className="inspector-heading">
-                  {step.kind === 'title'
-                    ? 'Title slide'
-                    : step.kind === 'image'
-                      ? 'Image & callout'
-                      : 'Video clip'}
+                  {step.kind === 'closing'
+                    ? 'Closing slide'
+                    : step.kind === 'title'
+                      ? 'Title slide'
+                      : step.kind === 'image'
+                        ? 'Image & callout'
+                        : 'Video clip'}
                 </h2>
                 <fieldset className="settings-section">
                   <legend>Content</legend>
@@ -1279,6 +1299,23 @@ function App() {
                         {project.appearance?.titleLayout === 'centered'
                           ? 'The centered layout hides the recording preview.'
                           : 'The image shows the upper-left corner of the recording’s opening frame.'}
+                      </p>
+                    </>
+                  )}
+                  {step.kind === 'closing' && (
+                    <>
+                      <label>
+                        Description
+                        <textarea
+                          aria-label="Closing description"
+                          value={step.body}
+                          maxLength={5000}
+                          onChange={(e) => patch({ body: e.target.value })}
+                        />
+                      </label>
+                      <p className="field-note">
+                        This slide ends the walkthrough. Replay starts again at the first step.
+                        Project branding applies here too.
                       </p>
                     </>
                   )}
@@ -1504,24 +1541,26 @@ function App() {
                       )}
                     </>
                   )}
-                  <label>
-                    Continue to
-                    <select
-                      aria-label="Navigation target"
-                      value={step.target}
-                      onChange={(e) => patch({ target: e.target.value })}
-                    >
-                      <option value="next">Next step</option>
-                      <option value="end">End walkthrough</option>
-                      {project.steps
-                        .filter((s) => s.id !== step.id)
-                        .map((s) => (
-                          <option value={s.id} key={s.id}>
-                            {s.title}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
+                  {step.kind !== 'closing' && (
+                    <label>
+                      Continue to
+                      <select
+                        aria-label="Navigation target"
+                        value={step.target}
+                        onChange={(e) => patch({ target: e.target.value })}
+                      >
+                        <option value="next">Next step</option>
+                        <option value="end">End walkthrough</option>
+                        {project.steps
+                          .filter((s) => s.id !== step.id)
+                          .map((s) => (
+                            <option value={s.id} key={s.id}>
+                              {s.title}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  )}
                 </fieldset>
                 <fieldset className="settings-section">
                   <legend>Arrange step</legend>

@@ -12,4 +12,5 @@ export async function openSample(page) {
     mimeType: 'application/zip',
     buffer: Buffer.from(bytes),
   });
+  return bytes;
 }

@@ -15,10 +15,10 @@ export function TitleSlide({
   onStart?: () => void;
   thumbnail?: boolean;
 }) {
-  if (step.kind !== 'title') return null;
+  if (step.kind !== 'title' && step.kind !== 'closing') return null;
   return (
     <div
-      className={`title-slide title-layout-${appearance?.titleLayout ?? 'split'} ${thumbnail ? 'title-thumbnail' : ''}`}
+      className={`title-slide title-layout-${step.kind === 'closing' ? 'centered' : (appearance?.titleLayout ?? 'split')} ${step.kind === 'closing' ? 'closing-slide' : ''} ${thumbnail ? 'title-thumbnail' : ''}`}
     >
       <img className="title-preview" src={src} alt="" />
       <div className="title-copy">
@@ -27,10 +27,12 @@ export function TitleSlide({
         <p>{step.body}</p>
         {onStart ? (
           <button className="title-start" onClick={onStart}>
-            {step.buttonText}
+            {step.kind === 'closing' ? 'Replay walkthrough' : step.buttonText}
           </button>
         ) : (
-          <span className="title-start">{step.buttonText}</span>
+          <span className="title-start">
+            {step.kind === 'closing' ? 'Replay walkthrough' : step.buttonText}
+          </span>
         )}
       </div>
     </div>

@@ -129,3 +129,9 @@
 .title-layout-centered .title-copy p {
   margin-bottom: 3cqw;
 }
+
+.closing-slide .title-logo {
+  margin-left: auto;
+  margin-right: auto;
+  object-position: center;
+}

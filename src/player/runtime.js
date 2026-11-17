@@ -119,6 +119,7 @@
     leaving = false;
   const step = () => project.steps[index];
   const targetIndex = () => {
+    if (step().kind === 'closing') return -1;
     const target = step().target;
     return target === 'end'
       ? -1
@@ -244,11 +245,13 @@
     const s = step();
     image.classList.remove('area-zoom-image');
     hotspot.classList.remove('area-zoom-hotspot');
-    titleSlide.hidden = s.kind !== 'title';
+    titleSlide.hidden = s.kind !== 'title' && s.kind !== 'closing';
+    titleSlide.className = `title-slide title-layout-${s.kind === 'closing' ? 'centered' : project.titleLayout || 'split'} ${s.kind === 'closing' ? 'closing-slide' : ''}`;
     titleImage.src = s.image;
     titleHeading.textContent = s.title;
     titleBody.textContent = s.body;
-    titleStart.textContent = s.kind === 'title' ? s.buttonText : '';
+    titleStart.textContent =
+      s.kind === 'closing' ? 'Replay walkthrough' : s.kind === 'title' ? s.buttonText : '';
     image.hidden = s.kind !== 'image';
     video.hidden = s.kind !== 'video';
     image.src = s.image;

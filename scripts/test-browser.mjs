@@ -12,6 +12,7 @@ for (const test of [
   'area-zoom',
   'export',
   'title',
+  'closing',
   'offline-core',
   'ui-polish',
   'storage',
