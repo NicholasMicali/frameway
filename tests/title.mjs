@@ -109,7 +109,7 @@ try {
   assert.equal(await page.locator('.stage .title-logo').count(), 1);
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
   assert.equal(await page.locator('.step-list .step').count(), 6);
-  await page.getByRole('button', { name: '＋ Add title slide', exact: true }).click();
+  await page.getByRole('button', { name: 'Add title slide', exact: true }).click();
   await page.getByLabel('Title description').waitFor();
   assert.equal(await page.locator('.step-list .step').count(), 7);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();

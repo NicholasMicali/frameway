@@ -58,3 +58,21 @@
 .editor-app .clip-pill {
   z-index: 5;
 }
+
+.editor-app .slide-add {
+  width: 100%;
+  flex-shrink: 0;
+  min-height: 38px;
+  border: 1px dashed var(--ui-border);
+  background: var(--ui-surface);
+  color: var(--ui-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+.editor-app .slide-add:hover:not(:disabled) {
+  background: var(--ui-primary-soft);
+  border-color: var(--ui-primary);
+}
+.editor-app .slide-add-closing {
+  margin-top: 16px;
+}

@@ -906,6 +906,11 @@ function App() {
                   YOUR STORY <span>{project.steps.length}</span>
                 </div>
                 <div className="step-list">
+                  {!project.steps.some((s) => s.kind === 'title') && (
+                    <Button className="slide-add" onClick={() => void addTitle()} disabled={!!busy}>
+                      <Icon name="plus" /> Add title slide
+                    </Button>
+                  )}
                   {project.steps.map((s, i) => (
                     <div className="step-row" key={s.id}>
                       <button
@@ -947,14 +952,9 @@ function App() {
                     </div>
                   ))}
                 </div>
-                {!project.steps.some((s) => s.kind === 'title') && (
-                  <button className="sample-link" onClick={() => void addTitle()} disabled={!!busy}>
-                    ＋ Add title slide
-                  </button>
-                )}
                 {!project.steps.some((s) => s.kind === 'closing') && (
                   <Button
-                    variant="ghost"
+                    className="slide-add slide-add-closing"
                     onClick={() => {
                       const next = withClosingSlide(project);
                       update(next);

@@ -85,3 +85,7 @@ GitHub workflows are configured but have not executed on GitHub yet. Repository 
 - ZIP includes 22 files, Frameway license/notices and production dependency notices, no source maps or private media. Permissions are unchanged (`activeTab`, `scripting`, `tabCapture`, `offscreen`, `storage`) with no host permissions. Packaged JavaScript was checked for eval/new Function.
 
 Remaining gates: final PR CI and merge approval, native tab/screen capture on macOS and Windows with this candidate, owner product review, final rebuild from merged main, dashboard disclosures/verification, and explicit submission/publication approval. Do not treat synthetic browser tests as verification of OS pickers or enterprise browser policies. No Store item or release has been published by this preparation pass.
+
+### Home and slide-control polish
+
+The add-title action now appears first inside the scrollable slide list, and both add-slide actions share the same dashed button style. The Library uses more spacious sections, subtle blue/lilac gradients, and a short entrance animation disabled by reduced-motion preferences. Home/library, title, and closing-slide browser workflows passed after these changes, along with formatting, lint, and a rebuilt v0.4.0 package. Desktop/mobile layouts and the reduced-motion behavior were checked; Store screenshots were refreshed.

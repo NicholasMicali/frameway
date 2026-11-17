@@ -16,16 +16,16 @@ try {
   await page.getByRole('menuitem', { name: 'Duplicate', exact: true }).waitFor();
   await page.keyboard.press('Escape');
   await page.locator('.section-heading').first().click();
-  await page.screenshot({ path: 'docs/assets/store/editor.png' });
+  await page.screenshot({ animations: 'disabled', path: 'docs/assets/store/editor.png' });
   await page.getByRole('button', { name: 'Add closing slide', exact: true }).click();
   await page.getByLabel('Closing description').waitFor();
   await page.getByRole('button', { name: '▷ Preview' }).click();
   await page.getByText('Saved locally', { exact: true }).waitFor();
-  await page.screenshot({ path: 'docs/assets/store/completion.png' });
+  await page.screenshot({ animations: 'disabled', path: 'docs/assets/store/completion.png' });
   await page.goto('http://127.0.0.1:4198/#home');
   await page.reload();
   await page.getByRole('heading', { name: 'Your walkthroughs', exact: true }).waitFor();
-  await page.screenshot({ path: 'docs/assets/store/library.png' });
+  await page.screenshot({ animations: 'disabled', path: 'docs/assets/store/library.png' });
 } finally {
   await browser.close();
   await server.close();
