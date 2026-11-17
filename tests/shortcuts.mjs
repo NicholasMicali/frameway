@@ -12,12 +12,10 @@ const openHelp = async () => {
   await page.getByLabel('Workspace options', { exact: true }).focus();
   await page.keyboard.press('Enter');
   await page.getByRole('menuitem', { name: 'Storage & backups', exact: true }).waitFor();
+  await page.waitForFunction(() => document.activeElement?.getAttribute('role') === 'menuitem');
   await page.keyboard.press('End');
-  assert.equal(
-    await page
-      .getByRole('menuitem', { name: 'Keyboard shortcuts', exact: true })
-      .evaluate((el) => document.activeElement === el),
-    true,
+  await page.waitForFunction(
+    () => document.activeElement?.getAttribute('aria-label') === 'Keyboard shortcuts',
   );
   await page.keyboard.press('Enter');
   await page.getByRole('dialog', { name: 'Keyboard shortcuts' }).waitFor();
