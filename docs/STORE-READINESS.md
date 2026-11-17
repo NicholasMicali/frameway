@@ -27,7 +27,7 @@ Chrome may restrict capture on protected or browser-internal pages. Automatic cl
 - Homepage/source: https://github.com/NicholasMicali/frameway
 - Support: https://github.com/NicholasMicali/frameway/issues
 - Privacy: https://github.com/NicholasMicali/frameway/blob/main/PRIVACY.md — merge the updated policy before submission.
-- Icon: `extension/icons/frameway-128.png`; smaller toolbar sizes are included in the package.
+- Icon: `extension/icons/frameway-128.png` (96px artwork with 16px transparent padding); smaller toolbar sizes are included in the package.
 - Sanitized screenshots: `docs/assets/store/` (generated synthetic project, no private content).
 - Package/checksum: `release/frameway-extension-v0.4.0.zip` and `.zip.sha256`, generated locally, not committed.
 
@@ -79,6 +79,7 @@ Run `node scripts/store-screenshots.mjs` with Playwright Chromium installed to r
 
 ## Official references
 
+- [Store image guidance](https://developer.chrome.com/docs/webstore/images)
 - [Distribution and unlisted visibility](https://developer.chrome.com/docs/webstore/cws-dashboard-distribution)
 - [Privacy fields and permission justifications](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy)
 

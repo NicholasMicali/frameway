@@ -13,7 +13,11 @@ try {
         await img.decode();
         const canvas = document.createElement('canvas');
         canvas.width = canvas.height = size;
-        canvas.getContext('2d').drawImage(img, 0, 0, size, size);
+        // Store icon guidance: 96px artwork inside a 128px transparent canvas.
+        const padding = size === 128 ? 16 : 0;
+        canvas
+          .getContext('2d')
+          .drawImage(img, padding, padding, size - padding * 2, size - padding * 2);
         return canvas.toDataURL('image/png').split(',')[1];
       },
       { svg, size },

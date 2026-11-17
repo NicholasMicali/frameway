@@ -73,3 +73,15 @@ GitHub workflows are configured but have not executed on GitHub yet. Repository 
 - Build/package and all 12 model tests pass. Dedicated zoom browser tests pass for percentage overrides, automatic/reset/disable controls, unchanged callout dimensions, persistence, archive roundtrip, offline HTML, reduced motion, and navigation reset.
 - Existing editor and export suites pass, including relative-file packages and React iframe embedding. Preview and offline export screenshots reviewed.
 - Automatic zoom is capped by the highlight dimensions so the whole area fits. Custom percentages intentionally allow cropping; translation remains bounded to avoid blank image edges.
+
+## v0.4.0 unlisted-release candidate (November 16, 2026)
+
+- Formatting, lint, TypeScript/build/package, and all 21 model tests passed locally.
+- All 22 browser workflows passed across the full run and its continuation. A source-edit-triggered Vite reload interrupted storage fixture generation; storage and all subsequent workflows were rerun successfully after source changes settled. The final slide-menu layout was also checked separately, including title-thumbnail menu access.
+- A packaged extension in a disposable Chromium profile imported synthetic data, saved a closing slide, and retained the project after a same-path manifest-version update with the same extension identity. The initial app workflow made no HTTP(S) requests. This does not verify actual Store update delivery.
+- Closing-slide tests cover editing, delete/undo, reload persistence, backup roundtrip, offline HTML/embed replay with/without a title, and transitions from video and zoomed highlights. Existing no-closing workflows pass unchanged.
+- Synthetic Store screenshots are 1280×800. The 128px Store icon uses 96px artwork and transparent padding. No private recordings were used.
+- Editor bundle is about 478 KB raw / 155 KB gzip; shared UI primitives account for the increase from the pre-Radix baseline. Popup remains plain HTML/TypeScript; exported playback remains independent of React/Radix.
+- ZIP includes 22 files, Frameway license/notices and production dependency notices, no source maps or private media. Permissions are unchanged (`activeTab`, `scripting`, `tabCapture`, `offscreen`, `storage`) with no host permissions. Packaged JavaScript was checked for eval/new Function.
+
+Remaining gates: final PR CI and merge approval, native tab/screen capture on macOS and Windows with this candidate, owner product review, final rebuild from merged main, dashboard disclosures/verification, and explicit submission/publication approval. Do not treat synthetic browser tests as verification of OS pickers or enterprise browser policies. No Store item or release has been published by this preparation pass.
