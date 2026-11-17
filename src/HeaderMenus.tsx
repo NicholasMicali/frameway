@@ -1,4 +1,8 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+import * as Popover from '@radix-ui/react-popover';
+import { Button } from './ui/Button';
+import { Menu, MenuItem } from './ui/Menu';
+import './styles/navigation.css';
 import type { Project } from './model';
 import { Icon } from './Icon';
 
@@ -13,32 +17,28 @@ function HeaderMenu({
   className?: string;
   children: (close: () => void) => ReactNode;
 }) {
-  const menu = useRef<HTMLDetailsElement>(null);
-  const close = () => {
-    menu.current?.removeAttribute('open');
-    menu.current?.querySelector('summary')?.focus();
-  };
-  useEffect(() => {
-    const outside = (e: PointerEvent) => {
-      if (!menu.current?.contains(e.target as Node)) menu.current?.removeAttribute('open');
-    };
-    document.addEventListener('pointerdown', outside);
-    return () => document.removeEventListener('pointerdown', outside);
-  }, []);
+  const [open, setOpen] = useState(false);
   return (
-    <details
-      ref={menu}
-      className={`header-menu ${className}`}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          e.stopPropagation();
-          close();
-        }
-      }}
-    >
-      <summary aria-label={label}>{trigger}</summary>
-      <div className="header-menu-panel">{children(close)}</div>
-    </details>
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <div className={`header-menu ${className}`}>
+        <Popover.Trigger asChild>
+          <Button className="header-menu-trigger" aria-label={label}>
+            {trigger}
+          </Button>
+        </Popover.Trigger>
+        <Popover.Portal>
+          <Popover.Content
+            className="header-menu-panel"
+            aria-label={label}
+            sideOffset={8}
+            align={className === 'workspace-options' ? 'end' : 'start'}
+            collisionPadding={16}
+          >
+            {children(() => setOpen(false))}
+          </Popover.Content>
+        </Popover.Portal>
+      </div>
+    </Popover.Root>
   );
 }
 
@@ -149,63 +149,39 @@ export function WorkspaceOptions({
   onImport: () => void;
 }) {
   return (
-    <HeaderMenu
-      label="Workspace options"
-      className="workspace-options"
-      trigger={
-        <>
-          <Icon name="settings" />
-          <span>Options</span>
-          <Icon name="chevron" />
-        </>
-      }
-    >
-      {(close) => (
-        <>
-          <button
-            aria-label="Storage & backups"
-            disabled={busy}
-            onClick={() => {
-              close();
-              onStorage();
-            }}
-          >
-            <Icon name="folder" />
-            <span>
-              <strong>Storage & backups</strong>
-              <small>Review space and manage saved work</small>
-            </span>
-          </button>
-          <button
-            aria-label="Import project backup"
-            disabled={busy}
-            onClick={() => {
-              close();
-              onImport();
-            }}
-          >
-            <Icon name="upload" />
-            <span>
-              <strong>Import project backup</strong>
-              <small>Restore an editable project ZIP</small>
-            </span>
-          </button>
-          <button
-            aria-label="Keyboard shortcuts"
-            aria-haspopup="dialog"
-            onClick={() => {
-              close();
-              onShortcuts();
-            }}
-          >
-            <Icon name="keyboard" />
-            <span>
-              <strong>Keyboard shortcuts</strong>
-              <small>Editing, trimming, and navigation keys</small>
-            </span>
-          </button>
-        </>
-      )}
-    </HeaderMenu>
+    <div className="workspace-options">
+      <Menu
+        label="Workspace options"
+        trigger={
+          <Button variant="ghost" aria-label="Workspace options">
+            <Icon name="settings" />
+            <span>Options</span>
+            <Icon name="chevron" />
+          </Button>
+        }
+      >
+        <MenuItem label="Storage & backups" disabled={busy} onSelect={onStorage}>
+          <Icon name="folder" />
+          <span>
+            <strong>Storage & backups</strong>
+            <small>Review space and manage saved work</small>
+          </span>
+        </MenuItem>
+        <MenuItem label="Import project backup" disabled={busy} onSelect={onImport}>
+          <Icon name="upload" />
+          <span>
+            <strong>Import project backup</strong>
+            <small>Restore an editable project ZIP</small>
+          </span>
+        </MenuItem>
+        <MenuItem label="Keyboard shortcuts" onSelect={onShortcuts}>
+          <Icon name="keyboard" />
+          <span>
+            <strong>Keyboard shortcuts</strong>
+            <small>Editing, trimming, and navigation keys</small>
+          </span>
+        </MenuItem>
+      </Menu>
+    </div>
   );
 }

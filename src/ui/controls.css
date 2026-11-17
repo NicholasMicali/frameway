@@ -1,0 +1,110 @@
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-2);
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  font: inherit;
+  font-size: var(--ui-text-body);
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.ui-button svg,
+.ui-menu-item > svg {
+  flex-shrink: 0;
+}
+.ui-button:hover {
+  background: var(--ui-primary-soft);
+}
+.ui-button-primary {
+  background: var(--ui-primary);
+  border-color: transparent;
+  color: white;
+}
+.ui-button-primary:hover {
+  background: var(--ui-primary-hover);
+}
+.ui-button-ghost {
+  background: transparent;
+  border-color: transparent;
+}
+.ui-button-danger {
+  color: var(--ui-danger);
+}
+.ui-button-icon {
+  width: 36px;
+  padding: 8px;
+}
+.ui-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.ui-button:focus-visible,
+.ui-menu-item:focus-visible {
+  outline: 3px solid var(--ui-focus);
+  outline-offset: 2px;
+}
+.ui-menu {
+  z-index: 50;
+  box-sizing: border-box;
+  width: min(310px, calc(100vw - 32px));
+  max-height: var(--radix-dropdown-menu-content-available-height);
+  overflow-y: auto;
+  padding: var(--ui-space-2);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-panel);
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  box-shadow: var(--ui-shadow);
+}
+.ui-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-3);
+  border-radius: var(--ui-radius);
+  padding: var(--ui-space-3);
+  font-size: var(--ui-text-body);
+  cursor: pointer;
+  outline: none;
+}
+.ui-menu-item[data-highlighted] {
+  background: var(--ui-primary-soft);
+}
+.ui-menu-item[data-disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+.ui-menu-item strong {
+  display: block;
+  font-size: var(--ui-text-body);
+  font-weight: 600;
+}
+.ui-menu-item small {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--ui-text-small);
+  line-height: 1.5;
+  color: var(--ui-muted);
+}
+.ui-menu-danger {
+  color: var(--ui-danger);
+}
+.ui-tooltip {
+  z-index: 60;
+  max-width: min(260px, calc(100vw - 24px));
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: white;
+  background: var(--ui-text);
+  font-size: var(--ui-text-small);
+  line-height: 1.5;
+}
+.ui-tooltip svg {
+  fill: var(--ui-text);
+}
