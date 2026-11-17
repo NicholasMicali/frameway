@@ -32,6 +32,8 @@ import './style.css';
 import './ui/controls.css';
 import { Button } from './ui/Button';
 import { Tooltip } from './ui/Tooltip';
+import { SlideActions } from './SlideActions';
+import './styles/editor-controls.css';
 import { HomePage } from './HomePage';
 import framewayLogo from '../extension/icons/frameway.svg';
 import packageInfo from '../package.json';
@@ -705,7 +707,7 @@ function App() {
           />
           {project && (
             <button
-              className="share-button"
+              className="ui-button ui-button-primary share-button"
               disabled={!!busy}
               onClick={() => setExportOpen(true)}
               aria-haspopup="dialog"
@@ -849,7 +851,7 @@ function App() {
                   <button
                     disabled={!past.current.length || !!busy}
                     onClick={() => travel('undo')}
-                    className="icon-button"
+                    className="ui-button ui-button-ghost ui-button-icon"
                     aria-label="Undo"
                     title="Undo (⌘/Ctrl Z)"
                   >
@@ -858,7 +860,7 @@ function App() {
                   <button
                     disabled={!future.current.length || !!busy}
                     onClick={() => travel('redo')}
-                    className="icon-button"
+                    className="ui-button ui-button-ghost ui-button-icon"
                     aria-label="Redo"
                     title="Redo (⌘/Ctrl Shift Z)"
                   >
@@ -931,60 +933,14 @@ function App() {
                           </span>
                         )}
                       </button>
-                      <details
-                        className="step-menu"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Escape') {
-                            e.currentTarget.open = false;
-                            e.currentTarget.querySelector('summary')?.focus();
-                          }
-                        }}
-                      >
-                        <summary
-                          aria-label={`Options for step ${i + 1}`}
-                          title={`Options for step ${i + 1}`}
-                        >
-                          <Icon name="more" />
-                        </summary>
-                        <div
-                          className="step-menu-actions"
-                          onClick={(e) => {
-                            if ((e.target as HTMLElement).closest('button'))
-                              e.currentTarget.closest('details')?.removeAttribute('open');
-                          }}
-                        >
-                          <button
-                            disabled={!!busy}
-                            onClick={() => update(duplicateStep(project, s.id))}
-                          >
-                            Duplicate
-                          </button>
-                          <button
-                            disabled={i === 0 || !!busy}
-                            onClick={() => update(moveStep(project, s.id, -1))}
-                          >
-                            Move up
-                          </button>
-                          <button
-                            disabled={i === project.steps.length - 1 || !!busy}
-                            onClick={() => update(moveStep(project, s.id, 1))}
-                          >
-                            Move down
-                          </button>
-                          <button
-                            className="danger-text"
-                            disabled={project.steps.length <= 1 || !!busy}
-                            onClick={() => {
-                              const p = deleteStep(project, s.id);
-                              update(p);
-                              if (selected === s.id)
-                                select(p.steps[Math.min(i, p.steps.length - 1)].id);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </details>
+                      <SlideActions
+                        project={project}
+                        step={s}
+                        busy={!!busy}
+                        selected={selected}
+                        onChange={update}
+                        onSelect={select}
+                      />
                     </div>
                   ))}
                 </div>

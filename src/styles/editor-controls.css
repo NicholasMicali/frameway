@@ -1,0 +1,35 @@
+/* Application controls only: walkthrough colors and exported player stay separate. */
+.editor-app .step-row > .ui-button-icon {
+  flex-shrink: 0;
+  width: 30px;
+  min-height: 32px;
+  padding: 6px;
+}
+.editor-app .step-row {
+  align-items: center;
+}
+.editor-app .inspector .settings-section {
+  border-color: var(--ui-border);
+  border-radius: var(--ui-radius);
+}
+.editor-app .inspector .settings-section > button,
+.editor-app .inspector .arrange button,
+.editor-app .timeline-actions > button,
+.utility-dialog .utility-actions button {
+  border-color: var(--ui-border);
+  border-radius: var(--ui-radius);
+  min-height: 36px;
+}
+.editor-app .inspector .settings-section > .delete {
+  color: var(--ui-danger);
+  background: transparent;
+}
+.editor-app .inspector .settings-section > .delete:hover {
+  background: #fff3f5;
+}
+.editor-app .toolbar-right {
+  gap: 8px;
+}
+.editor-app .toolbar-right > .ui-button-icon {
+  color: var(--ui-text);
+}

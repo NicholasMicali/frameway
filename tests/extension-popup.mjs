@@ -37,6 +37,7 @@ try {
       },
       { state, url, failure },
     );
+    await page.addStyleTag({ content: await readFile('dist/ui-tokens.css', 'utf8') });
     await page.addStyleTag({ content: await readFile('dist/popup.css', 'utf8') });
     await page.addScriptTag({ content: script });
     await page.waitForFunction(
@@ -44,6 +45,8 @@ try {
     );
   }
   await scenario();
+  await page.screenshot({ path: 'test-results/pause/idle.png' });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   assert.equal(await page.locator('#record-label').textContent(), 'Record this tab');
   await page.locator('#open').click();
   assert.deepEqual(await page.evaluate(() => window.calls), [

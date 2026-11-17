@@ -17,20 +17,23 @@ try {
   assert.equal(await page.locator('header').getByLabel('Open walkthrough').count(), 1);
   const headline = await page.getByLabel('Callout headline').inputValue();
   const row = page.locator('.step-row').nth(2);
-  await row.locator('summary').click();
-  await row.getByRole('button', { name: 'Duplicate', exact: true }).click();
-  assert.equal(await page.locator('.step').count(), 8);
+  await row.getByRole('button', { name: /Step .* options/ }).click();
+  await page.getByRole('menuitem', { name: 'Duplicate', exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll('.step').length === 8);
   assert.equal(await page.getByLabel('Callout headline').inputValue(), headline);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   assert.equal(await page.locator('.step').count(), 7);
   const originalOrder = await page.locator('.step-label').allTextContents();
-  await row.locator('summary').click();
-  await row.getByRole('button', { name: 'Move up', exact: true }).click();
-  assert.equal((await page.locator('.step-label').allTextContents())[1], originalOrder[2]);
+  await row.getByRole('button', { name: /Step .* options/ }).click();
+  await page.getByRole('menuitem', { name: 'Move up', exact: true }).click();
+  await page.waitForFunction(
+    (text) => document.querySelectorAll('.step-label')[1].textContent === text,
+    originalOrder[2],
+  );
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
-  await row.locator('summary').click();
-  await row.getByRole('button', { name: 'Delete', exact: true }).click();
-  assert.equal(await page.locator('.step').count(), 6);
+  await row.getByRole('button', { name: /Step .* options/ }).click();
+  await page.getByRole('menuitem', { name: 'Delete', exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll('.step').length === 6);
   assert.equal(await page.getByLabel('Callout headline').inputValue(), headline);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await page.locator('.step').nth(1).click();

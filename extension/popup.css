@@ -1,28 +1,31 @@
 :root {
   font-family: system-ui, sans-serif;
-  color: #172638;
-  background: #fff;
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+* {
+  box-sizing: border-box;
 }
 body {
-  width: 300px;
+  width: 340px;
   margin: 0;
   padding: 20px;
 }
 header {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 h1 {
-  font-size: 19px;
+  font-size: 20px;
   margin: 0;
   letter-spacing: -0.5px;
 }
 p {
   font-size: 12px;
-  color: #58697b;
-  line-height: 1.5;
+  color: var(--ui-muted);
+  line-height: 1.6;
   margin: 4px 0 0;
 }
 button {
@@ -30,20 +33,23 @@ button {
   align-items: center;
   gap: 12px;
   width: 100%;
-  border: 1px solid #d6e3ef;
-  border-radius: 12px;
-  background: #f6faff;
-  color: #172638;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  background: var(--ui-surface);
+  color: var(--ui-text);
   padding: 14px;
   font: 600 14px system-ui;
   text-align: left;
   cursor: pointer;
 }
-button:hover {
-  background: #eaf4ff;
+button svg {
+  flex-shrink: 0;
 }
-button:focus-visible {
-  outline: 3px solid #69b5f7;
+button:hover:not(:disabled) {
+  background: var(--ui-primary-soft);
+}
+:is(button, a):focus-visible {
+  outline: 3px solid var(--ui-focus);
   outline-offset: 3px;
 }
 button:disabled {
@@ -51,35 +57,86 @@ button:disabled {
   cursor: default;
 }
 #record {
-  color: #fff;
-  background: #167bd1;
-  border-color: #167bd1;
+  color: white;
+  background: var(--ui-primary);
+  border-color: transparent;
 }
 #record:hover:not(:disabled) {
-  background: #096abf;
+  background: var(--ui-primary-hover);
 }
 #record[data-recording='true'] {
-  background: #b92f49;
-  border-color: #b92f49;
+  background: var(--ui-danger);
+}
+#record[data-recording='true']:hover:not(:disabled) {
+  background: #a4233c;
+}
+.record-stop,
+#record[data-recording='true'] .record-dot,
+.resume-play,
+#pause[data-paused='true'] .pause-bars {
+  display: none;
+}
+#record[data-recording='true'] .record-stop,
+#pause[data-paused='true'] .resume-play {
+  display: block;
+}
+#pause {
+  margin-top: 8px;
+}
+body[data-capture='paused'] #pause {
+  color: var(--ui-warning);
+  background: #fff7e7;
+  border-color: #e5cf9f;
 }
 small {
   display: block;
   font-size: 12px;
   font-weight: 400;
-  color: #58697b;
+  color: var(--ui-muted);
   margin-top: 3px;
+  line-height: 1.5;
 }
 #status {
-  margin: 8px 2px 18px;
+  margin: 10px 2px 18px;
+}
+#open {
+  background: var(--ui-surface-muted);
 }
 #error {
-  color: #aa253c;
+  color: var(--ui-danger);
   margin-top: 12px;
+  padding: 10px;
+  background: #fff3f5;
+  border-radius: 8px;
+  overflow-wrap: anywhere;
 }
-
+.screen-tip {
+  margin: 16px 2px 0;
+}
+.screen-tip strong {
+  font-weight: 600;
+}
+footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-top: 1px solid var(--ui-border);
+  margin-top: 18px;
+  padding-top: 14px;
+  font-size: 11px;
+  color: var(--ui-muted);
+}
+footer span {
+  flex: 1;
+  color: var(--ui-success);
+}
+footer a {
+  color: var(--ui-muted);
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}
 [hidden] {
   display: none !important;
-}
-#pause {
-  margin-top: 8px;
 }
