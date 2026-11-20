@@ -6,19 +6,28 @@ Record a workflow, edit screenshot and video steps, and send or embed an interac
 
 _Recorded in Frameway using generated demo content. The GIF shows editing, preview, and export; the downloadable HTML remains interactive._
 
-The current downloadable release is **v0.3.0 beta**. This branch prepares **v0.4.0** and an unlisted Chrome Web Store release; neither has been published yet. See the [release preparation checklist](docs/STORE-READINESS.md).
+## Install Frameway
 
-## Install the packaged extension
+**[Add Frameway to Chrome](https://chromewebstore.google.com/detail/dpfkfbpolahiofedbdebdjmpjfphkjge)** — the recommended way to install and stay up to date. No Node.js, build tools, or Developer mode required.
 
-No Node.js or build tools are needed for the packaged version.
+1. Open the Store listing and choose **Add to Chrome**.
+2. Pin Frameway from Chrome's Extensions menu.
+3. Open a page, click Frameway → **Record this tab**, and wait for **REC**.
+4. Perform your workflow, then choose **Finish recording**. The editor opens automatically.
 
-1. Open [Releases](https://github.com/NicholasMicali/frameway/releases) and download **frameway-extension-v0.3.0.zip** from **Assets** (not the source-code archive).
-2. Unzip it into a permanent folder. On Windows, use **Extract All**.
-3. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
-4. Select the extracted folder containing `manifest.json`, then pin Frameway in Chrome.
-5. Open a page, click Frameway → **Record this tab**, wait for **REC**, and choose **Finish recording** when finished. The editor opens automatically.
+Choose **Open library** from the extension menu to return to existing projects without recording. Use **Record my screen** in the Library to capture desktop apps or a whole screen and add screenshot steps manually.
 
-Keep the extracted folder in place. Back up editable work with **Export project backup** before replacing or removing an installation; restore the `.frameway.zip` with **Options → Import project backup**. **Share → Send a walkthrough → Download HTML** creates the file to send to viewers. The export dialog explains each format and shows next steps after starting the download.
+The Store version receives updates through Chrome. We keep it aligned with the latest release after Store review. The current release is **v0.4.0 beta**; see [GitHub Releases](https://github.com/NicholasMicali/frameway/releases) for release notes and alternative packaged downloads.
+
+### Sharing, backups, and moving to the Store version
+
+**Share → Send a walkthrough → Download HTML** creates an interactive file for viewers who do not need Frameway installed. **Export project backup** creates an editable `.frameway.zip` to back up your work or send to a teammate; restore it with **Options → Import project backup**.
+
+Projects stay in your browser profile. Before switching from an unpacked extension or localhost to the Store version, export important project backups from the old installation and import them into the new one. Verify them before removing the old installation. Ordinary updates to the same Store installation retain its library; keep backups for recovery.
+
+### Alternative: install a release ZIP
+
+For manual testing, download the extension ZIP from [Releases](https://github.com/NicholasMicali/frameway/releases/latest), extract it to a permanent folder, and use **Load unpacked** in `chrome://extensions` with **Developer mode** enabled. Select the folder containing `manifest.json`. This installation does not receive Store updates; back up projects before replacing its files or removing it.
 
 ## Project direction and contributions
 
@@ -26,7 +35,7 @@ Frameway is a local tool: no accounts, application backend, managed hosting, clo
 
 Contributions are welcome under [Apache-2.0](LICENSE). Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [code of conduct](CODE_OF_CONDUCT.md), and the issue forms. Report vulnerabilities through [SECURITY.md](SECURITY.md). Your recordings and branding remain your content.
 
-## Start from a fresh clone
+## Build from source (contributors)
 
 Use **Node.js 24** and npm. From this repository:
 
@@ -41,7 +50,7 @@ The same npm commands work on macOS and Windows (including PowerShell). Install 
 
 Your projects and recordings are saved in your own browser's IndexedDB, outside the Git repository. Cloning this source does not include the author's projects. Automated tests use generated demo content. If saving personal exports inside the repository, use `exports/` or `recordings/`; both are ignored, along with video files and the default walkthrough export filenames. Renamed HTML exports or extracted project folders should also stay in those ignored directories.
 
-### Recommended: Chrome extension
+### Load your development build
 
 The extension records a tab's video and clicks, then creates screenshot/video steps automatically.
 
@@ -53,7 +62,7 @@ The extension records a tab's video and clicks, then creates screenshot/video st
 
 Open the toolbar menu with **Command+Shift+Y** on macOS or **Ctrl+Shift+Y** elsewhere. Choose **Open library** to access saved projects without recording. The extension's **Options** page also opens the editor. After updating the source, rebuild, click **Reload** on the extension's Chrome card, and reopen the editor. Export important projects before replacing or removing an extension installation.
 
-Alternatively, unzip a built `frameway-extension-v0.3.0.zip` release artifact and load the extracted folder containing `manifest.json`. There is no Chrome Web Store listing. Use the Releases page for packaged builds; developers can create one locally with `npm run package:extension`.
+Developers can create an installable ZIP locally with `npm run package:extension`. For everyday use, install from the Chrome Web Store above.
 
 ### Website and manual screen recording
 
@@ -136,7 +145,7 @@ Creates `release/frameway-extension-v0.4.0.zip`, with `manifest.json` at its roo
 
 GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `vX.Y.Z` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
 
-Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. Download the packaged [v0.3.0 beta](https://github.com/NicholasMicali/frameway/releases/tag/v0.3.0) from Releases. See [open issues](https://github.com/NicholasMicali/frameway/issues) for planned improvements.
+Source repository: [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). See [release preparation](docs/RELEASING.md). Source is licensed under Apache-2.0. Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/dpfkfbpolahiofedbdebdjmpjfphkjge) or find packaged builds in [Releases](https://github.com/NicholasMicali/frameway/releases). See [open issues](https://github.com/NicholasMicali/frameway/issues) for planned improvements.
 
 ## Research notes
 

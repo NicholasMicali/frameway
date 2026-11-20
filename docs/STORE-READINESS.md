@@ -1,6 +1,6 @@
-# Unlisted release readiness — v0.4.0 candidate
+# Chrome Web Store listing and release materials
 
-This is preparation, not a published Store listing. Merge PRs #46 → #47 → #48 → #49 → the release preparation PR, after review and CI. Rebuild the final package from merged main before submission. No Store item has been created by this work.
+Frameway v0.4.0 is published on [Chrome Web Store](https://chromewebstore.google.com/detail/dpfkfbpolahiofedbdebdjmpjfphkjge). The initial PR stack is merged and main CI passed. Use this document for listing maintenance and future release checks; native-device tests remain release-specific.
 
 ## Listing draft
 
@@ -26,12 +26,12 @@ Chrome may restrict capture on protected or browser-internal pages. Automatic cl
 
 - Homepage/source: https://github.com/NicholasMicali/frameway
 - Support: https://github.com/NicholasMicali/frameway/issues
-- Privacy: https://github.com/NicholasMicali/frameway/blob/main/PRIVACY.md — merge the updated policy before submission.
+- Privacy: https://github.com/NicholasMicali/frameway/blob/main/PRIVACY.md.
 - Icon: `extension/icons/frameway-128.png` (96px artwork with 16px transparent padding); smaller toolbar sizes are included in the package.
 - Sanitized screenshots: `docs/assets/store/` (generated synthetic project, no private content).
 - Package/checksum: `release/frameway-extension-v0.4.0.zip` and `.zip.sha256`, generated locally, not committed.
 
-Use the final dashboard's asset requirements when uploading; preview all images there. Keep the Store install link out of the app/README until an actual item URL exists.
+Use the final dashboard's asset requirements when uploading; preview all images there. Use the published Store link above in installation guidance.
 
 ## Permission justifications
 
@@ -53,7 +53,7 @@ Declare the locally processed content/activity accurately under the applicable d
 
 ## Install, migrate, and update
 
-**First Store installation (once approved):** open the actual unlisted link, add to Chrome, pin Frameway, and choose Open library or Record this tab. An unlisted item can be installed by anyone with its link; it still undergoes normal Store review.
+**First Store installation:** open the Store link above, add to Chrome, pin Frameway, and choose Open library or Record this tab. An unlisted item can be installed by anyone with its link; it still undergoes normal Store review.
 
 **Unpacked → Store:** in the old extension, open each important project and use Share → Export project backup. Save the `.frameway.zip` files outside the extension folder. Install the Store version, open its Library, choose Options → Import project backup, and verify the projects. Only then remove the old installation. HTML exports cannot restore editable projects. Different extension identities do not automatically share a library.
 
