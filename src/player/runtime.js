@@ -11,6 +11,7 @@
   document.title = project.title;
   element('h1', 'title', root, project.title);
   const stage = element('div', 'stage', root);
+  stage.dataset.motion = project.motion || 'subtle';
   const screen = element('div', 'screen', stage);
   screen.style.aspectRatio = `${project.width}/${project.height}`;
   const image = element('img', 'media', screen);
@@ -236,6 +237,9 @@
   }
   function render() {
     generation++;
+    // These nodes are reused across slides; restart entrance effects on each visit.
+    const entering = [card, titleCopy, titleStart, continueButton, action, hotspot];
+    entering.forEach((el) => el.classList.remove('motion-enter'));
     cancelAnimationFrame(frame);
     video.pause();
     completed = false;
@@ -290,6 +294,8 @@
     play.textContent = 'Play';
     next.textContent = continueButton.textContent = targetIndex() < 0 ? 'Replay' : 'Continue →';
     positionCard();
+    void stage.offsetWidth;
+    entering.forEach((el) => el.classList.add('motion-enter'));
     if (s.kind === 'video') prepare();
   }
   const reset = () => {

@@ -39,6 +39,7 @@ import { HomePage } from './HomePage';
 import framewayLogo from '../extension/icons/frameway.svg';
 import packageInfo from '../package.json';
 import './title-slide.css';
+import './walkthrough-motion.css';
 import { TitleSlide } from './TitleSlide';
 import { themeVars } from './themes';
 import { ProjectSettings } from './ProjectSettings';
@@ -996,6 +997,7 @@ function App() {
               <div className="stage-wrap">
                 <div
                   ref={stage}
+                  data-motion={preview ? (project.appearance?.motion ?? 'subtle') : 'none'}
                   className="stage"
                   style={
                     {
@@ -1039,6 +1041,7 @@ function App() {
                   />
                   {(step?.kind === 'title' || step?.kind === 'closing') && (
                     <TitleSlide
+                      key={`title:${selected}:${preview}:${visit}`}
                       step={step}
                       src={imageURL}
                       logo={project.logo}
@@ -1055,7 +1058,7 @@ function App() {
                           key={`${selected}:${preview}:${visit}`}
                           aria-label="Hotspot"
                           disabled={leaving}
-                          className={`hotspot ${zooming ? 'area-zoom-hotspot' : ''} ${step.style === 'area' ? 'area-hotspot' : ''}`}
+                          className={`hotspot motion-enter ${zooming ? 'area-zoom-hotspot' : ''} ${step.style === 'area' ? 'area-hotspot' : ''}`}
                           style={{
                             ...(zooming ? areaZoomVars(step) : {}),
                             width:
@@ -1082,9 +1085,9 @@ function App() {
                       )}
                       {(!preview || cardOpen || step.style === 'callout') && (
                         <div
-                          key={step.id}
+                          key={`card:${selected}:${preview}:${visit}`}
                           ref={card}
-                          className="callout"
+                          className="callout motion-enter"
                           style={{
                             width: step.cardWidth ? `${step.cardWidth * 100}%` : undefined,
                             left: `${Math.min(step.cardX, cardBounds.x) * 100}%`,
@@ -1107,7 +1110,7 @@ function App() {
                           />
                           {step.actionUrl && safeActionURL(step.actionUrl) && (
                             <a
-                              className="callout-action"
+                              className="callout-action motion-enter"
                               href={step.actionUrl}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -1118,7 +1121,7 @@ function App() {
                           )}
                           {preview ? (
                             <button
-                              className="card-next"
+                              className="card-next motion-enter"
                               disabled={leaving}
                               onClick={() => (nextId(project, step) ? advance() : restart())}
                             >

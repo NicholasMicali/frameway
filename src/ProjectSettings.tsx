@@ -208,20 +208,13 @@ export function ProjectSettings({
         </fieldset>
         <fieldset>
           <legend>Layout and type</legend>
-          {Object.entries(appearanceChoices).map(([key, choices]) => (
-            <label key={key}>
-              {
+          {Object.entries(appearanceChoices)
+            .filter(([key]) => key !== 'motion')
+            .map(([key, choices]) => (
+              <label key={key}>
                 {
-                  titleLayout: 'Title layout',
-                  logoAlignment: 'Logo alignment',
-                  typography: 'Card typography',
-                  font: 'Font family',
-                  buttonShape: 'Button shape',
-                }[key as keyof typeof appearanceChoices]
-              }
-              <select
-                aria-label={
                   {
+                    motion: 'Overlay animations',
                     titleLayout: 'Title layout',
                     logoAlignment: 'Logo alignment',
                     typography: 'Card typography',
@@ -229,18 +222,29 @@ export function ProjectSettings({
                     buttonShape: 'Button shape',
                   }[key as keyof typeof appearanceChoices]
                 }
-                value={a[key as keyof typeof appearanceChoices] ?? ''}
-                onChange={(e) => set({ [key]: e.target.value || undefined })}
-              >
-                <option value="">Original styling</option>
-                {Object.entries(choices).map(([id, name]) => (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ))}
+                <select
+                  aria-label={
+                    {
+                      motion: 'Overlay animations',
+                      titleLayout: 'Title layout',
+                      logoAlignment: 'Logo alignment',
+                      typography: 'Card typography',
+                      font: 'Font family',
+                      buttonShape: 'Button shape',
+                    }[key as keyof typeof appearanceChoices]
+                  }
+                  value={a[key as keyof typeof appearanceChoices] ?? ''}
+                  onChange={(e) => set({ [key]: e.target.value || undefined })}
+                >
+                  <option value="">Original styling</option>
+                  {Object.entries(choices).map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
           <label>
             Title logo size · {a.logoSize ?? 5}
             <input
@@ -256,6 +260,28 @@ export function ProjectSettings({
           <p>
             Logo size and alignment apply to title slides only. Fonts use this device’s installed
             system fonts.
+          </p>
+        </fieldset>
+        <fieldset>
+          <legend>Motion</legend>
+          <label>
+            Overlay animations
+            <select
+              aria-label="Overlay animations"
+              value={a.motion ?? 'subtle'}
+              onChange={(e) => set({ motion: e.target.value as Appearance['motion'] })}
+            >
+              {Object.entries(appearanceChoices.motion).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p>
+            Cards, buttons, and hotspot circles animate on entry and hover during playback. None
+            disables these effects. Reduced-motion preferences are always respected. Highlight zoom
+            is configured separately on each slide.
           </p>
         </fieldset>
         <div className="appearance-actions">

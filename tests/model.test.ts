@@ -331,6 +331,7 @@ test('appearance defaults preserve old projects and validated styling survives b
     [],
     { cardText: 'red' },
     { titleLayout: 'html' },
+    { motion: 'spin' },
     { logoSize: 100 },
     { font: 'https://font.test' },
     { css: 'color:red' },
@@ -340,6 +341,7 @@ test('appearance defaults preserve old projects and validated styling survives b
   const p = project();
   p.video = new Blob([], { type: 'video/webm' });
   p.appearance = {
+    motion: 'none',
     cardBackground: '#112233',
     cardText: '#ffffff',
     titleBackground: '#eeeeee',

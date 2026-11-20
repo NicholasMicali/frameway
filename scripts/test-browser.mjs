@@ -21,6 +21,7 @@ for (const test of [
   'shortcuts',
   'chapters',
   'appearance',
+  'walkthrough-motion',
   'timeline-navigation',
   'callout-formatting',
   'project-copy',

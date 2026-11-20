@@ -12,6 +12,7 @@ import { validateManifest, type Project } from './model';
 import runtime from './player/runtime.js?raw';
 import css from './player/style.css?raw';
 import titleCSS from './title-slide.css?raw';
+import motionCSS from './walkthrough-motion.css?raw';
 
 const jsonForHTML = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003c');
 const escapeHTML = (value: string) =>
@@ -23,6 +24,7 @@ function playerDocument(p: Project, video: string, images: string[]) {
   const data = {
     theme: { ...themeVars(p.theme, p.customColor), ...appearanceVars(p.appearance) },
     titleLayout: p.appearance?.titleLayout ?? 'split',
+    motion: p.appearance?.motion ?? 'subtle',
     logo: p.logo,
     chapters: chaptersFor(p.steps),
     title: p.title,
@@ -40,7 +42,8 @@ function playerDocument(p: Project, video: string, images: string[]) {
 ${titleCSS}
 ${formattedCSS}
 ${contentsCSS}
-${zoomCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const zoomOut = ${zoomOut.toString()};\n${runtime}</script></body></html>`;
+${zoomCSS}
+${motionCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const zoomOut = ${zoomOut.toString()};\n${runtime}</script></body></html>`;
 }
 function dataURL(blob: Blob) {
   return new Promise<string>((resolve, reject) => {
