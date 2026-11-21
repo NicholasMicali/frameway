@@ -14,7 +14,12 @@ const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
 const settle = async (p) =>
   p.evaluate(async () => {
-    await Promise.all(document.getAnimations().map((a) => a.finished.catch(() => {})));
+    await Promise.all(
+      document
+        .getAnimations()
+        .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+        .map((a) => a.finished.catch(() => {})),
+    );
   });
 const scale = (locator) =>
   locator.evaluate((e) => new DOMMatrixReadOnly(getComputedStyle(e).transform).a);

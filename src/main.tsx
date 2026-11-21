@@ -997,7 +997,7 @@ function App() {
               <div className="stage-wrap">
                 <div
                   ref={stage}
-                  data-motion={preview ? (project.appearance?.motion ?? 'subtle') : 'none'}
+                  data-motion={preview ? 'subtle' : 'none'}
                   className="stage"
                   style={
                     {

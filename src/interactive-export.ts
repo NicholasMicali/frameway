@@ -24,7 +24,6 @@ function playerDocument(p: Project, video: string, images: string[]) {
   const data = {
     theme: { ...themeVars(p.theme, p.customColor), ...appearanceVars(p.appearance) },
     titleLayout: p.appearance?.titleLayout ?? 'split',
-    motion: p.appearance?.motion ?? 'subtle',
     logo: p.logo,
     chapters: chaptersFor(p.steps),
     title: p.title,

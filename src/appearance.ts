@@ -1,6 +1,7 @@
 import { isHexColor } from './themes';
 
 export type Appearance = {
+  // Accepted for backups from the early animation prototype; playback uses one default.
   motion?: 'subtle' | 'fade' | 'none';
   cardBackground?: string;
   cardText?: string;

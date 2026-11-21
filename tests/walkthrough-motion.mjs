@@ -36,24 +36,24 @@ try {
   await page.locator('.hotspot').hover();
   await settle(page);
   assert.ok(Number(await page.locator('.hotspot').evaluate((e) => getComputedStyle(e).scale)) > 1);
+  assert.equal(
+    await page
+      .locator('.hotspot')
+      .evaluate((e) => getComputedStyle(e, '::after').animationIterationCount),
+    'infinite',
+  );
   await page.emulateMedia({ reducedMotion: 'reduce' });
   assert.equal(await animationName(page.locator('.callout')), 'none');
+  assert.equal(
+    await page.locator('.hotspot').evaluate((e) => getComputedStyle(e, '::after').animationName),
+    'none',
+  );
   assert.equal(await page.locator('.hotspot').evaluate((e) => getComputedStyle(e).scale), 'none');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.getByRole('button', { name: '✎ Edit' }).click();
   await page.getByText('Project settings', { exact: true }).click();
-  await page.getByLabel('Overlay animations').selectOption('none');
-  await page.getByRole('button', { name: 'Apply appearance' }).click();
-  await page.waitForTimeout(700);
-  await page.getByText('Saved locally', { exact: true }).waitFor();
-  console.log('Checking saved motion setting');
-  await page.reload();
-  await page.getByText('Project settings', { exact: true }).click();
-  assert.equal(await page.getByLabel('Overlay animations').inputValue(), 'none');
+  assert.equal(await page.getByLabel('Overlay animations').count(), 0);
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
-  await page.locator('.step').nth(2).click();
-  await page.getByRole('button', { name: '▷ Preview' }).click();
-  assert.equal(await animationName(page.locator('.callout')), 'none');
 
   // Export generated fixture data, never a real user's library.
   console.log('Checking offline exports');
@@ -86,7 +86,7 @@ try {
       });
       await viewer.context().setOffline(true);
       await viewer.goto(pathToFileURL(path.join(folder, 'index.html')).href);
-      const expected = motion === 'none' ? 'none' : 'walkthrough-enter';
+      const expected = 'walkthrough-enter';
       assert.equal(await animationName(viewer.locator('.title-start')), expected);
       await viewer.getByRole('button', { name: /^Go to step 3:/ }).click();
       assert.equal(await animationName(viewer.locator('.card')), expected);
@@ -94,7 +94,13 @@ try {
       await viewer.locator('.hotspot').hover();
       await settle(viewer);
       const scale = await viewer.locator('.hotspot').evaluate((e) => getComputedStyle(e).scale);
-      assert.equal(motion === 'none' ? scale === 'none' : Number(scale) > 1, true);
+      assert.equal(Number(scale), 1.025);
+      assert.equal(
+        await viewer
+          .locator('.hotspot')
+          .evaluate((e) => getComputedStyle(e, '::after').animationName),
+        'walkthrough-hotspot-pulse',
+      );
       await viewer.getByRole('button', { name: 'Restart', exact: true }).click();
       assert.equal(await animationName(viewer.locator('.title-start')), expected);
       await viewer.emulateMedia({ reducedMotion: 'reduce' });
@@ -106,7 +112,7 @@ try {
     }
   }
   console.log(
-    'Motion passed: edit/preview, hover, saved off setting, reduced motion, restart, offline HTML/embed presets.',
+    'Motion passed: no settings, unified hover, repeating pulse, reduced motion, restart, offline HTML/embed and legacy settings.',
   );
 } finally {
   await browser.close();

@@ -262,28 +262,6 @@ export function ProjectSettings({
             system fonts.
           </p>
         </fieldset>
-        <fieldset>
-          <legend>Motion</legend>
-          <label>
-            Overlay animations
-            <select
-              aria-label="Overlay animations"
-              value={a.motion ?? 'subtle'}
-              onChange={(e) => set({ motion: e.target.value as Appearance['motion'] })}
-            >
-              {Object.entries(appearanceChoices.motion).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p>
-            Cards, buttons, and hotspot circles animate on entry and hover during playback. None
-            disables these effects. Reduced-motion preferences are always respected. Highlight zoom
-            is configured separately on each slide.
-          </p>
-        </fieldset>
         <div className="appearance-actions">
           <button
             onClick={() =>
