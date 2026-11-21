@@ -1,4 +1,4 @@
-import { openSample } from './sample-fixture.mjs';
+import { openSample, openAdvanced } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer as createViteServer } from 'vite';
 import { createServer } from 'node:http';
@@ -43,8 +43,10 @@ try {
   await editor.goto('http://127.0.0.1:4176');
   await openSample(editor);
   await editor.getByLabel('Callout headline').waitFor({ timeout: 30000 });
+  await openAdvanced(editor);
   await editor.getByRole('button', { name: 'Delete step', exact: true }).click();
   await editor.locator('.step-list .step').nth(1).click();
+  await openAdvanced(editor);
   await editor.getByLabel('Open by default').uncheck();
   // A modal explains formats, contains focus, and recovers from generation failures.
   await editor.getByRole('button', { name: 'Share', exact: true }).click();
@@ -172,6 +174,7 @@ try {
   await frame.getByRole('heading', { name: 'Give your project a home' }).waitFor();
   await host.screenshot({ path: 'test-results/export-embed.png', fullPage: true });
   // Export an explicit branch and confirm the downloaded player follows it.
+  await openAdvanced(editor);
   await editor.getByLabel('Navigation target').selectOption({ label: 'You’re all set' });
   await download('Download HTML', 'branch.html');
   await host.goto(pathToFileURL(path.join(directory, 'branch.html')).href);

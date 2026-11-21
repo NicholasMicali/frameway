@@ -1,4 +1,4 @@
-import { openSample } from './sample-fixture.mjs';
+import { openSample, openAdvanced } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import { pathToFileURL } from 'node:url';
@@ -107,6 +107,7 @@ try {
   );
   assert.equal(await page.getByLabel('Custom theme color').inputValue(), '#ffd500');
   assert.equal(await page.locator('.stage .title-logo').count(), 1);
+  await openAdvanced(page);
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
   assert.equal(await page.locator('.step-list .step').count(), 6);
   await page.getByRole('button', { name: 'Add title slide', exact: true }).click();

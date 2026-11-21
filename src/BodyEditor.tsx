@@ -9,29 +9,12 @@ export function BodyEditor({
   onPatch: (patch: Partial<Step>) => void;
 }) {
   const input = useRef<HTMLTextAreaElement>(null);
-  const [url, setURL] = useState(step.actionUrl ?? '');
-  useEffect(() => setURL(step.actionUrl ?? ''), [step.actionUrl]);
-  const invalid = !!url && !safeActionURL(url);
   function format(kind: string) {
     const el = input.current!;
-    let start = el.selectionStart,
+    const start = el.selectionStart,
       end = el.selectionEnd;
-    if (kind === 'ul' || kind === 'ol') {
-      start = step.body.lastIndexOf('\n', start - 1) + 1;
-      const next = step.body.indexOf('\n', end);
-      end = next < 0 ? step.body.length : next;
-    }
     const selection = step.body.slice(start, end);
-    const replacement =
-      kind === 'ul' || kind === 'ol'
-        ? (selection || 'List item')
-            .split('\n')
-            .map(
-              (line, i) =>
-                `${kind === 'ul' ? '-' : `${i + 1}.`} ${line.replace(/^\s*(?:- |\d+\. )/, '')}`,
-            )
-            .join('\n')
-        : `${kind}${selection || 'text'}${kind}`;
+    const replacement = `${kind}${selection || 'text'}${kind}`;
     const body = step.body.slice(0, start) + replacement + step.body.slice(end);
     if (body.length > 5000) return;
     onPatch({ body, bodyFormat: 'basic' });
@@ -49,12 +32,6 @@ export function BodyEditor({
         <button type="button" aria-label="Italic" onClick={() => format('*')}>
           <em>I</em>
         </button>
-        <button type="button" onClick={() => format('ul')}>
-          • List
-        </button>
-        <button type="button" onClick={() => format('ol')}>
-          1. List
-        </button>
       </div>
       <label>
         A little context
@@ -63,21 +40,26 @@ export function BodyEditor({
           aria-label="Callout body"
           value={step.body}
           maxLength={5000}
-          onChange={(e) => onPatch({ body: e.target.value })}
+          onChange={(e) => onPatch({ body: e.target.value, bodyFormat: 'basic' })}
         />
       </label>
-      <label className="check">
-        <input
-          type="checkbox"
-          checked={step.bodyFormat === 'basic'}
-          onChange={(e) => onPatch({ bodyFormat: e.target.checked ? 'basic' : undefined })}
-        />
-        Enable text formatting
-      </label>
-      <p className="field-note">
-        Select text, then use the toolbar. Formatting uses **bold**, *italic*, and lines starting
-        with - or 1. Turn it off to display the text literally.
-      </p>
+    </>
+  );
+}
+
+export function OptionalLinkEditor({
+  step,
+  onPatch,
+}: {
+  step: Step;
+  onPatch: (patch: Partial<Step>) => void;
+}) {
+  const [url, setURL] = useState(step.actionUrl ?? '');
+  useEffect(() => setURL(step.actionUrl ?? ''), [step.actionUrl]);
+  const invalid = !!url && !safeActionURL(url);
+  return (
+    <details className="optional-link">
+      <summary>Optional link</summary>
       <label>
         Link button label
         <input
@@ -114,6 +96,6 @@ export function BodyEditor({
           Optional. Opens a new tab only when clicked. Clear the destination to remove the button.
         </p>
       )}
-    </>
+    </details>
   );
 }

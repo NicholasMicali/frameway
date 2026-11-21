@@ -3,6 +3,8 @@ import { validateManifest, migrateProject, type Project } from './model';
 export async function exportProject(p: Project) {
   const manifest = {
     ...p,
+    // Older editors must reject element-bearing backups rather than drop annotations.
+    schemaVersion: p.steps.some((s) => s.elements?.length) ? 3 : 2,
     localEditedAt: undefined,
     localRevision: undefined,
     localBackup: undefined,

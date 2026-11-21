@@ -38,6 +38,21 @@
   const hotspot = element('button', 'hotspot', screen, '●');
   hotspot.setAttribute('aria-label', 'Hotspot');
   const card = element('section', 'card', stage);
+  const extras = element('div', 'extra-layer', screen);
+  let openElement = '';
+  function drawElements() {
+    renderElements(extras, step().kind === 'image' ? step().elements || [] : [], {
+      open: openElement,
+      zoom: step().elementZoom,
+      toggle: (id) => {
+        openElement = id;
+        drawElements();
+      },
+    });
+  }
+  new ResizeObserver(() => {
+    if (project.steps[index]) drawElements();
+  }).observe(extras);
   for (const [name, value] of Object.entries(project.theme || {})) {
     screen.style.setProperty(name, value);
     card.style.setProperty(name, value);
@@ -179,6 +194,7 @@
       return;
     }
     leaving = true;
+    extras.style.visibility = 'hidden';
     updateNavigation();
     void animation.finished.then(() => {
       animation.cancel();
@@ -237,6 +253,9 @@
   }
   function render() {
     generation++;
+    openElement = '';
+    extras.style.visibility = '';
+    drawElements();
     // These nodes are reused across slides; restart entrance effects on each visit.
     const entering = [card, titleCopy, titleStart, continueButton, action, hotspot];
     entering.forEach((el) => el.classList.remove('motion-enter'));

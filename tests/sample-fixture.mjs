@@ -14,3 +14,8 @@ export async function openSample(page) {
   });
   return bytes;
 }
+
+export async function openAdvanced(page) {
+  const toggle = page.getByRole('button', { name: 'Advanced', exact: true });
+  if ((await toggle.getAttribute('aria-expanded')) === 'false') await toggle.click();
+}
