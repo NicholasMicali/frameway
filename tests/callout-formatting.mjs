@@ -1,4 +1,4 @@
-import { openSample } from './sample-fixture.mjs';
+import { openSample, openAdvanced } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
@@ -23,6 +23,11 @@ try {
   await page
     .getByLabel('Callout body', { exact: true })
     .fill('**Important**\n- First\n- *Second*\n1. Review\n<script>alert(1)</script>');
+  assert.equal(await page.getByText('Enable text formatting', { exact: true }).count(), 0);
+  assert.equal(await page.locator('.format-tools button').count(), 2);
+  assert.equal(await page.getByLabel('Action button label').isVisible(), false);
+  await openAdvanced(page);
+  await page.locator('.optional-link summary').click();
   await page.getByLabel('Action button label').fill('Documentation');
   await page.getByLabel('Action button URL').fill('javascript:alert(1)');
   await page.getByRole('alert').waitFor();

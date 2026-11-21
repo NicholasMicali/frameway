@@ -1,4 +1,4 @@
-import { openSample } from './sample-fixture.mjs';
+import { openSample, openAdvanced } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import { pathToFileURL } from 'node:url';
@@ -20,6 +20,7 @@ try {
   await page.getByRole('button', { name: 'Add closing slide', exact: true }).click();
   await page.getByLabel('Closing description').fill('Your workflow is ready.');
   await page.getByLabel('Callout headline').fill('Nicely done');
+  await openAdvanced(page);
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await page.getByLabel('Closing description').waitFor();

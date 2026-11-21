@@ -1,4 +1,4 @@
-import { openSample } from './sample-fixture.mjs';
+import { openSample, openAdvanced } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
@@ -14,13 +14,17 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 try {
   await page.goto('http://127.0.0.1:4190');
   await openSample(page);
+  await openAdvanced(page);
   await page.getByLabel('Start a chapter', { exact: true }).check();
+  await openAdvanced(page);
   await page.getByLabel('Chapter name').fill('Introduction');
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   assert.equal(await page.getByLabel('Start a chapter', { exact: true }).isChecked(), false);
   await page.getByRole('button', { name: 'Redo', exact: true }).click();
   await page.locator('.step-list .step').last().click();
+  await openAdvanced(page);
   await page.getByLabel('Start a chapter', { exact: true }).check();
+  await openAdvanced(page);
   await page.getByLabel('Chapter name').fill('Finish');
   await page.getByText('Saved locally', { exact: true }).waitFor();
   await page.getByRole('button', { name: '▷ Preview' }).click();

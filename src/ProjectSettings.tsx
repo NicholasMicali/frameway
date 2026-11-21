@@ -208,20 +208,13 @@ export function ProjectSettings({
         </fieldset>
         <fieldset>
           <legend>Layout and type</legend>
-          {Object.entries(appearanceChoices).map(([key, choices]) => (
-            <label key={key}>
-              {
+          {Object.entries(appearanceChoices)
+            .filter(([key]) => key !== 'motion')
+            .map(([key, choices]) => (
+              <label key={key}>
                 {
-                  titleLayout: 'Title layout',
-                  logoAlignment: 'Logo alignment',
-                  typography: 'Card typography',
-                  font: 'Font family',
-                  buttonShape: 'Button shape',
-                }[key as keyof typeof appearanceChoices]
-              }
-              <select
-                aria-label={
                   {
+                    motion: 'Overlay animations',
                     titleLayout: 'Title layout',
                     logoAlignment: 'Logo alignment',
                     typography: 'Card typography',
@@ -229,18 +222,29 @@ export function ProjectSettings({
                     buttonShape: 'Button shape',
                   }[key as keyof typeof appearanceChoices]
                 }
-                value={a[key as keyof typeof appearanceChoices] ?? ''}
-                onChange={(e) => set({ [key]: e.target.value || undefined })}
-              >
-                <option value="">Original styling</option>
-                {Object.entries(choices).map(([id, name]) => (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ))}
+                <select
+                  aria-label={
+                    {
+                      motion: 'Overlay animations',
+                      titleLayout: 'Title layout',
+                      logoAlignment: 'Logo alignment',
+                      typography: 'Card typography',
+                      font: 'Font family',
+                      buttonShape: 'Button shape',
+                    }[key as keyof typeof appearanceChoices]
+                  }
+                  value={a[key as keyof typeof appearanceChoices] ?? ''}
+                  onChange={(e) => set({ [key]: e.target.value || undefined })}
+                >
+                  <option value="">Original styling</option>
+                  {Object.entries(choices).map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
           <label>
             Title logo size · {a.logoSize ?? 5}
             <input

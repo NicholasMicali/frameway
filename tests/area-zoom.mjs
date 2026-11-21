@@ -1,4 +1,4 @@
-import { openSample } from './sample-fixture.mjs';
+import { openSample, openAdvanced } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
@@ -14,7 +14,12 @@ const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
 const settle = async (p) =>
   p.evaluate(async () => {
-    await Promise.all(document.getAnimations().map((a) => a.finished.catch(() => {})));
+    await Promise.all(
+      document
+        .getAnimations()
+        .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+        .map((a) => a.finished.catch(() => {})),
+    );
   });
 const scale = (locator) =>
   locator.evaluate((e) => new DOMMatrixReadOnly(getComputedStyle(e).transform).a);
@@ -26,12 +31,14 @@ try {
   await page.getByLabel('Overlay style').selectOption('area');
   assert.equal(await page.getByLabel('Zoom into highlighted area').isChecked(), true);
   assert.ok(Number(await page.getByLabel('Area zoom percentage').inputValue()) <= 120);
+  await openAdvanced(page);
   await page.getByLabel('Area zoom percentage').fill('100');
   await page.getByRole('button', { name: '▷ Preview' }).click();
   await settle(page);
   const size = await page.locator('.callout').boundingBox();
   assert.equal(await scale(page.locator('.still')), 1);
   await page.getByRole('button', { name: '✎ Edit' }).click();
+  await openAdvanced(page);
   await page.getByLabel('Area zoom percentage').fill('150');
   assert.equal(await scale(page.locator('.still')), 1);
   await page.getByRole('button', { name: '▷ Preview' }).click();
@@ -125,10 +132,12 @@ try {
   await settle(viewer);
   await checkExit(viewer, '.area-zoom-image', '.card');
 
+  await openAdvanced(page);
   await page.getByLabel('Zoom into highlighted area').uncheck();
   await page.getByRole('button', { name: '▷ Preview' }).click();
   assert.equal(await page.locator('.area-zoom-image').count(), 0);
   await page.getByRole('button', { name: '✎ Edit' }).click();
+  await openAdvanced(page);
   await page.getByLabel('Zoom into highlighted area').check();
   await page.getByRole('button', { name: 'Use automatic zoom' }).click();
   assert.ok(Number(await page.getByLabel('Area zoom percentage').inputValue()) < 150);

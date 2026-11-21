@@ -1,4 +1,4 @@
-import { openSample } from './sample-fixture.mjs';
+import { openSample, openAdvanced } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import { mkdir } from 'node:fs/promises';
@@ -15,6 +15,7 @@ try {
   await page.getByText('Opening your studio…').waitFor({ state: 'hidden' });
   await openSample(page);
   await page.getByLabel('Callout headline').waitFor({ timeout: 30000 });
+  await openAdvanced(page);
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
   assert.equal(await page.getByLabel('Callout headline').inputValue(), 'Opening footage');
   assert.equal(await page.locator('.step-list .step').count(), 6);
@@ -37,6 +38,7 @@ try {
   await page.getByLabel('Callout headline').waitFor();
   await page.locator('.step-list .step').nth(1).click();
   assert.equal(await page.getByLabel('Callout headline').inputValue(), 'Create something great');
+  await openAdvanced(page);
   await page.getByLabel('Open by default').uncheck();
   await page.getByRole('button', { name: '▷ Preview' }).click();
   await page.getByRole('button', { name: 'Hotspot', exact: true }).waitFor();
@@ -73,8 +75,10 @@ try {
   assert.equal(await page.getByRole('button', { name: 'Hotspot', exact: true }).count(), 0);
   await page.getByLabel('Move step down').click();
   assert.equal(await page.locator('.step-list .step.selected .clip-pill').textContent(), '▧ image');
+  await openAdvanced(page);
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
   assert.equal(await page.locator('.step-list .step').count(), 5);
+  await openAdvanced(page);
   await page.getByLabel('Autoplay video').uncheck();
   await page.getByRole('button', { name: '▷ Preview' }).click();
   await page.getByRole('button', { name: '▶ Play clip' }).waitFor();
