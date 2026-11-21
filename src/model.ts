@@ -1,3 +1,4 @@
+import { validateElements, type SlideElement } from './slide-elements';
 import { validateAppearance, type Appearance } from './appearance';
 import { safeActionURL } from './formatted-text';
 import { themes, isHexColor, type ThemeName } from './themes';
@@ -12,6 +13,7 @@ export type Marker = {
   lagMs: number;
 };
 type StepBase = {
+  elements?: SlideElement[];
   id: string;
   title: string;
   body: string;
@@ -77,8 +79,11 @@ export function nextId(p: Project, s: Step) {
       ? undefined
       : s.target;
 }
-export function migrateProject(p: Project | LegacyProject): Project {
+export function migrateProject(
+  p: Project | LegacyProject | (Omit<Project, 'schemaVersion'> & { schemaVersion: 3 }),
+): Project {
   if (p.schemaVersion === 2) return p;
+  if (p.schemaVersion === 3) return { ...p, schemaVersion: 2 };
   const steps: Step[] = [];
   for (let i = 0; i < p.steps.length; i++) {
     const { transition, ...s } = p.steps[i];
@@ -166,7 +171,7 @@ export function validateManifest(v: any) {
     throw Error('Invalid logo');
   if (
     !v ||
-    ![1, 2].includes(v.schemaVersion) ||
+    ![1, 2, 3].includes(v.schemaVersion) ||
     typeof v.title !== 'string' ||
     v.title.length > 200 ||
     !Number.isFinite(v.duration) ||
@@ -190,6 +195,8 @@ export function validateManifest(v: any) {
     ids.add(s.id);
   }
   for (const s of v.steps) {
+    validateElements(s.elements);
+    if (s.elements?.length && s.kind !== 'image') throw Error('Elements require an image slide');
     if (s.bodyFormat !== undefined && s.bodyFormat !== 'basic') throw Error('Invalid body format');
     if (
       s.actionLabel !== undefined &&
@@ -291,6 +298,7 @@ export function withTitleSlide(p: Project, image: Blob): Project {
     ...p.steps[0],
     id: crypto.randomUUID(),
     kind: 'title',
+    elements: undefined,
     chapter: undefined,
     title: p.title,
     body: 'Follow along with this interactive walkthrough.',
@@ -312,6 +320,7 @@ export function withClosingSlide(p: Project): Project {
     ...last,
     id: crypto.randomUUID(),
     kind: 'closing',
+    elements: undefined,
     chapter: undefined,
     title: 'You’re all set',
     body: 'Thanks for following along. Replay the walkthrough whenever you need.',

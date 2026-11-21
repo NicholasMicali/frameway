@@ -1,6 +1,8 @@
 import { isHexColor } from './themes';
 
 export type Appearance = {
+  // Accepted for backups from the early animation prototype; playback uses one default.
+  motion?: 'subtle' | 'fade' | 'none';
   cardBackground?: string;
   cardText?: string;
   titleBackground?: string;
@@ -13,6 +15,7 @@ export type Appearance = {
   buttonShape?: 'rounded' | 'square' | 'pill';
 };
 export const appearanceChoices = {
+  motion: { subtle: 'Subtle rise', fade: 'Fade', none: 'None' },
   titleLayout: { split: 'Split with recording', centered: 'Centered introduction' },
   logoAlignment: { left: 'Left', center: 'Center', right: 'Right' },
   typography: { compact: 'Compact', comfortable: 'Comfortable', large: 'Large' },

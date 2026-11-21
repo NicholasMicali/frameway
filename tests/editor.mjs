@@ -1,4 +1,4 @@
-import { openSample } from './sample-fixture.mjs';
+import { openSample, openAdvanced } from './sample-fixture.mjs';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
@@ -14,6 +14,7 @@ try {
   await page.goto('http://127.0.0.1:4179');
   await openSample(page);
   await page.getByLabel('Callout headline').waitFor({ timeout: 30000 });
+  await openAdvanced(page);
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
   await page.getByLabel('Callout headline').fill('Opening edit');
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
@@ -38,6 +39,7 @@ try {
   assert.equal(await page.locator('.step-list .step').count(), 6);
   await page.getByRole('button', { name: 'Redo', exact: true }).click();
   assert.equal(await page.locator('.step-list .step').count(), 7);
+  await openAdvanced(page);
   await page.getByRole('button', { name: 'Duplicate step', exact: true }).click();
   assert.equal(await page.locator('.step-list .step').count(), 8);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
@@ -50,12 +52,16 @@ try {
   await page.getByRole('button', { name: '✎ Edit' }).click();
   assert.equal(await page.getByLabel('Callout headline').inputValue(), 'Create your first project');
   await page.getByLabel('Overlay style').selectOption('area');
+  await openAdvanced(page);
   await page.getByLabel('Area width').fill('0.4');
+  await openAdvanced(page);
   await page.getByLabel('Area height').fill('0.3');
+  await openAdvanced(page);
   await page.getByLabel('Card width').fill('0.4');
   assert.equal(await page.getByRole('button', { name: /^(Top|Bottom) (left|right)$/ }).count(), 0);
   assert.ok((await page.locator('.area-hotspot').boundingBox()).width > 100);
   await page.screenshot({ path: 'test-results/editor-enhanced.png', fullPage: true });
+  await openAdvanced(page);
   await page.getByRole('button', { name: 'Delete step', exact: true }).click();
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   assert.equal(await page.getByLabel('Overlay style').inputValue(), 'area');

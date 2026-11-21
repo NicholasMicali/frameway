@@ -21,16 +21,16 @@ export function TitleSlide({
       className={`title-slide title-layout-${step.kind === 'closing' ? 'centered' : (appearance?.titleLayout ?? 'split')} ${step.kind === 'closing' ? 'closing-slide' : ''} ${thumbnail ? 'title-thumbnail' : ''}`}
     >
       <img className="title-preview" src={src} alt="" />
-      <div className="title-copy">
+      <div className="title-copy motion-enter">
         {logo && <img className="title-logo" src={logo} alt="Company logo" />}
         <h2>{step.title}</h2>
         <p>{step.body}</p>
         {onStart ? (
-          <button className="title-start" onClick={onStart}>
+          <button className="title-start motion-enter" onClick={onStart}>
             {step.kind === 'closing' ? 'Replay walkthrough' : step.buttonText}
           </button>
         ) : (
-          <span className="title-start">
+          <span className="title-start motion-enter">
             {step.kind === 'closing' ? 'Replay walkthrough' : step.buttonText}
           </span>
         )}

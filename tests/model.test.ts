@@ -331,6 +331,7 @@ test('appearance defaults preserve old projects and validated styling survives b
     [],
     { cardText: 'red' },
     { titleLayout: 'html' },
+    { motion: 'spin' },
     { logoSize: 100 },
     { font: 'https://font.test' },
     { css: 'color:red' },
@@ -340,6 +341,7 @@ test('appearance defaults preserve old projects and validated styling survives b
   const p = project();
   p.video = new Blob([], { type: 'video/webm' });
   p.appearance = {
+    motion: 'none',
     cardBackground: '#112233',
     cardText: '#ffffff',
     titleBackground: '#eeeeee',
@@ -419,4 +421,26 @@ test('closing slides are optional terminal steps with portable editing behavior'
   );
   original.steps[2].target = 'a';
   assert.equal(withClosingSlide(original).steps[2].target, 'a');
+});
+
+test('additional elements validate and use a compatible-reader backup version', async () => {
+  const { newElement, validateElements } = await import('../src/slide-elements');
+  const { exportProject, importProject } = await import('../src/archive');
+  const { unzipSync, strFromU8 } = await import('fflate');
+  const p = project();
+  p.video = new Blob([], { type: 'video/webm' });
+  p.steps[0].elements = [newElement('tip'), newElement('arrow')];
+  validateManifest(p);
+  const file = await exportProject(p);
+  const manifest = JSON.parse(
+    strFromU8(unzipSync(new Uint8Array(await file.arrayBuffer()))['project.json']),
+  );
+  assert.equal(manifest.schemaVersion, 3);
+  const restored = await importProject(file);
+  assert.equal(restored.schemaVersion, 2);
+  assert.deepEqual(restored.steps[0].elements, p.steps[0].elements);
+  assert.throws(() => validateElements([{ ...newElement('card'), x: NaN }]));
+  assert.throws(() => validateElements(Array.from({ length: 21 }, () => newElement('tip'))));
+  const duplicate = newElement('arrow');
+  assert.throws(() => validateElements([duplicate, duplicate]));
 });

@@ -47,3 +47,9 @@ The header uses `extension/icons/frameway.svg`, the same source used for extensi
 Schema 2 now accepts an explicit `kind: 'closing'` step, with the same bounded title/body/media fields as other steps and a required `target: 'end'`. Existing schema 1/2 projects still import unchanged; old app versions cannot import new backups containing a closing step. There is no automatic insertion into existing projects.
 
 Adding a closing slide appends it and changes only a final step's ordinary `end` target to `next`, making the ending reachable without rewriting explicit branches or earlier endings. Closing slides always replay from the first step, including when moved or duplicated. The centered title-slide presentation is reused in the editor and exported player, with project branding and a fixed Replay walkthrough action. Removing the slide uses existing navigation repair and undo.
+
+## Additional slide elements
+
+Image slides can carry up to 20 optional arrows or cards (plain, tip, warning, info). These annotations supplement the primary hotspot/callout/area navigation; expanding a card never advances the walkthrough. `src/slide-elements.ts` owns validation, defaults, and the DOM renderer shared with standalone exports. Keep that renderer self-contained: the exporter embeds its function source. `src/SlideElements.tsx` connects it to selection, dragging, undo, and the inspector; `src/slide-elements.css` supplies shared styling and reduced-motion-aware animation.
+
+Editable ZIPs containing these elements use portable schema 3 so older readers reject them instead of silently losing annotations. New readers accept schemas 1–3 and normalize imported projects to the existing internal schema 2 representation. Backups without elements remain schema 2. This does not change the IndexedDB database version.
