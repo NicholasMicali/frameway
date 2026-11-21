@@ -125,7 +125,7 @@ try {
   const html = path.resolve('test-results/project-copy.html');
   const zip = path.resolve('test-results/project-copy.frameway.zip');
   await exportFile('Download HTML', html);
-  await exportFile('Export project backup', zip);
+  await exportFile('Download project', zip);
   const offline = await browser.newContext({ offline: true });
   const viewer = await offline.newPage();
   await viewer.goto(pathToFileURL(html).href);

@@ -92,7 +92,7 @@ try {
   assert.equal(await page.getByLabel('Area zoom percentage').inputValue(), '150');
   await page.getByRole('button', { name: 'Share', exact: true }).click();
   const dl = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export project', exact: false }).click();
+  await page.getByRole('button', { name: 'Download project', exact: false }).click();
   await page.getByText('Download started — check your downloads', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Close export' }).click();
   const archive = path.resolve('test-results/zoom.frameway.zip');

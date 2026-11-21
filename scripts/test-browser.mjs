@@ -26,6 +26,7 @@ for (const test of [
   'timeline-navigation',
   'callout-formatting',
   'project-copy',
+  'video-export',
 ]) {
   await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [`tests/${test}.mjs`], {

@@ -1,0 +1,192 @@
+.video-export {
+  border-top: 1px solid #dce3eb;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+.video-export h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.video-export fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.video-export-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+.video-export label {
+  display: grid;
+  gap: 6px;
+}
+.video-export input,
+.video-export select {
+  width: 100%;
+  padding: 8px;
+}
+.video-export summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.video-slide-durations {
+  max-height: 220px;
+  overflow: auto;
+  padding: 8px;
+}
+.video-slide-durations label {
+  grid-template-columns: 1fr 90px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.video-slide-durations span {
+  overflow-wrap: anywhere;
+}
+.video-export-preview {
+  width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+  background: #eef2f6;
+  margin-top: 16px;
+  border-radius: 10px;
+}
+.video-export progress {
+  width: 100%;
+  margin: 12px 0;
+}
+/* Compact share rows, with video controls revealed only when needed. */
+.share-options {
+  display: grid;
+  gap: 10px;
+}
+.share-option {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #e1e7ef;
+  border-radius: 12px;
+}
+.share-option h3 {
+  font-size: 15px;
+  margin: 0 0 5px;
+}
+.share-option p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  color: #617187;
+}
+.share-option button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 12px;
+  padding: 9px 12px;
+}
+.export-dialog .export-symbol {
+  padding: 8px;
+}
+.export-dialog .share-close {
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  color: #617187;
+  box-shadow: none;
+  border-radius: 8px;
+}
+.export-dialog .share-close:hover {
+  background: #eff4f9;
+}
+.share-video {
+  margin-top: 10px;
+  border: 1px solid #e1e7ef;
+  border-radius: 12px;
+}
+.share-video > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  cursor: pointer;
+}
+.share-video > summary::-webkit-details-marker {
+  display: none;
+}
+.share-video > summary > span:nth-child(2) {
+  flex: 1;
+}
+.share-video > summary strong {
+  font-size: 15px;
+}
+.share-video-caption {
+  display: block;
+  color: #617187;
+  font-size: 13px;
+  margin-top: 5px;
+}
+.share-video[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.share-video .video-export {
+  border-top: 1px solid #edf0f5;
+  margin: 0 16px 16px;
+  padding-top: 12px;
+}
+.video-export-note {
+  color: #617187;
+  font-size: 13px;
+  margin: 0;
+}
+.video-export input,
+.video-export select {
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  background: #f8fafc;
+  font: inherit;
+}
+.video-export-options label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.video-export-estimate {
+  font-size: 13px;
+  color: #42546b;
+  line-height: 1.6;
+}
+.video-export-estimate span {
+  display: block;
+  color: #617187;
+}
+.video-slide-durations {
+  background: #f8fafc;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+.video-slide-durations label {
+  font-size: 13px;
+}
+@media (max-width: 600px) {
+  .share-option {
+    grid-template-columns: 32px 1fr;
+    padding: 12px;
+  }
+  .share-option button {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .video-export-options {
+    gap: 10px;
+  }
+  .share-option-copy {
+    min-width: 0;
+  }
+}

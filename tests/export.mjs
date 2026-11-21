@@ -50,9 +50,9 @@ try {
   await editor.getByLabel('Open by default').uncheck();
   // A modal explains formats, contains focus, and recovers from generation failures.
   await editor.getByRole('button', { name: 'Share', exact: true }).click();
-  const dialog = editor.getByRole('dialog', { name: 'Export your walkthrough' });
+  const dialog = editor.getByRole('dialog', { name: 'Share walkthrough' });
   await dialog.waitFor();
-  await dialog.getByRole('heading', { name: 'Send a walkthrough', exact: true }).waitFor();
+  await dialog.getByRole('heading', { name: 'Interactive walkthrough', exact: true }).waitFor();
   await editor.screenshot({ path: 'test-results/export-dialog.png', fullPage: true });
   await editor.setViewportSize({ width: 390, height: 844 });
   assert.ok(await dialog.evaluate((e) => e.scrollWidth <= e.clientWidth));
@@ -104,7 +104,7 @@ try {
   }
   await download('Download HTML', 'portable.html');
   await download('Export embed', 'embed.zip');
-  await download('Export project backup', 'backup.zip');
+  await download('Download project', 'backup.zip');
   const files = unzipSync(new Uint8Array(await readFile(path.join(directory, 'embed.zip'))));
   for (const [name, bytes] of Object.entries(files)) {
     await mkdir(path.dirname(path.join(directory, name)), { recursive: true });
