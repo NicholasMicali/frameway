@@ -1,4 +1,4 @@
-# Local video export prototype
+# Local video export
 
 Try Share → Export video in the local editor. Nothing is uploaded and no capture permission is needed. The browser records a locally composed canvas, preferring MP4 when its encoder supports it and otherwise offering WebM. Exports are silent, matching current walkthrough playback. This is not an audio/voiceover implementation.
 
@@ -8,7 +8,7 @@ Rendering is approximately real time with a progress preview and cancel control.
 
 The canvas compositor shares theme data and area-zoom geometry but is separate from the HTML player. It includes title/closing composition, branding, basic bold/italic text, highlights, zoom in/out, hotspots, extra cards, and animated arrows. Text wrapping and sizing are not yet pixel-identical to HTML playback. Tall text blocks fail with an actionable message rather than clipping silently. Overlapping cards retain their authored positions; review the preview and adjust placement if necessary. Video itself is not a redaction tool.
 
-Before a PR/release: visually compare real walkthroughs, test downloaded MP4/WebM in Windows and macOS players, review longer recordings and large text, and decide whether closer renderer parity is needed. Existing HTML/embed/project exports still include original source media. The new video contains only rendered frames from the selected trim ranges.
+Before a release: visually compare real walkthroughs, test downloaded MP4/WebM in Windows and macOS players, review longer recordings and large text, and decide whether closer renderer parity is needed. Existing HTML/embed/project exports still include original source media. The new video contains only rendered frames from the selected trim ranges.
 
 Implementation: `src/video-export.ts` owns the canvas compositor/encoder; `src/VideoExport.tsx` owns export-only controls. The implementation uses browser-native Canvas capture and MediaRecorder without adding packages or extension permissions.
 
