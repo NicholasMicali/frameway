@@ -71,20 +71,21 @@ try {
   await page.locator('.extra-panel').waitFor();
   await add.getByRole('button', { name: 'Arrow', exact: true }).click();
   assert.equal(await page.locator('.extra-arrow').count(), 1);
-  assert.equal(
-    await page
-      .locator('.extra-arrow-stem')
-      .evaluate((el) => getComputedStyle(el).animationIterationCount),
-    'infinite',
-  );
+  const expectAnimation = async (selector, property, expected, pseudo = null) => {
+    const result = await page.waitForFunction(
+      ({ selector, property, expected, pseudo }) => {
+        const el = document.querySelector(selector);
+        if (!el?.isConnected) return false;
+        const value = getComputedStyle(el, pseudo)[property];
+        return value === expected ? value : false;
+      },
+      { selector, property, expected, pseudo },
+    );
+    assert.equal(await result.jsonValue(), expected);
+  };
+  await expectAnimation('.extra-arrow-stem', 'animationIterationCount', 'infinite');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  const reducedArrow = await page.waitForFunction(() => {
-    const el = document.querySelector('.extra-arrow-stem');
-    if (!el?.isConnected) return false;
-    const animation = getComputedStyle(el).animationName;
-    return animation === 'none' ? animation : false;
-  });
-  assert.equal(await reducedArrow.jsonValue(), 'none');
+  await expectAnimation('.extra-arrow-stem', 'animationName', 'none');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
 
   await page.getByLabel('Element title').fill('Look here');
@@ -102,19 +103,9 @@ try {
   await page.getByRole('button', { name: 'Advanced', exact: true }).click();
   assert.equal(await page.getByLabel('Navigation target').isVisible(), true);
   await page.getByRole('button', { name: '▷ Preview' }).click();
-  assert.equal(
-    await page
-      .locator('.extra-trigger')
-      .evaluate((el) => getComputedStyle(el, '::after').animationName),
-    'extra-icon-pulse',
-  );
+  await expectAnimation('.extra-trigger', 'animationName', 'extra-icon-pulse', '::after');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  assert.equal(
-    await page
-      .locator('.extra-trigger')
-      .evaluate((el) => getComputedStyle(el, '::after').animationName),
-    'none',
-  );
+  await expectAnimation('.extra-trigger', 'animationName', 'none', '::after');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
 
   await page.getByRole('button', { name: 'Open tip: A useful tip' }).click();
