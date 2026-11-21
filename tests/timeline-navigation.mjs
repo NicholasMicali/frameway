@@ -72,6 +72,10 @@ try {
   await page.setViewportSize({ width: 700, height: 900 });
   await page.getByRole('button', { name: 'Fit selected clip', exact: true }).click();
   await page.getByRole('button', { name: 'Show full video', exact: true }).click();
+  await page.waitForFunction(() => {
+    const e = document.querySelector('.timeline-viewport');
+    return e && Math.abs(e.scrollWidth - e.clientWidth) < 3;
+  });
   assert.ok(await viewport.evaluate((e) => Math.abs(e.scrollWidth - e.clientWidth) < 3));
   assert.ok(
     Math.abs(Number(await page.getByLabel('Clip start', { exact: true }).inputValue()) - 2.05) <
