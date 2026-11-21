@@ -61,7 +61,7 @@ try {
   await page.getByText('Extracting still frame…').waitFor({ state: 'hidden' });
   await page.getByRole('button', { name: 'Share', exact: true }).click();
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export project' }).click();
+  await page.getByRole('button', { name: 'Download project' }).click();
   await page.getByText('Download started — check your downloads', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Close export' }).click();
   const download = await downloadPromise;

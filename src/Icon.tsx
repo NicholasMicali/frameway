@@ -1,4 +1,5 @@
 type IconName =
+  | 'close'
   | 'up'
   | 'down'
   | 'shield'
@@ -23,6 +24,7 @@ type IconName =
   | 'folder'
   | 'arrow';
 const paths: Record<IconName, string> = {
+  close: 'M6 6l12 12M6 18 18 6',
   up: 'M12 20V4m-6 6 6-6 6 6',
   down: 'M12 4v16m-6-6 6 6 6-6',
   shield: 'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM8 12l3 3 5-6',

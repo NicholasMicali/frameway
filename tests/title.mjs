@@ -94,7 +94,7 @@ try {
   assert.ok(await viewer.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   await page.getByRole('button', { name: 'Share', exact: true }).click();
   const archive = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export project', exact: false }).click();
+  await page.getByRole('button', { name: 'Download project', exact: false }).click();
   await page.getByText('Download started — check your downloads', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Close export' }).click();
   const zip = path.resolve('test-results/title.zip');

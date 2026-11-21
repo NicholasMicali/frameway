@@ -444,3 +444,52 @@ test('additional elements validate and use a compatible-reader backup version', 
   const duplicate = newElement('arrow');
   assert.throws(() => validateElements([duplicate, duplicate]));
 });
+
+test('video export uses library order once, clip trims, and export-only timing overrides', async () => {
+  const { videoPlan } = await import('../src/video-export');
+  const p = project();
+  p.steps[0].target = p.steps[0].id;
+  const before = structuredClone(p);
+  const plan = videoPlan(p, { seconds: 5, durations: { [p.steps[0].id]: 8 }, width: 1280 });
+  assert.deepEqual(
+    plan.map((x) => x.step.id),
+    p.steps.map((x) => x.id),
+  );
+  assert.equal(plan[0].seconds, 8);
+  assert.deepEqual(p, before);
+  const video = {
+    ...p.steps[0],
+    kind: 'video' as const,
+    autoplay: false,
+    clipStart: 2,
+    clipEnd: 3.25,
+  };
+  assert.equal(
+    videoPlan({ ...p, steps: [video] }, { seconds: 5, durations: {}, width: 1920 })[0].seconds,
+    1.25,
+  );
+  for (const seconds of [NaN, 0, 61])
+    assert.throws(() => videoPlan(p, { seconds, durations: {}, width: 1280 }));
+});
+
+test('video text preserves words, styled runs, blank lines, and hanging list indents', async () => {
+  const { layoutVideoText } = await import('../src/video-text');
+  const measure = (text: string) => Array.from(text).length;
+  const rows = layoutVideoText('Use **bold** words with *care*', 10, measure);
+  assert.deepEqual(
+    rows.map((row) => row.runs.map((run) => run.text).join('')),
+    ['Use bold', 'words with', 'care'],
+  );
+  assert.ok(rows[0].runs.some((run) => run.text === 'bold' && run.weight === '700'));
+  assert.equal(rows[2].runs[0].weight, 'italic');
+  const list = layoutVideoText('Intro\n- longer list item wraps', 12, measure);
+  assert.equal(list[1].indent, 0);
+  assert.equal(list[2].indent, 2);
+  assert.ok(list[1].runs[0].text.startsWith('• '));
+  assert.equal(layoutVideoText('one\n\ntwo', 20, measure).length, 3);
+  assert.deepEqual(
+    layoutVideoText('abcdefghijk', 5, measure).map((row) => row.runs[0].text),
+    ['abcde', 'fghij', 'k'],
+  );
+  assert.equal(layoutVideoText('**literal**', 20, measure, false)[0].runs[0].text, '**literal**');
+});

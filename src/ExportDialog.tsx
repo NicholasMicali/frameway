@@ -1,17 +1,17 @@
+import { VideoExport } from './VideoExport';
 import { useEffect, useRef, useState } from 'react';
 import type { Project } from './model';
 import { Icon } from './Icon';
 import { download } from './archive';
 import { exportInteractive } from './interactive-export';
 import { exportName } from './export-name';
-import { backupStatus } from './storage-health';
 
 type Format = 'html' | 'zip' | 'backup';
 const instructions: Record<Format, string> = {
-  html: 'Send the HTML file to your recipient. They should download it and open it in a modern browser. Email and file-sharing previews may block interactive content. No Frameway installation, account, or internet connection is needed to view it.',
-  zip: 'Extract the ZIP and keep its files together. Place the folder on your existing website or internal static server. Use embed.html for an HTML iframe example or WalkthroughEmbed.tsx for React. A localhost URL only works on your own computer.',
+  html: 'Send this HTML file. Recipients download it and open it in their browser, even offline.',
+  zip: 'Extract the ZIP on your website or internal server. HTML and React embed examples are included.',
   backup:
-    'Keep the .frameway.zip file somewhere safe. To reopen or edit it later, choose Options → Import project backup in Frameway. This is an editable project, not a file for viewers.',
+    'Send the .frameway.zip file. The recipient opens Options → Import project backup in their Frameway to edit a separate copy. You can also keep it as a backup.',
 };
 export function ExportDialog({
   project,
@@ -25,6 +25,7 @@ export function ExportDialog({
   const dialog = useRef<HTMLDialogElement>(null);
   const working = useRef(false);
   const feedback = useRef<HTMLDivElement>(null);
+  const [videoBusy, setVideoBusy] = useState(false);
   const [pending, setPending] = useState<Format>();
   const [completed, setCompleted] = useState<Format>();
   const [error, setError] = useState('');
@@ -75,68 +76,92 @@ export function ExportDialog({
     >
       <div className="export-heading">
         <div>
-          <h2 id="export-heading">Export your walkthrough</h2>
+          <h2 id="export-heading">Share walkthrough</h2>
           <p>{project.title}</p>
         </div>
-        <button aria-label="Close export" disabled={!!pending} onClick={onClose}>
-          Close
+        <button
+          className="share-close"
+          aria-label="Close export"
+          disabled={!!pending || videoBusy}
+          onClick={onClose}
+        >
+          <Icon name="close" />
         </button>
       </div>
-      <p className="export-intro">
-        Choose how you want to share or keep your work. Files are created on this device.
-      </p>
-      <div className="export-choices" aria-busy={!!pending}>
-        <section className="export-choice export-featured">
-          <span className="export-symbol">
-            <Icon name="share" />
-          </span>
-          <div>
-            <span className="export-badge">Best for sharing</span>
-            <h3>Send a walkthrough</h3>
-            <p>
-              One interactive HTML file with your screenshots and video. Anyone can open it in a
-              browser, even offline.
-            </p>
-            <button className="primary" disabled={!!pending} onClick={() => void run('html')}>
+      <p className="export-intro">Choose a format. Your files stay on this device.</p>
+      <div className="share-options" aria-busy={!!pending || videoBusy}>
+        {(
+          [
+            {
+              format: 'html',
+              icon: 'share',
+              title: 'Interactive walkthrough',
+              description: 'One HTML file. Watch in any browser, even offline.',
+              button: 'Download HTML',
+            },
+            {
+              format: 'zip',
+              icon: 'monitor',
+              title: 'Website embed',
+              description: 'Player files with HTML and React embed examples.',
+              button: 'Export embed',
+            },
+            {
+              format: 'backup',
+              icon: 'edit',
+              title: 'Send to a teammate',
+              description: 'An editable copy they can import into their Frameway.',
+              button: 'Download project',
+            },
+          ] as const
+        ).map((item) => (
+          <section className="share-option" key={item.format}>
+            <span className="export-symbol">
+              <Icon name={item.icon} />
+            </span>
+            <div className="share-option-copy">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </div>
+            <button
+              className={item.format === 'html' ? 'primary' : ''}
+              disabled={!!pending || videoBusy}
+              onClick={() => void run(item.format)}
+            >
               <Icon name="download" />
-              Download HTML
+              {item.button}
             </button>
-          </div>
-        </section>
-        <section className="export-choice">
-          <span className="export-symbol">
-            <Icon name="folder" />
-          </span>
-          <div>
-            <h3>Website embed</h3>
-            <p>
-              A ZIP with the player, media, and HTML / React embed examples for your existing
-              website or internal server.
-            </p>
-            <button disabled={!!pending} onClick={() => void run('zip')}>
-              <Icon name="download" />
-              Export embed
-            </button>
-          </div>
-        </section>
-        <section className="export-choice">
-          <span className="export-symbol">
-            <Icon name="edit" />
-          </span>
-          <div>
-            <h3>Editable project backup</h3>
-            <p>
-              Save a copy you can import into Frameway to continue editing or move to another
-              device. HTML and embed exports are for viewing.
-            </p>
-            <button disabled={!!pending} onClick={() => void run('backup')}>
-              <Icon name="download" />
-              Export project backup
-            </button>
-            <small>{backupStatus(project)}. Keep the downloaded ZIP.</small>
-          </div>
-        </section>
+          </section>
+        ))}
       </div>
+      <details
+        className="share-video"
+        onClick={(event) => {
+          if (videoBusy && (event.target as Element).closest('summary')) event.preventDefault();
+        }}
+      >
+        <summary>
+          <span className="export-symbol">
+            <Icon name="record" />
+          </span>
+          <span>
+            <strong>Video</strong>
+            <span className="share-video-caption">
+              A video that plays the walkthrough automatically.
+            </span>
+          </span>
+          <Icon name="chevron" />
+        </summary>
+        {!pending && (
+          <VideoExport
+            project={project}
+            onBusy={(busy) => {
+              working.current = busy;
+              setVideoBusy(busy);
+            }}
+          />
+        )}
+      </details>
       <div ref={feedback}>
         <div role="status" aria-live="polite">
           {pending && (
@@ -163,9 +188,9 @@ export function ExportDialog({
         )}
       </div>
       <p className="export-privacy">
-        Exports include the complete original recording. Trimming changes playback ranges; it does
-        not remove footage or redact sensitive information. Only share files with people who should
-        have access to that recording.
+        HTML, embed, and editable projects contain the original recording, including trimmed
+        footage. Video contains rendered clip ranges. Share only content intended for your
+        recipient.
       </p>
     </dialog>
   );
