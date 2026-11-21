@@ -27,12 +27,24 @@ try {
   // A narrow desktop editor canvas must not use the mobile reader width override.
   await page.setViewportSize({ width: 1000, height: 1000 });
   await page.getByLabel('Element width').fill('0.2');
-  const smallWidth = (await page.locator('.extra-item').boundingBox()).width;
-  const canvasWidth = (await page.locator('.extra-layer').boundingBox()).width;
+  // Read both boxes in one browser task after the requested width has rendered.
+  // React may replace the element between separate locator measurements.
+  const measureWidth = async (ratio) => {
+    const result = await page.waitForFunction((expected) => {
+      const item = document.querySelector('.extra-item');
+      const layer = document.querySelector('.extra-layer');
+      if (!item || !layer) return false;
+      const width = item.getBoundingClientRect().width;
+      const canvas = layer.getBoundingClientRect().width;
+      return canvas > 0 && Math.abs(width - canvas * expected) < 2 ? { width, canvas } : false;
+    }, ratio);
+    return result.jsonValue();
+  };
+  const { width: smallWidth, canvas: canvasWidth } = await measureWidth(0.2);
   assert.ok(canvasWidth < 600);
   assert.ok(Math.abs(smallWidth - canvasWidth * 0.2) < 2);
   await page.getByLabel('Element width').fill('0.4');
-  const largeWidth = (await page.locator('.extra-item').boundingBox()).width;
+  const { width: largeWidth } = await measureWidth(0.4);
   assert.ok(
     largeWidth > smallWidth * 1.8,
     'width control must resize cards on narrow desktop canvases',
