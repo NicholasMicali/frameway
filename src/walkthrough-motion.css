@@ -54,11 +54,11 @@
 @keyframes walkthrough-hotspot-pulse {
   0% {
     transform: scale(0.85);
-    opacity: 0.55;
+    opacity: 0.65;
   }
   75%,
   100% {
-    transform: scale(1.5);
+    transform: scale(1.8);
     opacity: 0;
   }
 }
