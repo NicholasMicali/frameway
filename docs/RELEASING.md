@@ -1,6 +1,6 @@
 # Release preparation
 
-The current release version is [v0.3.0 beta](https://github.com/NicholasMicali/frameway/releases/tag/v0.3.0). Source is published at [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). Each new packaged release requires a separate maintainer decision; track validation in [TODO.md](../TODO.md).
+The current release version is [v0.4.0 beta](https://github.com/NicholasMicali/frameway/releases/tag/v0.4.0). Source is published at [NicholasMicali/frameway](https://github.com/NicholasMicali/frameway). Each new packaged release requires a separate maintainer decision; track validation in [TODO.md](../TODO.md).
 
 1. The repository is public and the source uses Apache-2.0; `private: true` prevents npm publication, not GitHub visibility.
 2. Review the prospective commit files (`git ls-files --cached --others --exclude-standard`). Keep recordings, private research captures, profiles, `.env` files, dependencies, and build artifacts out of Git.
@@ -18,8 +18,16 @@ GitHub-hosted CI execution and real installation of a release artifact must be v
 
 `scripts/record-demo.mjs` records the real editor in a fresh Playwright profile using only generated sample content. It writes source videos and screenshots to ignored `test-results/readme-demo/`. Run it with the installed Playwright Chromium; its Vite server uses port 4184. The reviewed GIF is committed at `docs/assets/frameway-demo.gif`; source recordings remain ignored. The demo illustrates editing, preview, and HTML export, not native recording-picker interactions.
 
-## v0.4.0 / Chrome Web Store preparation
+## Chrome Web Store updates
 
-The source candidate is v0.4.0; v0.3.0 remains the published GitHub release until separately approved. Follow [Store readiness](STORE-READINESS.md) for listing text, migration, permission explanations, and owner submission gates. GitHub release publication does not publish a Chrome Web Store item. Build the final artifact from merged main, not an intermediate stacked PR branch.
+Frameway is published in the [Chrome Web Store](https://chromewebstore.google.com/detail/dpfkfbpolahiofedbdebdjmpjfphkjge). This is the primary installation path; keep the Store package aligned with each approved GitHub release after review.
+
+1. Increment the package, lockfile, and extension manifest versions together.
+2. Complete the checks and GitHub release process above.
+3. Open the existing Frameway item in the Developer Dashboard → Package → Upload New Package. Upload the complete release ZIP, not the source archive. Do not create a new Store item.
+4. Update listing and privacy declarations if behavior or permissions changed; submit for review and publish after approval.
+5. Verify the Store version and installation/update behavior, including existing project storage. The old version stays available during review. GitHub publication does not upload to the Store automatically.
+
+See [Store materials](STORE-READINESS.md) for listing copy, permission explanations, and migration instructions.
 
 The build includes Frameway LICENSE/NOTICE and generated THIRD_PARTY_NOTICES.txt. Review new dependencies and missing-license errors before packaging; do not omit notices to get a release out.

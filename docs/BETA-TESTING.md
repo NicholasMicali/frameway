@@ -1,6 +1,6 @@
 # Try Frameway and report feedback
 
-Download the extension ZIP from the [v0.3.0 beta release](https://github.com/NicholasMicali/frameway/releases/tag/v0.3.0), extract it to a folder you will keep, then use Chrome → Extensions → Developer mode → Load unpacked to select the folder containing `manifest.json`. [The README](../README.md) also explains building from source. The goal is to create a walkthrough you would actually send to a colleague or customer. Start with approved dummy data: the repository and its GitHub issues are public.
+Install [Frameway from the Chrome Web Store](https://chromewebstore.google.com/detail/dpfkfbpolahiofedbdebdjmpjfphkjge) and pin it in Chrome. Store installations receive updates through Chrome. [The README](../README.md) also explains manual ZIP installation and building from source for development. The goal is to create a walkthrough you would actually send to a colleague or customer. Start with approved dummy data: the repository and its GitHub issues are public.
 
 ## A short test session
 
@@ -36,7 +36,7 @@ Impact: blocks the workflow / workaround available / minor inconvenience
 Frameway version or commit:
 OS and version:
 Chrome version (and whether managed by your organization):
-Installation: built from source / extension ZIP
+Installation: Chrome Web Store / built from source / extension ZIP
 Mode: extension / website recorder
 Use case and intended audience:
 Steps to reproduce:
@@ -77,3 +77,5 @@ The owner reports successful Windows use, delivery of standalone HTML to other p
 - Before migrating installations, export `.frameway.zip` backups. Keep the old installation until you have verified the imported projects in the new one.
 
 See [Store readiness](STORE-READINESS.md) for release gates. Local automated tests use synthetic data; real Windows/macOS picker checks remain manual.
+
+The owner and another tester have confirmed project sharing and backup/restore with the Store version. Continue testing with sanitized content in your own delivery channels.

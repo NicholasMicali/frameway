@@ -78,14 +78,13 @@ try {
     'infinite',
   );
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.waitForFunction(() => {
+  const reducedArrow = await page.waitForFunction(() => {
     const el = document.querySelector('.extra-arrow-stem');
-    return el?.isConnected && getComputedStyle(el).animationName === 'none';
+    if (!el?.isConnected) return false;
+    const animation = getComputedStyle(el).animationName;
+    return animation === 'none' ? animation : false;
   });
-  assert.equal(
-    await page.locator('.extra-arrow-stem').evaluate((el) => getComputedStyle(el).animationName),
-    'none',
-  );
+  assert.equal(await reducedArrow.jsonValue(), 'none');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
 
   await page.getByLabel('Element title').fill('Look here');
