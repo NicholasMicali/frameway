@@ -66,6 +66,10 @@ try {
     'infinite',
   );
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForFunction(() => {
+    const el = document.querySelector('.extra-arrow-stem');
+    return el?.isConnected && getComputedStyle(el).animationName === 'none';
+  });
   assert.equal(
     await page.locator('.extra-arrow-stem').evaluate((el) => getComputedStyle(el).animationName),
     'none',
