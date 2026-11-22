@@ -1,3 +1,5 @@
+import { frameVars, presentationFrame } from './presentation-frame';
+import './presentation-frame.css';
 import { SlideElements, ElementTools } from './SlideElements';
 import { BodyEditor, OptionalLinkEditor } from './BodyEditor';
 import { formattedText, safeActionURL } from './formatted-text';
@@ -1014,168 +1016,185 @@ function App() {
               )}
               <div className="stage-wrap">
                 <div
-                  ref={stage}
-                  onPointerDown={(e) => {
-                    if (!preview && !(e.target as Element).closest('.extra-layer'))
-                      setSelectedElement('');
-                  }}
-                  data-motion={preview ? 'subtle' : 'none'}
-                  className="stage"
+                  className="presentation-frame"
+                  data-framed={
+                    presentationFrame(project.appearance).enabled &&
+                    step?.kind !== 'title' &&
+                    step?.kind !== 'closing'
+                  }
                   style={
-                    {
-                      ...themeVars(project.theme, project.customColor),
-                      ...appearanceVars(project.appearance),
-                      aspectRatio: `${project.width}/${project.height}`,
-                    } as React.CSSProperties
+                    frameVars(
+                      project.appearance,
+                      project.height / project.width,
+                    ) as React.CSSProperties
                   }
                 >
-                  <img
-                    key={`${selected}:${preview}:${visit}`}
-                    style={zooming ? (areaZoomVars(step) as React.CSSProperties) : undefined}
-                    hidden={step?.kind === 'title' || step?.kind === 'closing'}
-                    className={`still ${zooming ? 'area-zoom-image' : ''}`}
-                    src={imageURL}
-                    alt={step?.title}
-                  />
-                  <video
-                    ref={video}
-                    src={videoURL}
-                    muted
-                    playsInline
-                    preload="auto"
-                    onLoadedMetadata={() => {
-                      if (video.current && step?.kind === 'video')
-                        video.current.currentTime = step.clipStart;
+                  <div
+                    ref={stage}
+                    onPointerDown={(e) => {
+                      if (!preview && !(e.target as Element).closest('.extra-layer'))
+                        setSelectedElement('');
                     }}
-                    className={`recording ${playing || scrub || step?.kind === 'video' ? 'visible' : ''}`}
-                    onEnded={() => {
-                      if (playing) {
-                        setPlaying(false);
-                        if (destination.current) {
-                          history.current.push(selected);
-                          select(destination.current);
-                        }
-                      }
-                    }}
-                    onError={() =>
-                      setError('The recording could not be decoded. Check the imported media.')
+                    data-motion={preview ? 'subtle' : 'none'}
+                    className="stage"
+                    style={
+                      {
+                        ...themeVars(project.theme, project.customColor),
+                        ...appearanceVars(project.appearance),
+                        aspectRatio: `${project.width}/${project.height}`,
+                      } as React.CSSProperties
                     }
-                  />
-                  {(step?.kind === 'title' || step?.kind === 'closing') && (
-                    <TitleSlide
-                      key={`title:${selected}:${preview}:${visit}`}
-                      step={step}
+                  >
+                    <img
+                      key={`${selected}:${preview}:${visit}`}
+                      style={zooming ? (areaZoomVars(step) as React.CSSProperties) : undefined}
+                      hidden={step?.kind === 'title' || step?.kind === 'closing'}
+                      className={`still ${zooming ? 'area-zoom-image' : ''}`}
                       src={imageURL}
-                      logo={project.logo}
-                      appearance={project.appearance}
-                      onStart={
-                        preview ? () => (nextId(project, step) ? advance() : restart()) : undefined
+                      alt={step?.title}
+                    />
+                    <video
+                      ref={video}
+                      src={videoURL}
+                      muted
+                      playsInline
+                      preload="auto"
+                      onLoadedMetadata={() => {
+                        if (video.current && step?.kind === 'video')
+                          video.current.currentTime = step.clipStart;
+                      }}
+                      className={`recording ${playing || scrub || step?.kind === 'video' ? 'visible' : ''}`}
+                      onEnded={() => {
+                        if (playing) {
+                          setPlaying(false);
+                          if (destination.current) {
+                            history.current.push(selected);
+                            select(destination.current);
+                          }
+                        }
+                      }}
+                      onError={() =>
+                        setError('The recording could not be decoded. Check the imported media.')
                       }
                     />
-                  )}
-                  {step?.kind === 'image' && !playing && !scrub && (
-                    <SlideElements
-                      key={`elements:${selected}:${preview}:${visit}`}
-                      step={step}
-                      preview={preview}
-                      leaving={leaving}
-                      selected={selectedElement}
-                      onSelect={setSelectedElement}
-                      onChange={(elements) => patch({ elements })}
-                      boundary={boundary}
-                    />
-                  )}
-                  {step?.kind === 'image' && !playing && !scrub && (
-                    <>
-                      {step.style !== 'callout' && (
-                        <button
-                          key={`${selected}:${preview}:${visit}`}
-                          aria-label="Hotspot"
-                          disabled={leaving}
-                          className={`hotspot motion-enter ${zooming ? 'area-zoom-hotspot' : ''} ${step.style === 'area' ? 'area-hotspot' : ''}`}
-                          style={{
-                            ...(zooming ? areaZoomVars(step) : {}),
-                            width:
-                              step.style === 'area'
-                                ? `${(step.areaWidth ?? 0.25) * 100}%`
-                                : undefined,
-                            height:
-                              step.style === 'area'
-                                ? `${(step.areaHeight ?? 0.2) * 100}%`
-                                : undefined,
-                            left: `${(step.style === 'area' ? clamp(step.x, (step.areaWidth ?? 0.25) / 2, 1 - (step.areaWidth ?? 0.25) / 2) : step.x) * 100}%`,
-                            top: `${(step.style === 'area' ? clamp(step.y, (step.areaHeight ?? 0.2) / 2, 1 - (step.areaHeight ?? 0.2) / 2) : step.y) * 100}%`,
-                          }}
-                          onPointerDown={(e) => drag(e, 'anchor')}
-                          onClick={() => {
-                            if (preview) {
-                              if (cardOpen) advance();
-                              else setCardOpen(true);
-                            }
-                          }}
-                        >
-                          <span />
-                        </button>
-                      )}
-                      {(!preview || cardOpen || step.style === 'callout') && (
-                        <div
-                          key={`card:${selected}:${preview}:${visit}`}
-                          ref={card}
-                          className="callout motion-enter"
-                          style={{
-                            width: step.cardWidth ? `${step.cardWidth * 100}%` : undefined,
-                            left: `${Math.min(step.cardX, cardBounds.x) * 100}%`,
-                            top: `${Math.min(step.cardY, cardBounds.y) * 100}%`,
-                          }}
-                        >
-                          <div className="card-handle" onPointerDown={(e) => drag(e, 'card')}>
-                            <span>
-                              {String(project.steps.indexOf(step) + 1).padStart(2, '0')} /{' '}
-                              {String(project.steps.length).padStart(2, '0')}
-                            </span>
-                            <span>{preview ? '✦' : '⠿'}</span>
-                          </div>
-                          <h3>{step.title}</h3>
-                          <div
-                            className="formatted-body"
-                            dangerouslySetInnerHTML={{
-                              __html: formattedText(step.body, true),
+                    {(step?.kind === 'title' || step?.kind === 'closing') && (
+                      <TitleSlide
+                        key={`title:${selected}:${preview}:${visit}`}
+                        step={step}
+                        src={imageURL}
+                        logo={project.logo}
+                        appearance={project.appearance}
+                        onStart={
+                          preview
+                            ? () => (nextId(project, step) ? advance() : restart())
+                            : undefined
+                        }
+                      />
+                    )}
+                    {step?.kind === 'image' && !playing && !scrub && (
+                      <SlideElements
+                        key={`elements:${selected}:${preview}:${visit}`}
+                        step={step}
+                        preview={preview}
+                        leaving={leaving}
+                        selected={selectedElement}
+                        onSelect={setSelectedElement}
+                        onChange={(elements) => patch({ elements })}
+                        boundary={boundary}
+                      />
+                    )}
+                    {step?.kind === 'image' && !playing && !scrub && (
+                      <>
+                        {step.style !== 'callout' && (
+                          <button
+                            key={`${selected}:${preview}:${visit}`}
+                            aria-label="Hotspot"
+                            disabled={leaving}
+                            className={`hotspot motion-enter ${zooming ? 'area-zoom-hotspot' : ''} ${step.style === 'area' ? 'area-hotspot' : ''}`}
+                            style={{
+                              ...(zooming ? areaZoomVars(step) : {}),
+                              width:
+                                step.style === 'area'
+                                  ? `${(step.areaWidth ?? 0.25) * 100}%`
+                                  : undefined,
+                              height:
+                                step.style === 'area'
+                                  ? `${(step.areaHeight ?? 0.2) * 100}%`
+                                  : undefined,
+                              left: `${(step.style === 'area' ? clamp(step.x, (step.areaWidth ?? 0.25) / 2, 1 - (step.areaWidth ?? 0.25) / 2) : step.x) * 100}%`,
+                              top: `${(step.style === 'area' ? clamp(step.y, (step.areaHeight ?? 0.2) / 2, 1 - (step.areaHeight ?? 0.2) / 2) : step.y) * 100}%`,
                             }}
-                          />
-                          {step.actionUrl && safeActionURL(step.actionUrl) && (
-                            <a
-                              className="callout-action motion-enter"
-                              href={step.actionUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onPointerDown={(e) => e.stopPropagation()}
-                            >
-                              {step.actionLabel || 'Learn more'} ↗
-                            </a>
-                          )}
-                          {preview ? (
-                            <button
-                              className="card-next motion-enter"
-                              disabled={leaving}
-                              onClick={() => (nextId(project, step) ? advance() : restart())}
-                            >
-                              {nextId(project, step) ? 'Continue' : 'Replay'} <span>→</span>
-                            </button>
-                          ) : (
-                            <div className="card-footer">
-                              Your next moment starts here <span>→</span>
+                            onPointerDown={(e) => drag(e, 'anchor')}
+                            onClick={() => {
+                              if (preview) {
+                                if (cardOpen) advance();
+                                else setCardOpen(true);
+                              }
+                            }}
+                          >
+                            <span />
+                          </button>
+                        )}
+                        {(!preview || cardOpen || step.style === 'callout') && (
+                          <div
+                            key={`card:${selected}:${preview}:${visit}`}
+                            ref={card}
+                            className="callout motion-enter"
+                            style={{
+                              width: step.cardWidth ? `${step.cardWidth * 100}%` : undefined,
+                              left: `${Math.min(step.cardX, cardBounds.x) * 100}%`,
+                              top: `${Math.min(step.cardY, cardBounds.y) * 100}%`,
+                            }}
+                          >
+                            <div className="card-handle" onPointerDown={(e) => drag(e, 'card')}>
+                              <span>
+                                {String(project.steps.indexOf(step) + 1).padStart(2, '0')} /{' '}
+                                {String(project.steps.length).padStart(2, '0')}
+                              </span>
+                              <span>{preview ? '✦' : '⠿'}</span>
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  )}
-                  {step?.kind === 'video' && !playing && (
-                    <button className="clip-play" onClick={() => void playClip()}>
-                      ▶ Play clip
-                    </button>
-                  )}
-                  {playing && <div className="playing-label">● Playing video</div>}
+                            <h3>{step.title}</h3>
+                            <div
+                              className="formatted-body"
+                              dangerouslySetInnerHTML={{
+                                __html: formattedText(step.body, true),
+                              }}
+                            />
+                            {step.actionUrl && safeActionURL(step.actionUrl) && (
+                              <a
+                                className="callout-action motion-enter"
+                                href={step.actionUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onPointerDown={(e) => e.stopPropagation()}
+                              >
+                                {step.actionLabel || 'Learn more'} ↗
+                              </a>
+                            )}
+                            {preview ? (
+                              <button
+                                className="card-next motion-enter"
+                                disabled={leaving}
+                                onClick={() => (nextId(project, step) ? advance() : restart())}
+                              >
+                                {nextId(project, step) ? 'Continue' : 'Replay'} <span>→</span>
+                              </button>
+                            ) : (
+                              <div className="card-footer">
+                                Your next moment starts here <span>→</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                    {step?.kind === 'video' && !playing && (
+                      <button className="clip-play" onClick={() => void playClip()}>
+                        ▶ Play clip
+                      </button>
+                    )}
+                    {playing && <div className="playing-label">● Playing video</div>}
+                  </div>
                 </div>
               </div>
               <div className="player-bar">

@@ -25,6 +25,7 @@ try {
       model = await import('/src/model.ts');
     let p = await db.get('projects', location.hash.split('/')[1]);
     const { newElement } = await import('/src/slide-elements.ts');
+    p.appearance = { ...p.appearance, frameStyle: 'soft', framePadding: 6 };
     const image = p.steps.find((s) => s.kind === 'image');
     image.body =
       'Keep **complete words** together when wrapping. This sentence includes *italic text* and a longer explanation.\n- A list item that wraps naturally to the next line.\n1. Follow the instructions.';
@@ -61,6 +62,13 @@ try {
     document.querySelector('.video-export [role=status]')?.textContent.includes('slide 3'),
   );
   await page.waitForTimeout(400);
+  assert.deepEqual(
+    await page
+      .locator('canvas')
+      .evaluate((c) => Array.from(c.getContext('2d').getImageData(1, 1, 1, 1).data)),
+    [237, 243, 248, 255],
+    'video frame background is rendered',
+  );
   await page.locator('canvas').screenshot({ path: 'test-results/video-export/text.png' });
   await page.screenshot({ path: 'test-results/video-export/rendering.png', fullPage: true });
   const file = await download;

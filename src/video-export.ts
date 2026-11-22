@@ -1,3 +1,4 @@
+import { presentationFrame } from './presentation-frame';
 import { layoutVideoText } from './video-text';
 import { type Project, type Step, clamp, validateManifest } from './model';
 import { themeVars } from './themes';
@@ -309,8 +310,7 @@ export async function exportVideo(
             video.currentTime = s.clipStart;
           });
       }
-      const draw = (t: number) => {
-        ctx.setTransform(canvas.width / w, 0, 0, canvas.width / w, 0, 0);
+      const drawContent = (t: number) => {
         ctx.globalAlpha = 1;
         ctx.textBaseline = 'top';
         ctx.clearRect(0, 0, w, h);
@@ -461,6 +461,42 @@ export async function exportVideo(
           true,
           s.actionUrl ? s.actionLabel || 'Learn more' : undefined,
         );
+      };
+      const draw = (t: number) => {
+        ctx.setTransform(canvas.width / w, 0, 0, canvas.width / w, 0, 0);
+        const frame = presentationFrame(a);
+        if (!frame.enabled || s.kind === 'title' || s.kind === 'closing') {
+          drawContent(t);
+          return;
+        }
+        ctx.globalAlpha = 1;
+        const background = ctx.createLinearGradient(0, 0, w, h);
+        background.addColorStop(0, frame.background);
+        background.addColorStop(1, frame.gradient ? frame.endColor : frame.background);
+        ctx.fillStyle = background;
+        ctx.fillRect(0, 0, w, h);
+        const insetX = w * frame.padding,
+          insetY = h * frame.padding,
+          scale = 1 - 2 * frame.padding;
+        ctx.save();
+        if (frame.shadow) {
+          ctx.shadowColor = '#17253626';
+          ctx.shadowBlur = 24;
+          ctx.shadowOffsetY = 8;
+        }
+        box(insetX, insetY, w * scale, h * scale, '#ffffff', frame.radius);
+        ctx.restore();
+        ctx.save();
+        try {
+          ctx.beginPath();
+          ctx.roundRect(insetX, insetY, w * scale, h * scale, frame.radius);
+          ctx.clip();
+          ctx.translate(insetX, insetY);
+          ctx.scale(scale, scale);
+          drawContent(t);
+        } finally {
+          ctx.restore();
+        }
       };
       draw(0);
       if (recorder.state === 'inactive') recorder.start(1000);

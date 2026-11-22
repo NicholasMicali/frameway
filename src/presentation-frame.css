@@ -1,0 +1,24 @@
+.presentation-frame {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.presentation-frame[data-framed='true'] {
+  padding: var(--frame-y) var(--frame-x);
+  background: var(--frame-background);
+  border-radius: 12px;
+}
+.presentation-frame[data-framed='true'] > .stage,
+.presentation-frame[data-framed='true'] > .frame-sample-media {
+  border-radius: var(--frame-radius);
+  box-shadow: var(--frame-shadow);
+  overflow: hidden;
+}
+.frame-sample-media {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.frame-settings-preview {
+  margin: 12px 0;
+}
