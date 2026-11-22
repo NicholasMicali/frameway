@@ -513,3 +513,19 @@ test('presentation frames validate strictly and preserve defaults and project co
   assert.equal(presentationFrame(appearance).radius, 0);
   assert.equal(frameVars(appearance, 0.5)['--frame-y'], '3%');
 });
+
+test('music settings accept only the bundled track and bounded volume', async () => {
+  const { validateMusic } = await import('../src/music');
+  assert.doesNotThrow(() => validateMusic(undefined));
+  assert.doesNotThrow(() =>
+    validateMusic({ track: 'exploration-theme', enabled: true, volume: 0.2 }),
+  );
+  for (const volume of [-1, 2, NaN, Infinity, '0.2'])
+    assert.throws(() => validateMusic({ track: 'exploration-theme', enabled: true, volume }));
+  assert.throws(() =>
+    validateMusic({ track: 'https://remote.example/music.mp3', enabled: true, volume: 0.2 }),
+  );
+  assert.throws(() =>
+    validateMusic({ track: 'exploration-theme', enabled: true, volume: 0.2, url: 'anything' }),
+  );
+});

@@ -1,3 +1,6 @@
+import { createMusicPlayer } from './music-player';
+import { loadMusic, musicCredit } from './music';
+import musicCSS from './music.css?raw';
 import { frameVars, presentationFrame } from './presentation-frame';
 import frameCSS from './presentation-frame.css?raw';
 import { renderElements } from './slide-elements';
@@ -24,13 +27,14 @@ const escapeHTML = (value: string) =>
     /[&<>"']/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
   );
-function playerDocument(p: Project, video: string, images: string[]) {
+function playerDocument(p: Project, video: string, images: string[], music?: string) {
   const data = {
     theme: { ...themeVars(p.theme, p.customColor), ...appearanceVars(p.appearance) },
     frame: {
       ...presentationFrame(p.appearance),
       vars: frameVars(p.appearance, p.height / p.width),
     },
+    music: music ? { src: music, volume: p.music!.volume, credit: musicCredit } : undefined,
     titleLayout: p.appearance?.titleLayout ?? 'split',
     logo: p.logo,
     chapters: chaptersFor(p.steps),
@@ -53,7 +57,9 @@ ${contentsCSS}
 ${zoomCSS}
 ${motionCSS}
 ${elementsCSS}
-${frameCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const renderElements = ${renderElements.toString()};
+${frameCSS}
+${musicCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const renderElements = ${renderElements.toString()};
+const createMusicPlayer = ${createMusicPlayer.toString()};
 const zoomOut = ${zoomOut.toString()};\n${runtime}</script></body></html>`;
 }
 function dataURL(blob: Blob) {
@@ -66,15 +72,21 @@ function dataURL(blob: Blob) {
 }
 export async function exportInteractive(p: Project, format: 'html' | 'zip') {
   validateManifest(p);
+  const music = p.music?.enabled ? await loadMusic() : undefined;
   const bytes =
-    (p.logo?.length ?? 0) + p.video.size + p.steps.reduce((n, s) => n + s.image.size, 0);
+    (music?.size ?? 0) +
+    (p.logo?.length ?? 0) +
+    p.video.size +
+    p.steps.reduce((n, s) => n + s.image.size, 0);
   if (bytes > 100 * 1024 * 1024)
     throw Error('Interactive export supports up to 100 MB of media. Use a shorter recording.');
   if (format === 'html') {
     const video = await dataURL(p.video),
       images = [];
     for (const s of p.steps) images.push(await dataURL(s.image));
-    return new Blob([playerDocument(p, video, images)], { type: 'text/html;charset=utf-8' });
+    return new Blob([playerDocument(p, video, images, music ? await dataURL(music) : undefined)], {
+      type: 'text/html;charset=utf-8',
+    });
   }
   const entries: Record<string, Uint8Array> = {};
   entries['media/recording.webm'] = new Uint8Array(await p.video.arrayBuffer());
@@ -84,7 +96,15 @@ export async function exportInteractive(p: Project, format: 'html' | 'zip') {
     images.push(path);
     entries[path] = new Uint8Array(await p.steps[i].image.arrayBuffer());
   }
-  entries['index.html'] = strToU8(playerDocument(p, 'media/recording.webm', images));
+  if (music) {
+    entries['media/music.ogg'] = new Uint8Array(await music.arrayBuffer());
+    entries['MUSIC-CREDITS.txt'] = strToU8(
+      `${musicCredit}\nhttps://creativecommons.org/publicdomain/zero/1.0/\n`,
+    );
+  }
+  entries['index.html'] = strToU8(
+    playerDocument(p, 'media/recording.webm', images, music ? 'media/music.ogg' : undefined),
+  );
   entries['embed.html'] = strToU8(
     `<!-- Place the exported folder on your website. Change src to its index.html URL. -->\n<iframe src="./index.html" title="${escapeHTML(p.title)}" style="width:100%;height:850px;border:0" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>\n`,
   );

@@ -1,0 +1,18 @@
+.music-control {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.music-toggle {
+  display: inline-grid;
+  place-items: center;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 8px;
+  border-radius: 50%;
+}
+.music-toggle[aria-pressed='true'] {
+  color: var(--accent, #2264c5);
+}
+.walkthrough-music {
+  display: none;
+}

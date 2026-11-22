@@ -1,3 +1,4 @@
+import { validateMusic, type Music } from './music';
 import { validateElements, type SlideElement } from './slide-elements';
 import { validateAppearance, type Appearance } from './appearance';
 import { safeActionURL } from './formatted-text';
@@ -50,6 +51,7 @@ type ProjectBase = {
   localEditedAt?: number;
   localBackup?: { revision: string; exportedAt: number };
   appearance?: Appearance;
+  music?: Music;
   theme?: ThemeName;
   customColor?: string;
   logo?: string;
@@ -158,6 +160,7 @@ export function moveStep(p: Project, id: string, delta: number): Project {
 }
 export function validateManifest(v: any) {
   validateAppearance(v?.appearance);
+  validateMusic(v?.music);
   if (v?.theme !== undefined && v.theme !== 'custom' && !Object.hasOwn(themes, v.theme))
     throw Error('Invalid color theme');
   if (v?.customColor !== undefined && !isHexColor(v.customColor))

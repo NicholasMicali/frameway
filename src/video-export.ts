@@ -1,3 +1,4 @@
+import { loadMusic } from './music';
 import { presentationFrame } from './presentation-frame';
 import { layoutVideoText } from './video-text';
 import { type Project, type Step, clamp, validateManifest } from './model';
@@ -22,14 +23,14 @@ export function videoPlan(project: Project, options: VideoOptions) {
     return { step, seconds };
   });
 }
-export function videoFormat() {
+export function videoFormat(withAudio = false) {
   if (typeof MediaRecorder === 'undefined')
     throw Error('Video export requires a browser with MediaRecorder, such as Chrome.');
   const mime = [
-    'video/mp4;codecs=avc1.420028',
+    withAudio ? 'video/mp4;codecs=avc1.420028,mp4a.40.2' : 'video/mp4;codecs=avc1.420028',
     'video/mp4',
-    'video/webm;codecs=vp9',
-    'video/webm;codecs=vp8',
+    withAudio ? 'video/webm;codecs=vp9,opus' : 'video/webm;codecs=vp9',
+    withAudio ? 'video/webm;codecs=vp8,opus' : 'video/webm;codecs=vp8',
   ].find((m) => MediaRecorder.isTypeSupported(m));
   if (!mime) throw Error('This browser cannot encode MP4 or WebM video. Try current Chrome.');
   return { mime, extension: mime.startsWith('video/mp4') ? 'mp4' : 'webm' };
@@ -82,7 +83,7 @@ export async function exportVideo(
 ) {
   validateManifest(project);
   const plan = videoPlan(project, options),
-    format = videoFormat();
+    format = videoFormat(!!project.music?.enabled);
   const total = plan.reduce((sum, item) => sum + item.seconds, 0);
   if (total > 1800)
     throw Error(
@@ -250,6 +251,8 @@ export async function exportVideo(
   video.playsInline = true;
   let image: ImageBitmap | undefined, logo: HTMLImageElement | undefined;
   let stream: MediaStream | undefined, recorder: MediaRecorder | undefined;
+  let musicContext: AudioContext | undefined, musicSource: AudioBufferSourceNode | undefined;
+  let musicDestination: MediaStreamAudioDestinationNode | undefined;
   const chunks: Blob[] = [];
   let bytes = 0,
     recordingError: Error | undefined;
@@ -264,6 +267,28 @@ export async function exportVideo(
   try {
     if (signal.aborted) throw abortError();
     if (recordingError) throw recordingError;
+    if (project.music?.enabled) {
+      musicContext = new AudioContext();
+      await musicContext.resume();
+      await musicContext.suspend();
+      const audio = await loadMusic();
+      if (signal.aborted) throw abortError();
+      const buffer = await musicContext.decodeAudioData(await audio.arrayBuffer());
+      if (signal.aborted) throw abortError();
+      musicSource = musicContext.createBufferSource();
+      musicSource.buffer = buffer;
+      musicSource.loop = true;
+      const gain = musicContext.createGain();
+      const start = musicContext.currentTime,
+        fade = Math.min(1, total / 3);
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(project.music.volume, start + fade);
+      gain.gain.setValueAtTime(project.music.volume, start + total - fade);
+      gain.gain.linearRampToValueAtTime(0, start + total);
+      musicDestination = musicContext.createMediaStreamDestination();
+      musicSource.connect(gain).connect(musicDestination);
+      musicSource.start();
+    }
     if (project.logo) {
       logo = new Image();
       logo.src = project.logo;
@@ -278,6 +303,7 @@ export async function exportVideo(
       });
     }
     stream = canvas.captureStream(30);
+    musicDestination?.stream.getAudioTracks().forEach((track) => stream!.addTrack(track));
     recorder = new MediaRecorder(stream, { mimeType: format.mime, videoBitsPerSecond: 6_000_000 });
     recorder.ondataavailable = (e) => {
       if (e.data.size) {
@@ -302,6 +328,7 @@ export async function exportVideo(
       const { step: s, seconds } = plan[index];
       if (signal.aborted) throw abortError();
       if (recorder.state === 'recording') recorder.pause();
+      if (musicContext?.state === 'running') await musicContext.suspend();
       image?.close();
       image = await createImageBitmap(s.image);
       if (s.kind === 'video') {
@@ -501,6 +528,7 @@ export async function exportVideo(
       draw(0);
       if (recorder.state === 'inactive') recorder.start(1000);
       else recorder.resume();
+      if (musicContext) await musicContext.resume();
       if (s.kind === 'video') await video.play();
       await new Promise<void>((resolve, reject) => {
         const start = performance.now();
@@ -561,6 +589,9 @@ export async function exportVideo(
     return { blob, extension: format.extension };
   } finally {
     if (recorder && recorder.state !== 'inactive') recorder.stop();
+    musicSource?.stop();
+    musicDestination?.stream.getTracks().forEach((track) => track.stop());
+    if (musicContext && musicContext.state !== 'closed') await musicContext.close();
     video.pause();
     video.removeAttribute('src');
     video.load();

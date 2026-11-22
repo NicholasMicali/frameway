@@ -1,3 +1,4 @@
+import { defaultMusic } from './music';
 import { frameVars, presentationFrame } from './presentation-frame';
 import { frameChoices } from './appearance';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
@@ -63,7 +64,8 @@ export function ProjectSettings({
     ],
     ['Button text', contrastRatio(palette['--accent-text'], palette['--accent'])],
   ] as const;
-  const snapshot = (p: Project) => JSON.stringify([p.theme, p.customColor, p.appearance, p.logo]);
+  const snapshot = (p: Project) =>
+    JSON.stringify([p.theme, p.customColor, p.appearance, p.logo, p.music]);
   return (
     <details
       className="project-settings"
@@ -108,6 +110,50 @@ export function ProjectSettings({
             <span className="appearance-button">Continue →</span>
           </div>
         </div>
+        <fieldset>
+          <legend>Background music</legend>
+          <label>
+            Exploration Theme
+            <input
+              type="checkbox"
+              aria-label="Enable background music"
+              checked={draft.music?.enabled ?? false}
+              onChange={(e) =>
+                setDraft((current) => ({
+                  ...current,
+                  music: { ...(current.music ?? defaultMusic), enabled: e.target.checked },
+                }))
+              }
+            />
+          </label>
+          <p>
+            A gentle synth and piano loop by Cleyton Kauffman. Plays in preview, interactive
+            walkthroughs, and video exports.
+          </p>
+          {draft.music?.enabled && (
+            <label>
+              Volume · {Math.round(draft.music.volume * 100)}%
+              <input
+                aria-label="Music volume"
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                value={Math.round(draft.music.volume * 100)}
+                onChange={(e) =>
+                  setDraft((current) => ({
+                    ...current,
+                    music: {
+                      ...(current.music ?? defaultMusic),
+                      volume: Number(e.target.value) / 100,
+                    },
+                  }))
+                }
+              />
+            </label>
+          )}
+          <p>Viewers can mute music. Sound may start after their first click.</p>
+        </fieldset>
         <fieldset>
           <legend>Brand logo</legend>
           <LogoUpload
@@ -344,6 +390,7 @@ export function ProjectSettings({
                 onChange({
                   ...project,
                   logo: draft.logo,
+                  music: draft.music,
                   appearance: draft.appearance,
                   theme: draft.theme,
                   customColor: draft.customColor,

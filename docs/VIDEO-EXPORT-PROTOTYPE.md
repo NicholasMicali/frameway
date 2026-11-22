@@ -1,6 +1,6 @@
 # Local video export
 
-Try Share → Export video in the local editor. Nothing is uploaded and no capture permission is needed. The browser records a locally composed canvas, preferring MP4 when its encoder supports it and otherwise offering WebM. Exports are silent, matching current walkthrough playback. This is not an audio/voiceover implementation.
+Try Share → Export video in the local editor. Nothing is uploaded and no capture permission is needed. The browser records a locally composed canvas, preferring MP4 when its encoder supports it and otherwise offering WebM. Exports are silent by default. Optional project background music is mixed locally into the video with short fades; see [background music](BACKGROUND-MUSIC.md). Original captured audio and voiceover are not included.
 
 Every slide appears once in library order, including title and closing slides. Explicit navigation targets are ignored, so branches and loops cannot hang the export. Still slides default to five seconds; export-only overrides support 1–60 seconds per slide. Video slides use their existing trim ranges regardless of autoplay. The editable project is not changed. All context cards are expanded because viewers cannot click them in a video.
 
