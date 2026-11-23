@@ -82,7 +82,9 @@ In the library, open a project’s three-dot menu and choose **Make a copy** to 
 
 - New recordings begin with an editable title slide, using the opening frame cropped into its lower-right corner. Existing projects have **Add title slide**.
 - Image steps support point hotspots, callout cards, and outlined area spotlights. Move and size overlays, edit text, and select navigation targets. Area highlights offer gentle automatic zoom based on their size, an on/off switch, and a custom percentage (100% = original size). The screenshot zooms toward the highlight in preview and exports while the callout stays its normal size. Leaving a zoomed slide smoothly returns to the full screenshot before navigating; step controls briefly lock during this matching zoom-out. Editing stays unzoomed for accurate placement. Existing area slides keep zoom off until enabled; newly selected area styles enable it. Large custom percentages can crop the highlight. Reduced-motion viewers see the final view without animation.
-- Themes apply to walkthrough overlays and title slides; the studio stays white/light blue. Open **Project settings** to choose a theme or **Custom color…** for your own accent. Card descriptions stay neutral black. Upload a company logo in title-slide settings (PNG/JPEG/WebP up to 5 MB); it appears only on title slides and travels with project backups and exports.
+- Themes apply to walkthrough overlays and title slides; the studio stays white/light blue. Open **Project settings** to choose a theme or **Custom color…** for your own accent. Card descriptions stay neutral black. Upload a company logo in Project settings (PNG/JPEG/WebP up to 5 MB), choose bundled fonts, and add an optional presentation frame. Branding travels with project files and exports.
+- Add arrows, cards, tips, information, and warnings to explain details alongside the primary next-step action. Hotspots and optional elements have subtle motion, with reduced-motion support.
+- Add background music in Project settings: choose from eleven bundled tracks or upload MP3/WAV/OGG audio. Viewers can mute it; music and required credits travel with supported exports. See [music options and limits](docs/BACKGROUND-MUSIC.md).
 - Video steps have draggable trim handles, 1×–16× timeline zoom with horizontal scrolling, a scrubber, split actions, and autoplay settings. Insert a screenshot at a moment to split the video around it.
 - Use each slide’s three-dot menu to duplicate, reorder, or delete it. Undo/redo keeps up to 80 snapshots during the current editing session; it resets on reload or project opening.
 - Preview starts at the selected step; returning to Edit restores the originating step. Restart begins at the title slide. Click the step dots to jump between slides in preview or exported walkthroughs; dots, Back/Next, and Restart are disabled during video playback. In exported players, pausing unlocks navigation.
@@ -95,11 +97,15 @@ Open **Share**:
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Download HTML    | One self-contained interactive file, including media. Download and open in a modern browser; works offline.                                                          |
 | Export embed     | ZIP with a standalone player, media, an HTML iframe example, and a React iframe wrapper. Host the extracted folder on an existing website or internal static server. |
-| Download project | Editable ZIP backup for importing into Frameway later.                                                                                                               |
+| Download project | Editable project file for a teammate to import and change, or to keep as your own backup.                                                                            |
+
+The **Video** section exports a linear recording of the walkthrough as MP4 when supported, otherwise WebM. Choose still-slide timing and output size; keep the export tab visible until it finishes. See [video export](docs/VIDEO-EXPORT-PROTOTYPE.md).
+
+Share also shows the generated filename and size and offers recipient instructions. Editable project handoffs are independent copies, not live synchronization.
 
 No managed hosting service is included. A localhost URL only works on your computer. Email/file-sharing previews may block scripts; recipients should download the HTML and open it in a browser. The React wrapper uses the same standalone player, not the editor. Playback exports cannot be imported as editable projects.
 
-**Trimming changes playback ranges, not the underlying media. Exports retain the complete original recording.**
+**Trimming changes playback ranges, not source media. HTML, embed packages, and editable projects retain the complete original recording.** Video exports contain the rendered playback sequence; review every output before sharing.
 
 ## Local storage and backups
 
