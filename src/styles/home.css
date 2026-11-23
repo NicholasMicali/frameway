@@ -653,3 +653,47 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Explain the possibilities first for a new library; keep saved work first on return. */
+.home-heading + .use-cases {
+  margin: 0 auto 36px;
+}
+.home-page .use-case-grid article {
+  --use-case-accent: #337ab7;
+  --use-case-tint: #eaf4ff;
+  border-top: 3px solid var(--use-case-accent);
+  background: linear-gradient(150deg, #fff 25%, var(--use-case-tint));
+}
+.home-page .use-case-grid article:nth-child(2) {
+  --use-case-accent: #277e72;
+  --use-case-tint: #eaf7f2;
+}
+.home-page .use-case-grid article:nth-child(3) {
+  --use-case-accent: #aa702a;
+  --use-case-tint: #fff6e8;
+}
+.home-page .use-case-grid article > svg {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--use-case-tint);
+  color: var(--use-case-accent);
+}
+@media (hover: hover) {
+  .home-page .use-case-grid article:hover {
+    border-color: var(--use-case-accent);
+    box-shadow: 0 8px 22px #25354a0d;
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .home-page .use-case-grid article {
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+  .home-page .use-case-grid article:hover {
+    transform: translateY(-3px);
+  }
+}

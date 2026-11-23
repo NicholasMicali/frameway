@@ -39,6 +39,7 @@ export function HomePage({ onRecord, ...library }: HomePageProps) {
           <Icon name="shield" /> Local by design
         </span>
       </div>
+      {library.projects.length === 0 && <UseCases />}
       <section className="capture-choices" aria-label="Ways to record">
         <div className="capture-recommended">
           <span className="home-section-icon">
@@ -67,6 +68,7 @@ export function HomePage({ onRecord, ...library }: HomePageProps) {
       <div className="home-workspace">
         <ProjectLibrary {...library} />
       </div>
+      {library.projects.length > 0 && <UseCases />}
       <HomeIntro />
       <section className="home-sharing home-reveal" aria-labelledby="sharing-title">
         <div className="home-section-heading">
@@ -129,7 +131,6 @@ export function HomePage({ onRecord, ...library }: HomePageProps) {
           not restoring editable projects.
         </p>
       </section>
-      <UseCases />
       <div className="home-resources">
         <a
           href="https://github.com/NicholasMicali/frameway/blob/main/docs/BETA-TESTING.md"

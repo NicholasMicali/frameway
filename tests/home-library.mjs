@@ -24,6 +24,10 @@ try {
     true,
   );
   assert.equal(await page.getByText('Developer mode', { exact: true }).count(), 0);
+  assert.ok(
+    (await page.locator('.use-cases').boundingBox()).y <
+      (await page.locator('.capture-choices').boundingBox()).y,
+  );
   const emptyLibrary = await page.locator('.project-library').boundingBox();
   assert.ok(emptyLibrary.y < (await page.locator('.quick-guide').boundingBox()).y);
   await page.locator('.home-sharing').scrollIntoViewIfNeeded();
@@ -57,6 +61,11 @@ try {
   await page.reload();
   await page.locator('.project-card').nth(2).waitFor();
   assert.equal(await page.getByRole('heading', { name: 'Put it to work' }).isVisible(), true);
+  assert.equal(await page.locator('.use-cases').count(), 1);
+  assert.ok(
+    (await page.locator('.project-library').boundingBox()).y <
+      (await page.locator('.use-cases').boundingBox()).y,
+  );
   assert.ok(
     (await page.locator('.project-library').boundingBox()).y <
       (await page.locator('.quick-guide').boundingBox()).y,
