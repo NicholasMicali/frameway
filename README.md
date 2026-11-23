@@ -17,7 +17,7 @@ _Recorded in Frameway using generated demo content. The GIF shows editing, previ
 
 Choose **Open library** from the extension menu to return to existing projects without recording. Use **Record my screen** in the Library to capture desktop apps or a whole screen and add screenshot steps manually.
 
-The Store version receives updates through Chrome. We keep it aligned with the latest release after Store review. The current release is **v0.4.0 beta**; see [GitHub Releases](https://github.com/NicholasMicali/frameway/releases) for release notes and alternative packaged downloads.
+The Store version receives updates through Chrome. We keep it aligned with the latest release after Store review. The published release is **v0.4.0 beta**. Source on this branch prepares **v0.5.0**; see [GitHub Releases](https://github.com/NicholasMicali/frameway/releases) for release notes and alternative packaged downloads.
 
 ### Sharing, backups, and moving to the Store version
 
@@ -141,7 +141,7 @@ On the original development machine, `./scripts/dev.sh` can use the ignored proj
 npm run package:extension
 ```
 
-Creates `release/frameway-extension-v0.4.0.zip`, with `manifest.json` at its root. Source maps are excluded. `release/` and `dist/` stay ignored.
+Creates `release/frameway-extension-v0.5.0.zip`, with `manifest.json` at its root. Source maps are excluded. `release/` and `dist/` stay ignored.
 
 GitHub Actions checks builds and tests on pushes/PRs and uploads the extension ZIP as a workflow artifact. Publishing a GitHub release tagged `vX.Y.Z` runs checks again and attaches the ZIP. The tag must match `package.json`; the build checks the source extension manifest version. The UI reads its version from the package.
 

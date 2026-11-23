@@ -49,7 +49,10 @@ try {
   context = undefined;
   const manifestFile = path.join(extension, 'manifest.json');
   const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
-  manifest.version = '0.4.1'; // Only the disposable copy changes; simulate a successive build.
+  // Only the disposable copy changes; always simulate an upgrade from the candidate.
+  const version = manifest.version.split('.').map(Number);
+  version[version.length - 1] += 1;
+  manifest.version = version.join('.');
   await writeFile(manifestFile, JSON.stringify(manifest));
   context = await launch();
   const updatedWorker =

@@ -11,7 +11,7 @@ The maintainer intends 0.5.0 to be the first publicly listed Chrome Web Store re
 - Run a focused UI pass before publishing: narrow layouts, spacing, dropdowns, dialogs, keyboard focus, and consistent terminology.
 - Prepare consistent branding for the Chrome Web Store, GitHub README, and optional media posts. Use synthetic demo content and retain required music attribution. Review the listing/privacy text against the shipped features and permissions.
 - Validate the packaged extension as an update, older saved projects, recording/pause/resume, and recipient-side HTML, video, and editable-project import including uploaded music on Windows/macOS.
-- Publish 0.5.0 only after review of the final package and main CI. Do not bump versions or upload a store package during this preparation pass.
+- Publish 0.5.0 only after review of the final package and main CI. Version 0.5.0 preparation is authorized. Keep the candidate unpublished until final package and launch-asset approval.
 
 ## Sharing follow-up (#27)
 
@@ -25,3 +25,7 @@ Per-project branding already exists. Reusability is a separate feature, split in
 2. **Portable kits:** import/export a versioned, strictly validated .frameway-brand.json file containing only allowlisted styling and logo data. Reject malformed/oversized files and unsupported versions. Handle duplicate names explicitly. Verify offline HTML/embed/video appearance and existing-project compatibility.
 
 Decide the exact settings allowlist before implementation. Suggested first scope: theme, font/size choices, card/button shape, title layout/logo size, and presentation-frame styling. Title/closing text defaults remain optional future work rather than risking accidental company/project text reuse. Exclude remote fonts, arbitrary CSS, accounts, cloud libraries, recordings, and implicit watermarks.
+
+## Launch materials
+
+See [launch brief](LAUNCH-0.5.md) for messaging, asset specifications, example-project handoff, and a bounded design-agent assignment. Store copy is in [Store readiness](STORE-READINESS.md); candidate notes are in [v0.5.0](releases/v0.5.0.md).

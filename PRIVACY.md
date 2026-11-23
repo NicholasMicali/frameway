@@ -4,7 +4,7 @@ Frameway's core recorder, editor, and standalone player do not require an accoun
 
 ## What is stored
 
-Video, screenshots, click positions/timestamps, titles, callouts, branding, and editing settings are stored in your browser's IndexedDB. The extension and localhost editor have separate libraries. Browser data is not a durable backup: clearing browser storage, removing an extension, or changing an installation can make projects unavailable. Export project backups before those actions.
+Video, screenshots, click positions/timestamps, titles, callouts, branding, uploaded background music, and editing settings are stored in your browser's IndexedDB. The extension and localhost editor have separate libraries. Browser data is not a durable backup: clearing browser storage, removing an extension, or changing an installation can make projects unavailable. Export project backups before those actions.
 
 Projects are not written into this Git repository. Save downloaded artifacts outside the checkout or in ignored `exports/` and `recordings/` directories. Do not commit enterprise data, credentials, or personal recordings.
 
@@ -14,9 +14,9 @@ The extension requests `activeTab` for the tab you activate it on, `scripting` t
 
 ## Sharing and export
 
-Exporting creates a file on your computer; you decide how and with whom to share it. Anyone receiving a walkthrough may extract its screenshots and recording. **Trimming changes playback ranges, not the underlying media: exported walkthroughs retain the original recording.** Review the full recording for sensitive information before sharing. Uploaded logos are embedded in title/closing slides and exported artifacts.
+Exporting creates a file on your computer; you decide how and with whom to share it. Anyone receiving a walkthrough may extract its screenshots and recording. **Trimming changes playback ranges, not the underlying media: exported walkthroughs retain the original recording.** Review the full recording for sensitive information before sharing. Uploaded logos are embedded in title/closing slides and exported artifacts. Selected background music is included in playable exports; editable project files retain uploaded audio so recipients can continue editing. Bundled music and fonts load from the installed package, not remote services.
 
-The embedded player does not send data to Frameway. If you host an export elsewhere, that host's logging and privacy practices apply. GitHub and any future extension store handle software distribution under their own policies; that does not upload your walkthroughs.
+The embedded player does not send data to Frameway. If you host an export elsewhere, that host's logging and privacy practices apply. GitHub and the Chrome Web Store handle software distribution under their own policies; that does not upload your walkthroughs.
 
 Report security concerns through [SECURITY.md](SECURITY.md). Public issue reports should contain only sanitized reproduction material.
 

@@ -1,8 +1,8 @@
 # Chrome Web Store listing and release materials
 
-Frameway v0.4.0 is published on [Chrome Web Store](https://chromewebstore.google.com/detail/dpfkfbpolahiofedbdebdjmpjfphkjge). The initial PR stack is merged and main CI passed. Use this document for listing maintenance and future release checks; native-device tests remain release-specific.
+Frameway v0.4.0 is published on [Chrome Web Store](https://chromewebstore.google.com/detail/dpfkfbpolahiofedbdebdjmpjfphkjge). Version 0.5.0 is being prepared for public listing and is not yet published. Use this document for listing maintenance and future release checks; native-device tests remain release-specific.
 
-## Listing draft
+## Listing draft for 0.5.0
 
 **Name:** Frameway · Walkthrough recorder
 
@@ -14,11 +14,13 @@ Frameway v0.4.0 is published on [Chrome Web Store](https://chromewebstore.google
 
 Turn what's on your screen into a walkthrough. Frameway helps you explain a process, onboard colleagues, document a workflow, or demonstrate a product.
 
-Record a Chrome tab for automatic click-by-click screenshot and video steps. For desktop apps or a whole screen, open the Library and choose Record my screen, then mark screenshot moments or add them in the editor. The browser picker controls which surfaces are available. Recording is silent.
+Record a Chrome tab for automatic click-by-click screenshot and video steps. For desktop apps or a whole screen, open the Library and choose Record my screen, then mark screenshot moments or add them in the editor. The browser picker controls which surfaces are available. Screen capture is silent; optional background music can be added when editing.
 
-Edit your steps, trim playback, add callouts and highlights, organize chapters, and customize your branding. Add an optional closing message with Replay. Share a standalone interactive HTML file, export an embed folder for your own website, or save an editable project backup.
+Edit screenshot and video steps, trim playback, add animated hotspots, arrows, cards and highlights, and organize chapters. Customize your logo, colors, bundled fonts and presentation frame. Add a soundtrack from the built-in music library or upload your own audio. Include an optional title and closing slide.
 
-Frameway runs locally: no account, application backend, cloud project storage, or analytics. Projects stay in this browser profile until you export them. Keep editable backups before uninstalling or changing installations. Playback trims do not remove the original recording from exported files; review the complete recording before sharing.
+Share a standalone interactive HTML file, export a video, or embed the walkthrough on your own website. Send an editable project file to a teammate so they can import it into Frameway and make their own changes. Viewers do not need Frameway to open the HTML export. Project files are separate copies, not live collaboration.
+
+Frameway runs locally: no account, application backend, cloud project storage, or analytics. Projects stay in this browser profile until you export them. Keep editable backups before uninstalling or changing installations. Playback trims do not remove the original recording from interactive HTML, embed packages, or editable project files; review the complete recording before sharing.
 
 Chrome may restrict capture on protected or browser-internal pages. Automatic click capture covers the recorded tab's top frame. Frameway does not automatically detect clicks in desktop applications. Frameway is not a hosting service.
 
@@ -29,7 +31,7 @@ Chrome may restrict capture on protected or browser-internal pages. Automatic cl
 - Privacy: https://github.com/NicholasMicali/frameway/blob/main/PRIVACY.md.
 - Icon: `extension/icons/frameway-128.png` (96px artwork with 16px transparent padding); smaller toolbar sizes are included in the package.
 - Sanitized screenshots: `docs/assets/store/` (generated synthetic project, no private content).
-- Package/checksum: `release/frameway-extension-v0.4.0.zip` and `.zip.sha256`, generated locally, not committed.
+- Package/checksum: `release/frameway-extension-v0.5.0.zip` and `.zip.sha256`, generated locally, not committed.
 
 Use the final dashboard's asset requirements when uploading; preview all images there. Use the published Store link above in installation guidance.
 
@@ -47,7 +49,7 @@ No host permissions, remote code, telemetry, or new permissions were added. Java
 
 ## Privacy dashboard preparation
 
-Use the current dashboard definitions and review the final certifications before submission. Do not equate “no upload” with “no access to user data.” Frameway locally processes website/screen content, clicks and timestamps, user-written text, and uploaded branding. Screen content can include personal or sensitive information. It does not read browsing history or collect credentials as a separate feature.
+Use the current dashboard definitions and review the final certifications before submission. Do not equate “no upload” with “no access to user data.” Frameway locally processes website/screen content, clicks and timestamps, user-written text, uploaded branding, and uploaded background music. Screen content can include personal or sensitive information. It does not read browsing history or collect credentials as a separate feature.
 
 Declare the locally processed content/activity accurately under the applicable dashboard categories, explain that it is stored locally and exported only on user request, and use the linked privacy policy consistently. No data is sold or used for advertising, creditworthiness, or unrelated purposes. No remote code is used. The owner must confirm the dashboard certifications against the final uploaded package.
 
@@ -73,9 +75,9 @@ Run `node scripts/store-screenshots.mjs` with Playwright Chromium installed to r
 - [ ] Maintainer approves the UI and closing slide in a packaged installation.
 - [ ] Native tab capture, pause/resume/finish, and screen/window picker checked on macOS and Windows with the candidate. Automated tests do not prove OS picker or managed-device behavior.
 - [ ] Final ZIP built from merged main; version, checksum, license notices, and package contents verified.
-- [ ] Owner reviews Store privacy fields, screenshots, support details, account verification, regions, and **Unlisted** visibility.
+- [ ] Owner reviews Store privacy fields, screenshots, support details, account verification, regions, and the intended **Public** visibility for 0.5.0.
 - [ ] Explicit owner green light to submit/publish. No automatic Store upload workflow is configured.
-- [ ] After approval, verify real Store installation, backup/import migration, and a subsequent same-item update; then add the actual Store URL to docs.
+- [ ] After approval, verify real Store installation, backup/import migration, and a subsequent same-item update; then update the published-version references in the README and release guide.
 
 ## Official references
 
@@ -83,4 +85,4 @@ Run `node scripts/store-screenshots.mjs` with Playwright Chromium installed to r
 - [Distribution and unlisted visibility](https://developer.chrome.com/docs/webstore/cws-dashboard-distribution)
 - [Privacy fields and permission justifications](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy)
 
-Reviewed November 16, 2026. Store policy and dashboard details can change; verify at submission.
+Copy refreshed November 23, 2026. Store policy and dashboard details can change; verify at submission.
