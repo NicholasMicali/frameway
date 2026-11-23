@@ -3,6 +3,10 @@ import { isHexColor } from './themes';
 export type Appearance = {
   // Accepted for backups from the early animation prototype; playback uses one default.
   motion?: 'subtle' | 'fade' | 'none';
+  frameStyle?: 'none' | 'soft' | 'gradient';
+  framePadding?: number;
+  frameCorners?: 'rounded' | 'square';
+  frameShadow?: 'soft' | 'none';
   cardBackground?: string;
   cardText?: string;
   titleBackground?: string;
@@ -22,6 +26,11 @@ export const appearanceChoices = {
   font: { system: 'System sans serif', serif: 'Serif', rounded: 'Rounded system' },
   buttonShape: { rounded: 'Rounded', square: 'Square', pill: 'Pill' },
 } as const;
+export const frameChoices = {
+  frameStyle: { none: 'Off', soft: 'Soft', gradient: 'Gradient' },
+  frameCorners: { rounded: 'Rounded', square: 'Square' },
+  frameShadow: { soft: 'Soft', none: 'None' },
+} as const;
 export function validateAppearance(value: unknown): asserts value is Appearance | undefined {
   if (value === undefined) return;
   if (!value || typeof value !== 'object' || Array.isArray(value))
@@ -32,6 +41,15 @@ export function validateAppearance(value: unknown): asserts value is Appearance 
     if (v === undefined) continue;
     if (colors.includes(key)) {
       if (!isHexColor(v)) throw Error('Invalid appearance color');
+    } else if (key === 'framePadding') {
+      if (typeof v !== 'number' || !Number.isFinite(v) || v < 2 || v > 8)
+        throw Error('Invalid frame spacing');
+    } else if (Object.hasOwn(frameChoices, key)) {
+      if (
+        typeof v !== 'string' ||
+        !Object.hasOwn(frameChoices[key as keyof typeof frameChoices], v)
+      )
+        throw Error('Invalid frame option');
     } else if (key === 'logoSize') {
       if (typeof v !== 'number' || !Number.isFinite(v) || v < 3 || v > 10)
         throw Error('Invalid logo size');

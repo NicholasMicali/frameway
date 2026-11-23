@@ -1,3 +1,5 @@
+import { frameVars, presentationFrame } from './presentation-frame';
+import { frameChoices } from './appearance';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Project, Step } from './model';
 import { themes, themeVars, type ThemeName } from './themes';
@@ -205,6 +207,69 @@ export function ProjectSettings({
             ))}
             <p>Color feedback only; preview readability at your intended viewing size.</p>
           </div>
+        </fieldset>
+        <fieldset>
+          <legend>Presentation frame</legend>
+          <label>
+            Style
+            <select
+              aria-label="Presentation frame"
+              value={a.frameStyle ?? 'none'}
+              onChange={(e) => set({ frameStyle: e.target.value as Appearance['frameStyle'] })}
+            >
+              {Object.entries(frameChoices.frameStyle).map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+          {presentationFrame(a).enabled && (
+            <>
+              <div
+                className="frame-settings-preview presentation-frame"
+                data-framed="true"
+                style={frameVars(a, draft.height / draft.width) as CSSProperties}
+              >
+                <img
+                  className="frame-sample-media"
+                  src={image}
+                  alt="Recording with presentation frame"
+                />
+              </div>
+              <label>
+                Spacing · {a.framePadding ?? 4}%
+                <input
+                  aria-label="Frame spacing"
+                  type="range"
+                  min="2"
+                  max="8"
+                  step="1"
+                  value={a.framePadding ?? 4}
+                  onChange={(e) => set({ framePadding: Number(e.target.value) })}
+                />
+              </label>
+              {(['frameCorners', 'frameShadow'] as const).map((key) => (
+                <label key={key}>
+                  {key === 'frameCorners' ? 'Corners' : 'Shadow'}
+                  <select
+                    aria-label={key === 'frameCorners' ? 'Frame corners' : 'Frame shadow'}
+                    value={a[key] ?? (key === 'frameCorners' ? 'rounded' : 'soft')}
+                    onChange={(e) => set({ [key]: e.target.value })}
+                  >
+                    {Object.entries(frameChoices[key]).map(([id, name]) => (
+                      <option key={id} value={id}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+              <p>
+                Frames screenshots and video. Title and closing slides keep their full-slide layout.
+              </p>
+            </>
+          )}
         </fieldset>
         <fieldset>
           <legend>Layout and type</legend>

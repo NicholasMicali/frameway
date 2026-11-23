@@ -1,3 +1,5 @@
+import { frameVars, presentationFrame } from './presentation-frame';
+import frameCSS from './presentation-frame.css?raw';
 import { renderElements } from './slide-elements';
 import elementsCSS from './slide-elements.css?raw';
 import { formattedText } from './formatted-text';
@@ -25,6 +27,10 @@ const escapeHTML = (value: string) =>
 function playerDocument(p: Project, video: string, images: string[]) {
   const data = {
     theme: { ...themeVars(p.theme, p.customColor), ...appearanceVars(p.appearance) },
+    frame: {
+      ...presentationFrame(p.appearance),
+      vars: frameVars(p.appearance, p.height / p.width),
+    },
     titleLayout: p.appearance?.titleLayout ?? 'split',
     logo: p.logo,
     chapters: chaptersFor(p.steps),
@@ -46,7 +52,8 @@ ${formattedCSS}
 ${contentsCSS}
 ${zoomCSS}
 ${motionCSS}
-${elementsCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const renderElements = ${renderElements.toString()};
+${elementsCSS}
+${frameCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const renderElements = ${renderElements.toString()};
 const zoomOut = ${zoomOut.toString()};\n${runtime}</script></body></html>`;
 }
 function dataURL(blob: Blob) {

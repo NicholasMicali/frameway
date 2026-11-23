@@ -10,7 +10,10 @@
   };
   document.title = project.title;
   element('h1', 'title', root, project.title);
-  const stage = element('div', 'stage', root);
+  const frameShell = element('div', 'presentation-frame', root);
+  for (const [key, value] of Object.entries(project.frame.vars))
+    frameShell.style.setProperty(key, value);
+  const stage = element('div', 'stage', frameShell);
   stage.dataset.motion = 'subtle';
   const screen = element('div', 'screen', stage);
   screen.style.aspectRatio = `${project.width}/${project.height}`;
@@ -252,6 +255,9 @@
     if (step().autoplay) void start();
   }
   function render() {
+    frameShell.dataset.framed = String(
+      project.frame.enabled && !['title', 'closing'].includes(project.steps[index].kind),
+    );
     generation++;
     openElement = '';
     extras.style.visibility = '';

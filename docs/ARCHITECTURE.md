@@ -57,3 +57,9 @@ Editable ZIPs containing these elements use portable schema 3 so older readers r
 ## Local video export
 
 `src/VideoExport.tsx` owns export-only timing/resolution controls and cancellation. `src/video-export.ts` renders library-order slides into a canvas and encodes them with MediaRecorder, preferring supported MP4 and falling back to WebM. It shares theme and zoom geometry with the player; `src/video-text.ts` handles word wrapping and styled text runs. This compositor is separate from DOM playback, so typography parity needs visual review. Video export does not mutate project metadata or add capture permissions. See [video export](VIDEO-EXPORT-PROTOTYPE.md) for current behavior and limits.
+
+## Presentation frame
+
+Optional project appearance settings (`frameStyle`, `framePadding`, `frameCorners`, `frameShadow`) wrap screenshots/videos and their annotations together. `src/presentation-frame.ts` provides defaults, CSS variables, and video-rendering geometry; its CSS is shared by the editor and standalone player. Equal fractional insets on both axes preserve the capture aspect ratio. The inner stage remains the coordinate system for dragging, zoom, and overlay placement. On mobile, the standalone player's existing readable card layout still stacks below the media.
+
+Framing defaults off. Title/closing slides retain their full-slide composition. The canvas exporter draws the background/shadow, clips the inset viewport, then renders the complete slide within it. Settings remain local and travel with project copies and editable backups; older app versions may reject backups with these new appearance fields, so recipients should use the updated version.

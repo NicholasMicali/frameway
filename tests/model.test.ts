@@ -1,3 +1,4 @@
+import { validateAppearance } from '../src/appearance';
 import { RecordingClock } from '../src/recording-clock';
 import { formattedText, safeActionURL } from '../src/formatted-text';
 import test from 'node:test';
@@ -492,4 +493,23 @@ test('video text preserves words, styled runs, blank lines, and hanging list ind
     ['abcde', 'fghij', 'k'],
   );
   assert.equal(layoutVideoText('**literal**', 20, measure, false)[0].runs[0].text, '**literal**');
+});
+
+test('presentation frames validate strictly and preserve defaults and project copies', async () => {
+  const { presentationFrame, frameVars } = await import('../src/presentation-frame');
+  assert.equal(presentationFrame().enabled, false);
+  for (const framePadding of [NaN, Infinity, 0, 9, '4'])
+    assert.throws(() => validateAppearance({ framePadding }));
+  assert.throws(() => validateAppearance({ frameStyle: 'remote' }));
+  const appearance = {
+    frameStyle: 'gradient' as const,
+    framePadding: 6,
+    frameCorners: 'square' as const,
+    frameShadow: 'none' as const,
+  };
+  validateAppearance(appearance);
+  const p = { ...project(), appearance };
+  assert.deepEqual(copyProject(p).appearance, appearance);
+  assert.equal(presentationFrame(appearance).radius, 0);
+  assert.equal(frameVars(appearance, 0.5)['--frame-y'], '3%');
 });
