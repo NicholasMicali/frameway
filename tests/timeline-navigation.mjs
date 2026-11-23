@@ -77,6 +77,14 @@ try {
     return e && Math.abs(e.scrollWidth - e.clientWidth) < 3;
   });
   assert.ok(await viewport.evaluate((e) => Math.abs(e.scrollWidth - e.clientWidth) < 3));
+  // Ruler labels must stay inside the track after resize/scroll observers settle.
+  await page.waitForTimeout(250);
+  const ruler = await page.locator('.time-ruler').boundingBox();
+  for (const label of await page.locator('.time-ruler span').all()) {
+    const bounds = await label.boundingBox();
+    assert.ok(bounds.x + bounds.width <= ruler.x + ruler.width + 1, 'Time label overflows ruler');
+  }
+  assert.ok(await viewport.evaluate((e) => Math.abs(e.scrollWidth - e.clientWidth) < 3));
   assert.ok(
     Math.abs(Number(await page.getByLabel('Clip start', { exact: true }).inputValue()) - 2.05) <
       0.001,
