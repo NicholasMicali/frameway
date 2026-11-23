@@ -324,7 +324,7 @@ test('chapter labels follow steps and survive backups without creating duplicate
 test('appearance defaults preserve old projects and validated styling survives backup import', async () => {
   const { appearanceVars, contrastRatio, validateAppearance } = await import('../src/appearance');
   const { exportProject, importProject } = await import('../src/archive');
-  assert.deepEqual(appearanceVars(), {});
+  assert.equal(appearanceVars()['--card-heading-size'], '19px');
   assert.equal(contrastRatio('#ffffff', '#000000'), 21);
   assert.equal(contrastRatio('#ffffff', '#ffffff'), 1);
   for (const appearance of [
@@ -567,4 +567,20 @@ test('uploaded audio survives portable archives and rejects missing or invalid m
   assert.equal(JSON.parse(strFromU8(files['project.json'])).schemaVersion, 4);
   delete files['audio/background'];
   await assert.rejects(importProject(new Blob([zipSync(files) as BlobPart])), /uploaded music/);
+});
+
+test('authored typography resolves consistently for DOM and video rendering', async () => {
+  const { walkthroughStyle, appearanceVars } = await import('../src/appearance');
+  for (const typography of ['compact', 'comfortable', 'large'] as const) {
+    const a = { typography, font: 'serif' as const, buttonShape: 'pill' as const };
+    const style = walkthroughStyle(a),
+      vars = appearanceVars(a);
+    assert.equal(vars['--card-body-size'], `${style.bodySize}px`);
+    assert.equal(vars['--card-heading-size'], `${style.headingSize}px`);
+    assert.equal(vars['--walkthrough-font'], style.fontFamily);
+    assert.equal(vars['--card-text'], style.cardText);
+    assert.equal(vars['--button-radius'], `${style.buttonRadius}px`);
+  }
+  assert.equal(walkthroughStyle({ typography: 'compact' }).headingSize, 16);
+  assert.equal(walkthroughStyle({ typography: 'large' }).headingSize, 22);
 });

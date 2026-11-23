@@ -62,8 +62,34 @@ export function validateAppearance(value: unknown): asserts value is Appearance 
     } else throw Error('Unsupported appearance setting');
   }
 }
+// Shared authored typography for DOM editor/player and local canvas exports.
+export function walkthroughStyle(a: Appearance = {}) {
+  const [bodySize, headingSize] = {
+    compact: [12, 16],
+    comfortable: [14, 19],
+    large: [16, 22],
+  }[a.typography ?? 'comfortable'];
+  return {
+    bodySize,
+    headingSize,
+    fontFamily: {
+      system: 'system-ui, sans-serif',
+      serif: 'Georgia, serif',
+      rounded: 'ui-rounded, system-ui, sans-serif',
+    }[a.font ?? 'system'],
+    buttonRadius: { rounded: 10, square: 3, pill: 999 }[a.buttonShape ?? 'rounded'],
+    cardText: a.cardText ?? '#111111',
+  };
+}
 export function appearanceVars(a: Appearance = {}) {
-  const vars: Record<string, string> = {};
+  const style = walkthroughStyle(a);
+  const vars: Record<string, string> = {
+    '--walkthrough-font': style.fontFamily,
+    '--card-body-size': `${style.bodySize}px`,
+    '--card-heading-size': `${style.headingSize}px`,
+    '--button-radius': `${style.buttonRadius}px`,
+    '--card-text': style.cardText,
+  };
   const colorNames = {
     cardBackground: '--card-background',
     cardText: '--card-text',
@@ -74,17 +100,6 @@ export function appearanceVars(a: Appearance = {}) {
     const value = a[key as keyof typeof colorNames];
     if (isHexColor(value)) vars[name] = value;
   }
-  if (a.font)
-    vars['--walkthrough-font'] = {
-      system: 'system-ui, sans-serif',
-      serif: 'Georgia, serif',
-      rounded: 'ui-rounded, system-ui, sans-serif',
-    }[a.font];
-  if (a.typography) {
-    const sizes = { compact: [12, 16], comfortable: [14, 19], large: [16, 22] }[a.typography];
-    vars['--card-body-size'] = `${sizes[0]}px`;
-    vars['--card-heading-size'] = `${sizes[1]}px`;
-  }
   if (a.logoSize !== undefined) {
     vars['--logo-height'] = `${a.logoSize}cqw`;
     vars['--logo-max-height'] = `${a.logoSize * 14}px`;
@@ -93,8 +108,6 @@ export function appearanceVars(a: Appearance = {}) {
     vars['--logo-margin-left'] = a.logoAlignment === 'left' ? '0' : 'auto';
     vars['--logo-margin-right'] = a.logoAlignment === 'right' ? '0' : 'auto';
   }
-  if (a.buttonShape)
-    vars['--button-radius'] = { rounded: '10px', square: '3px', pill: '999px' }[a.buttonShape];
   return vars;
 }
 export function contrastRatio(foreground: string, background: string) {

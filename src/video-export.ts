@@ -1,7 +1,8 @@
+import { walkthroughStyle } from './appearance';
 import { loadMusic, builtInTrack } from './music';
 import { presentationFrame } from './presentation-frame';
 import { layoutVideoText } from './video-text';
-import { type Project, type Step, clamp, validateManifest } from './model';
+import { type Project, type Step, clamp, validateManifest, nextId } from './model';
 import { themeVars } from './themes';
 import { areaZoom } from './area-zoom';
 import fixWebmDuration from 'fix-webm-duration';
@@ -100,14 +101,10 @@ export async function exportVideo(
     h = (canvas.height / canvas.width) * w;
   const theme = themeVars(project.theme, project.customColor),
     a = project.appearance ?? {};
+  const style = walkthroughStyle(a);
   const accent = theme['--accent'],
-    ink = a.cardText ?? '#17202e';
-  const family =
-    a.font === 'serif'
-      ? 'Georgia, serif'
-      : a.font === 'rounded'
-        ? 'ui-rounded, system-ui, sans-serif'
-        : 'system-ui, sans-serif';
+    ink = style.cardText;
+  const family = style.fontFamily;
   const font = (size: number, weight = '400') => {
     ctx.font = `${weight} ${size}px ${family}`;
   };
@@ -162,11 +159,11 @@ export async function exportVideo(
     );
     return rows.length * size * 1.4;
   }
-  const radius = a.buttonShape === 'square' ? 3 : a.buttonShape === 'pill' ? 30 : 10;
+  const radius = style.buttonRadius;
   function button(label: string, x: number, y: number, max: number, size = 18) {
     font(size, '650');
     const bw = Math.min(max, ctx.measureText(label).width + 36);
-    box(x, y, bw, 44, accent, radius);
+    box(x, y, bw, 44, accent, Math.min(radius, 22, bw / 2));
     text(label, x + 18, y + 10, Math.max(1, bw - 36), size, theme['--accent-text'], '650');
   }
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -188,14 +185,9 @@ export async function exportVideo(
     t: number,
     primary = false,
     label?: string,
+    continueLabel = 'Continue →',
   ) {
-    const size = primary
-      ? a.typography === 'compact'
-        ? 12
-        : a.typography === 'large'
-          ? 16
-          : 14
-      : 14;
+    const size = primary ? style.bodySize : 14;
     const rows = layoutVideoText(
       body,
       bw - 40,
@@ -205,7 +197,7 @@ export async function exportVideo(
       },
       primary,
     );
-    const headingSize = primary ? size + 5 : 16;
+    const headingSize = primary ? style.headingSize : 16;
     const titleHeight = lines(title, bw - 40, headingSize, '700').length * headingSize * 1.4;
     const bh =
       40 +
@@ -239,10 +231,10 @@ export async function exportVideo(
         yy += size * (1.5 + row.gapAfter);
       }
       if (label) {
-        text(`${label} ↗`, x + 20, yy + 10, bw - 40, size, accent, '600');
+        text(`${label} ↗`, x + 20, yy + 10, bw - 40, size, ink, '600');
         yy += 44;
       }
-      if (primary) button('Continue →', x + 20, yy + 10, bw - 40, size);
+      if (primary) button(continueLabel, x + 20, yy + 10, bw - 40, size);
     });
   }
   const urls: string[] = [];
@@ -487,6 +479,7 @@ export async function exportVideo(
           t,
           true,
           s.actionUrl ? s.actionLabel || 'Learn more' : undefined,
+          nextId(project, s) ? 'Continue →' : 'Replay →',
         );
       };
       const drawStage = (t: number) => {
