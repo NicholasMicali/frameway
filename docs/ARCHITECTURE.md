@@ -66,4 +66,4 @@ Framing defaults off. Title/closing slides retain their full-slide composition. 
 
 ## Background music
 
-Optional bundled music uses one shared controller for preview and standalone exports, and Web Audio mixing for video. See [background music](BACKGROUND-MUSIC.md) for lifecycle, portability, licensing, and implementation details. Track IDs and volume are validated; projects cannot supply remote media URLs.
+Optional bundled or locally uploaded music uses one shared controller for preview and standalone exports, and Web Audio mixing for video. See [background music](BACKGROUND-MUSIC.md) for lifecycle, portability, licensing, and implementation details. Track IDs and volume are validated; projects cannot supply remote media URLs.

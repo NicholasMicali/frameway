@@ -1,5 +1,5 @@
 import { createMusicPlayer } from './music-player';
-import { loadMusic, musicCredit } from './music';
+import { loadMusic, trackCredit, musicExtension } from './music';
 import musicCSS from './music.css?raw';
 import { frameVars, presentationFrame } from './presentation-frame';
 import frameCSS from './presentation-frame.css?raw';
@@ -34,7 +34,9 @@ function playerDocument(p: Project, video: string, images: string[], music?: str
       ...presentationFrame(p.appearance),
       vars: frameVars(p.appearance, p.height / p.width),
     },
-    music: music ? { src: music, volume: p.music!.volume, credit: musicCredit } : undefined,
+    music: music
+      ? { src: music, volume: p.music!.volume, credit: trackCredit(p.music) }
+      : undefined,
     titleLayout: p.appearance?.titleLayout ?? 'split',
     logo: p.logo,
     chapters: chaptersFor(p.steps),
@@ -72,7 +74,7 @@ function dataURL(blob: Blob) {
 }
 export async function exportInteractive(p: Project, format: 'html' | 'zip') {
   validateManifest(p);
-  const music = p.music?.enabled ? await loadMusic() : undefined;
+  const music = p.music?.enabled ? await loadMusic(p) : undefined;
   const bytes =
     (music?.size ?? 0) +
     (p.logo?.length ?? 0) +
@@ -97,13 +99,16 @@ export async function exportInteractive(p: Project, format: 'html' | 'zip') {
     entries[path] = new Uint8Array(await p.steps[i].image.arrayBuffer());
   }
   if (music) {
-    entries['media/music.ogg'] = new Uint8Array(await music.arrayBuffer());
-    entries['MUSIC-CREDITS.txt'] = strToU8(
-      `${musicCredit}\nhttps://creativecommons.org/publicdomain/zero/1.0/\n`,
-    );
+    entries[`media/music.${musicExtension(p.music)}`] = new Uint8Array(await music.arrayBuffer());
+    entries['MUSIC-CREDITS.txt'] = strToU8(`${trackCredit(p.music)}\n`);
   }
   entries['index.html'] = strToU8(
-    playerDocument(p, 'media/recording.webm', images, music ? 'media/music.ogg' : undefined),
+    playerDocument(
+      p,
+      'media/recording.webm',
+      images,
+      music ? `media/music.${musicExtension(p.music)}` : undefined,
+    ),
   );
   entries['embed.html'] = strToU8(
     `<!-- Place the exported folder on your website. Change src to its index.html URL. -->\n<iframe src="./index.html" title="${escapeHTML(p.title)}" style="width:100%;height:850px;border:0" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>\n`,

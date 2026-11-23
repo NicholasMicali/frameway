@@ -1,5 +1,10 @@
 // Self-contained: the standalone exporter embeds this function alongside its player.
-export function createMusicPlayer(container: HTMLElement, src: string, volume: number) {
+export function createMusicPlayer(
+  container: HTMLElement,
+  src: string,
+  volume: number,
+  credit = '',
+) {
   const audio = document.createElement('audio');
   audio.src = src;
   audio.loop = true;
@@ -72,6 +77,29 @@ export function createMusicPlayer(container: HTMLElement, src: string, volume: n
   document.addEventListener('keydown', interact);
   document.addEventListener('visibilitychange', visibility);
   container.append(audio, button);
+  const credits = document.createElement('details');
+  credits.className = 'music-credits';
+  if (credit) {
+    const summary = document.createElement('summary');
+    summary.textContent = 'ⓘ';
+    summary.setAttribute('aria-label', 'Music credits');
+    summary.title = 'Music credits';
+    const panel = document.createElement('div');
+    // Only link explicit HTTPS URLs; uploaded filenames remain plain text.
+    const parts = credit.split(/(https:\/\/[^\s]+)/g);
+    for (const part of parts) {
+      if (part.startsWith('https://') && !credit.startsWith('Uploaded audio:')) {
+        const link = document.createElement('a');
+        link.href = part;
+        link.textContent = part;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        panel.append(link);
+      } else panel.append(document.createTextNode(part));
+    }
+    credits.append(summary, panel);
+    container.append(credits);
+  }
   update();
   void start();
   return () => {
@@ -85,5 +113,6 @@ export function createMusicPlayer(container: HTMLElement, src: string, volume: n
     audio.load();
     audio.remove();
     button.remove();
+    credits.remove();
   };
 }

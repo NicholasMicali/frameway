@@ -529,3 +529,42 @@ test('music settings accept only the bundled track and bounded volume', async ()
     validateMusic({ track: 'exploration-theme', enabled: true, volume: 0.2, url: 'anything' }),
   );
 });
+
+test('uploaded audio survives portable archives and rejects missing or invalid media', async () => {
+  const { exportProject, importProject } = await import('../src/archive');
+  const { validateMusic } = await import('../src/music');
+  const { unzipSync, zipSync, strFromU8 } = await import('fflate');
+  const music = {
+    track: 'upload' as const,
+    name: 'test.wav',
+    mimeType: 'audio/wav',
+    duration: 2,
+    id: 'test',
+    enabled: true,
+    volume: 0.2,
+  };
+  assert.doesNotThrow(() => validateMusic(music));
+  for (const patch of [
+    { duration: Infinity },
+    { duration: 601 },
+    { mimeType: 'text/html' },
+    { name: '' },
+    { url: 'https://example.com' },
+  ])
+    assert.throws(() => validateMusic({ ...music, ...patch }));
+  const p = {
+    ...project(),
+    music,
+    musicAudio: new Blob(['test audio'], { type: 'audio/wav' }),
+    video: new Blob(['video'], { type: 'video/webm' }),
+  };
+  const backup = await exportProject(p);
+  const restored = await importProject(backup);
+  assert.equal(await restored.musicAudio!.text(), 'test audio');
+  assert.deepEqual(restored.music, music);
+  assert.equal(await copyProject(p).musicAudio!.text(), 'test audio');
+  const files = unzipSync(new Uint8Array(await backup.arrayBuffer()));
+  assert.equal(JSON.parse(strFromU8(files['project.json'])).schemaVersion, 4);
+  delete files['audio/background'];
+  await assert.rejects(importProject(new Blob([zipSync(files) as BlobPart])), /uploaded music/);
+});

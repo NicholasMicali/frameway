@@ -16,3 +16,59 @@
 .walkthrough-music {
   display: none;
 }
+
+.music-upload-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-block: 8px;
+}
+.music-upload-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.music-control {
+  position: relative;
+  align-items: center;
+  gap: 4px;
+}
+.music-credits {
+  position: relative;
+  font-size: 12px;
+  color: #334155;
+}
+.music-credits summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 8px;
+  border-radius: 8px;
+}
+.music-credits summary::-webkit-details-marker {
+  display: none;
+}
+.music-credits summary:focus-visible {
+  outline: 2px solid #2264c5;
+}
+.music-credits > div {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  z-index: 30;
+  width: min(320px, 75vw);
+  max-height: 50vh;
+  overflow: auto;
+  padding: 14px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px #17253626;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+  text-align: left;
+}
+.music-credits a {
+  color: #2264c5;
+}

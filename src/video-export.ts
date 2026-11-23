@@ -1,4 +1,4 @@
-import { loadMusic } from './music';
+import { loadMusic, builtInTrack } from './music';
 import { presentationFrame } from './presentation-frame';
 import { layoutVideoText } from './video-text';
 import { type Project, type Step, clamp, validateManifest } from './model';
@@ -271,7 +271,7 @@ export async function exportVideo(
       musicContext = new AudioContext();
       await musicContext.resume();
       await musicContext.suspend();
-      const audio = await loadMusic();
+      const audio = await loadMusic(project);
       if (signal.aborted) throw abortError();
       const buffer = await musicContext.decodeAudioData(await audio.arrayBuffer());
       if (signal.aborted) throw abortError();
@@ -489,7 +489,7 @@ export async function exportVideo(
           s.actionUrl ? s.actionLabel || 'Learn more' : undefined,
         );
       };
-      const draw = (t: number) => {
+      const drawStage = (t: number) => {
         ctx.setTransform(canvas.width / w, 0, 0, canvas.width / w, 0, 0);
         const frame = presentationFrame(a);
         if (!frame.enabled || s.kind === 'title' || s.kind === 'closing') {
@@ -522,6 +522,29 @@ export async function exportVideo(
           ctx.scale(scale, scale);
           drawContent(t);
         } finally {
+          ctx.restore();
+        }
+      };
+      const draw = (t: number) => {
+        drawStage(t);
+        const track = builtInTrack(project.music);
+        if (project.music?.enabled && track?.license === 'CC BY 4.0' && elapsed + t >= total - 5) {
+          ctx.save();
+          ctx.setTransform(canvas.width / w, 0, 0, canvas.width / w, 0, 0);
+          ctx.globalAlpha = 1;
+          const lines = [
+            `Music: ${track.title} — ${track.artist}`,
+            track.source,
+            `${track.license} · ${track.licenseURL}`,
+            'Audio looped / excerpted, volume adjusted, and faded for this walkthrough.',
+          ];
+          ctx.fillStyle = '#ffffffee';
+          ctx.fillRect(0, h - 96, w, 96);
+          ctx.fillStyle = '#17202e';
+          ctx.font = '14px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
+          lines.forEach((line, i) => ctx.fillText(line, 18, h - 84 + i * 20, w - 36));
           ctx.restore();
         }
       };

@@ -4,6 +4,7 @@ export const revision = (p: Project) => p.localRevision ?? p.id;
 export function mediaBytes(p: Project) {
   return (
     p.video.size +
+    (p.musicAudio?.size ?? 0) +
     p.steps.reduce((n, s) => n + s.image.size, 0) +
     (p.logo ? Math.ceil(p.logo.length * 0.75) : 0)
   );

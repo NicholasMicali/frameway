@@ -18,6 +18,9 @@ if (manifest.version !== pkg.version) throw Error('Build version mismatch; run n
 for (const name of [
   'index.html',
   'audio/exploration-theme.ogg',
+  'audio/daylight.ogg',
+  'audio/lofi-focus.mp3',
+  'audio/sunrise.mp3',
   'audio/LICENSE.txt',
   'ui-tokens.css',
   'LICENSE',

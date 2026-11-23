@@ -64,6 +64,55 @@ try {
   await page.waitForFunction(() => document.querySelector('audio').currentTime < 2);
   await page.getByRole('button', { name: '✎ Edit' }).click();
   assert.equal(await page.locator('audio').count(), 0);
+  if (process.env.TEST_UPLOAD) {
+    await settings();
+    await page.getByLabel('Upload background music').setInputFiles({
+      name: 'broken.mp3',
+      mimeType: 'audio/mpeg',
+      buffer: Buffer.from('not audio'),
+    });
+    await page.getByRole('alert').waitFor();
+    assert.match(await page.getByRole('alert').textContent(), /decoded/);
+    const samples = 44100 * 2;
+    const wav = Buffer.alloc(44 + samples * 2);
+    wav.write('RIFF', 0);
+    wav.writeUInt32LE(wav.length - 8, 4);
+    wav.write('WAVEfmt ', 8);
+    wav.writeUInt32LE(16, 16);
+    wav.writeUInt16LE(1, 20);
+    wav.writeUInt16LE(1, 22);
+    wav.writeUInt32LE(44100, 24);
+    wav.writeUInt32LE(88200, 28);
+    wav.writeUInt16LE(2, 32);
+    wav.writeUInt16LE(16, 34);
+    wav.write('data', 36);
+    wav.writeUInt32LE(samples * 2, 40);
+    for (let i = 0; i < samples; i++)
+      wav.writeInt16LE(Math.round(Math.sin((i * 440 * 2 * Math.PI) / 44100) * 10000), 44 + i * 2);
+    await page
+      .getByLabel('Upload background music')
+      .setInputFiles({ name: 'Test soundtrack.wav', mimeType: 'audio/wav', buffer: wav });
+    await page.getByLabel('Uploaded music preview').waitFor();
+    await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
+    await page.getByRole('button', { name: 'Undo', exact: true }).click();
+    await settings();
+    assert.equal(await page.getByLabel('Uploaded music preview').count(), 0);
+    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await page.getByRole('button', { name: 'Redo', exact: true }).click();
+    await settings();
+    await page.getByLabel('Remove uploaded music').click();
+    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await page.getByText('Saved locally', { exact: true }).waitFor();
+    await page.waitForFunction(async () => {
+      const p = await (await import('/src/db.ts')).get('projects', location.hash.split('/')[1]);
+      return p?.music?.track === 'upload' && p.musicAudio?.size > 0;
+    });
+    await page.reload();
+    await page.getByLabel('Callout headline').waitFor();
+    await settings();
+    await page.getByLabel('Uploaded music preview').waitFor();
+    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  }
   await page.waitForTimeout(700);
   const output = await page.evaluate(async () => {
     const { get } = await import('/src/db.ts');
@@ -78,7 +127,11 @@ try {
     );
     return { music: restored.music, copied: copyProject(p).music, html, zip };
   });
-  assert.deepEqual(output.music, { enabled: true, track: 'exploration-theme', volume: 0.25 });
+  if (process.env.TEST_UPLOAD) {
+    assert.equal(output.music.track, 'upload');
+    assert.equal(output.music.name, 'Test soundtrack.wav');
+  } else
+    assert.deepEqual(output.music, { enabled: true, track: 'exploration-theme', volume: 0.25 });
   assert.deepEqual(output.copied, output.music);
   await writeFile(`${dir}/index.html`, output.html);
   for (const [name, bytes] of Object.entries(unzipSync(new Uint8Array(output.zip)))) {
@@ -171,6 +224,10 @@ try {
   console.log(
     'PASS music: opt-in, draft/undo, one looping player, mute/navigation, cleanup, backup/copy, offline HTML/embed, native encoded audio and cancellation/retry.',
   );
+} catch (error) {
+  await page.screenshot({ path: `${dir}/failure.png`, fullPage: true });
+  console.log(await page.locator('.project-settings').textContent());
+  throw error;
 } finally {
   await browser.close();
   await server.close();

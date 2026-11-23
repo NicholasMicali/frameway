@@ -1200,7 +1200,7 @@ function App() {
               </div>
               <div className="player-bar">
                 {preview && !exportOpen && project.music?.enabled && (
-                  <MusicControl key={project.id} volume={project.music.volume} />
+                  <MusicControl key={project.id} project={project} />
                 )}
                 {preview && (
                   <ContentsMenu
