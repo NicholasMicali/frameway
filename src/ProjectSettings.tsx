@@ -33,6 +33,7 @@ export function ProjectSettings({
   const [musicUploading, setMusicUploading] = useState(false);
   const [musicError, setMusicError] = useState('');
   const musicInput = useRef<HTMLInputElement>(null);
+  const musicPreviewAudio = useRef<HTMLAudioElement>(null);
   const [musicPreview, setMusicPreview] = useState('');
   useEffect(() => {
     if (draft.music?.track !== 'upload' || !draft.musicAudio) {
@@ -43,6 +44,10 @@ export function ProjectSettings({
     setMusicPreview(url);
     return () => URL.revokeObjectURL(url);
   }, [draft.music?.track, draft.musicAudio]);
+  useEffect(() => {
+    if (musicPreviewAudio.current)
+      musicPreviewAudio.current.volume = draft.music?.volume ?? defaultMusic.volume;
+  }, [draft.music?.volume, musicPreview, settingsOpen]);
   const [logoError, setLogoError] = useState('');
   const intro =
     draft.steps.find((s) => s.kind === 'title') ??
@@ -258,6 +263,7 @@ export function ProjectSettings({
           {musicError && <p role="alert">{musicError}</p>}
           {settingsOpen && musicPreview && (
             <audio
+              ref={musicPreviewAudio}
               aria-label={
                 draft.music?.track === 'upload' ? 'Uploaded music preview' : 'Music preview'
               }

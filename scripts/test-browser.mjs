@@ -28,6 +28,7 @@ for (const test of [
   'callout-formatting',
   'project-copy',
   'video-export',
+  'output-consistency',
   'music',
   'music-upload',
   'music-library',

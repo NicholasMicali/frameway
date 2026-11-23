@@ -317,7 +317,7 @@
     play.hidden = s.kind !== 'video';
     play.disabled = true;
     play.textContent = 'Play';
-    next.textContent = continueButton.textContent = targetIndex() < 0 ? 'Replay' : 'Continue →';
+    next.textContent = continueButton.textContent = targetIndex() < 0 ? 'Replay →' : 'Continue →';
     positionCard();
     void stage.offsetWidth;
     entering.forEach((el) => el.classList.add('motion-enter'));
