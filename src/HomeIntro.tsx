@@ -20,7 +20,7 @@ export function HomeIntro() {
             <p>
               Pin Frameway from Chrome’s Extensions menu. For a website, choose{' '}
               <strong>Record this tab</strong> from the toolbar and wait for <strong>REC</strong>.
-              Pause when needed; choose <strong>Finish recording</strong> to open the editor.
+              Pause when needed; choose <strong>Finish</strong> to open the editor.
             </p>
             <p>
               Use <strong>Record my screen</strong> for desktop apps or a whole screen. Both options
@@ -40,10 +40,10 @@ export function HomeIntro() {
           </article>
           <article>
             <span className="guide-step">03 / SHARE</span>
-            <h3>Send it to someone</h3>
+            <h3>Put it to work</h3>
             <p>
-              Use <strong>Share</strong> to download a walkthrough or prepare an embed. Export a
-              project backup when someone needs to edit it or you want to keep a separate copy.
+              Use <strong>Share</strong> to send an interactive walkthrough, export a video, or hand
+              an editable project to a teammate. Keep a separate project copy as your backup.
             </p>
             <p>Come back through Chrome’s Frameway menu to open your saved projects.</p>
           </article>

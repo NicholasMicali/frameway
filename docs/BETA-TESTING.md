@@ -17,7 +17,7 @@ Windows enterprise testers should also work through the [Windows checklist](../T
 
 The Library shows two ways to capture a workflow: use Frameway → Record this tab from Chrome’s toolbar for automatic click-by-click steps, or choose Record my screen for a desktop window or an entire screen and add screenshot steps in the editor. Both paths currently record silent video. Your project library comes before the visible Record → Edit → Share guide, sharing/backup guidance, and use cases. Help & installation links to this guide; developer setup instructions are kept out of the everyday workspace.
 
-Search by project name or sort by creation date, last edited, name, or estimated media size. Click a project to open it. Its three-dot options menu offers Rename, Make a copy, Export backup, and Delete with confirmation. Import project backup restores an editable project ZIP; HTML exports are for viewing. The header project picker includes Library and a searchable project list. Options contains Storage & backups, Import project backup, and Keyboard shortcuts.
+Search by project name or sort by creation date, last edited, name, or estimated media size. Click a project to open it. Its three-dot options menu offers Rename, Make a copy, Export backup, and Delete with confirmation. Import projects restores an editable project ZIP; HTML exports are for viewing. The header project picker includes Library and a searchable project list. Options contains Storage & backups, Import projects, and Keyboard shortcuts.
 
 When testing, create two walkthroughs, rename one from its menu, and try Last edited sorting. Opening or exporting should not change the edit date. Make a copy, edit it, and confirm the original stays unchanged. Find and reopen a project, export its backup, and cancel a deletion before trying a confirmed deletion on a disposable test project. Reload and verify the remaining project is intact.
 
@@ -53,12 +53,12 @@ Share only sanitized screenshots or logs. Do not attach credentials, customer da
 
 ## Backup and import
 
-1. Open your project, then select **Share → Export project backup**. Save the `.frameway.zip` file somewhere outside browser storage. Keep it zipped.
-2. Select **Options → Import project backup** in the Frameway header and choose that ZIP. This creates a separate editable project; it does not overwrite the original.
+1. Open your project, then select **Share → Download project**. Save the `.frameway.zip` file somewhere outside browser storage. Keep it zipped.
+2. Select **Options → Import projects** in the Frameway header and choose that ZIP. This creates a separate editable project; it does not overwrite the original.
 3. Preview the imported copy and check its video, screenshots, title, callouts, branding, and step order. Make an edit and reload to confirm it saves.
 4. To test recovery across an extension update or another computer, export before updating, then import the same ZIP into the destination installation. You can also use a separate Chrome profile for a clean recovery test.
 
-**Download HTML** and **Export embed** create viewer-facing playback exports. Use **Export project backup** for an editable backup. The extension and localhost editor have separate libraries; project ZIPs transfer work between them.
+**Download HTML** and **Export embed** create viewer-facing playback exports. Use **Download project** for an editable backup. The extension and localhost editor have separate libraries; project ZIPs transfer work between them.
 
 ## Reported findings
 

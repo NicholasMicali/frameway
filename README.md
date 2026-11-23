@@ -13,7 +13,7 @@ _Recorded in Frameway using generated demo content. The GIF shows editing, previ
 1. Open the Store listing and choose **Add to Chrome**.
 2. Pin Frameway from Chrome's Extensions menu.
 3. Open a page, click Frameway → **Record this tab**, and wait for **REC**.
-4. Perform your workflow, then choose **Finish recording**. The editor opens automatically.
+4. Perform your workflow, then choose **Finish**. The editor opens automatically.
 
 Choose **Open library** from the extension menu to return to existing projects without recording. Use **Record my screen** in the Library to capture desktop apps or a whole screen and add screenshot steps manually.
 
@@ -21,7 +21,7 @@ The Store version receives updates through Chrome. We keep it aligned with the l
 
 ### Sharing, backups, and moving to the Store version
 
-**Share → Send a walkthrough → Download HTML** creates an interactive file for viewers who do not need Frameway installed. **Export project backup** creates an editable `.frameway.zip` to back up your work or send to a teammate; restore it with **Options → Import project backup**.
+**Share → Download HTML** creates an interactive file for viewers who do not need Frameway installed. **Download project** creates an editable `.frameway.zip` to back up your work or send to a teammate; restore it with **Options → Import projects**.
 
 Projects stay in your browser profile. Before switching from an unpacked extension or localhost to the Store version, export important project backups from the old installation and import them into the new one. Verify them before removing the old installation. Ordinary updates to the same Store installation retain its library; keep backups for recovery.
 
@@ -58,7 +58,7 @@ The extension records a tab's video and clicks, then creates screenshot/video st
 2. Enable **Developer mode**, click **Load unpacked**, and select this repository's `dist` folder.
 3. Pin **Frameway · Walkthrough recorder** in Chrome's Extensions menu.
 4. Open the page you want to demonstrate. Click Frameway → **Record this tab** and wait for the **REC** badge.
-5. Perform your workflow; click Frameway → **Finish recording**. Its editor opens automatically.
+5. Perform your workflow; click Frameway → **Finish**. Its editor opens automatically.
 
 Open the toolbar menu with **Command+Shift+Y** on macOS or **Ctrl+Shift+Y** elsewhere. Choose **Open library** to access saved projects without recording. The extension's **Options** page also opens the editor. After updating the source, rebuild, click **Reload** on the extension's Chrome card, and reopen the editor. Export important projects before replacing or removing an extension installation.
 
@@ -74,7 +74,7 @@ Open `http://127.0.0.1:5173/`. The Library includes tab and screen recording gui
 
 **Record my screen** uses the browser picker for a tab, window, or whole screen. It records silent video; mark screenshot moments while recording or insert them later. It cannot automatically detect clicks in other applications. Keep the recorder page open until saving finishes. Recording stops at ten minutes or approximately 90 MB.
 
-The website and extension have separate browser storage. Use **Export project backup → Options → Import project backup** to move walkthroughs between them.
+The website and extension have separate browser storage. Use **Download project → Options → Import projects** to move walkthroughs between them.
 
 In the library, open a project’s three-dot menu and choose **Make a copy** to create a separately saved version. The copy opens with a “(copy)” name you can edit. Changes or deletion of either project do not affect the other; export a new backup for the copy. Copies include the media and may use additional browser storage.
 
@@ -91,11 +91,11 @@ In the library, open a project’s three-dot menu and choose **Make a copy** to 
 
 Open **Share**:
 
-| Action                | Result                                                                                                                                                               |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Download HTML         | One self-contained interactive file, including media. Download and open in a modern browser; works offline.                                                          |
-| Export embed          | ZIP with a standalone player, media, an HTML iframe example, and a React iframe wrapper. Host the extracted folder on an existing website or internal static server. |
-| Export project backup | Editable ZIP backup for importing into Frameway later.                                                                                                               |
+| Action           | Result                                                                                                                                                               |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Download HTML    | One self-contained interactive file, including media. Download and open in a modern browser; works offline.                                                          |
+| Export embed     | ZIP with a standalone player, media, an HTML iframe example, and a React iframe wrapper. Host the extracted folder on an existing website or internal static server. |
+| Download project | Editable ZIP backup for importing into Frameway later.                                                                                                               |
 
 No managed hosting service is included. A localhost URL only works on your computer. Email/file-sharing previews may block scripts; recipients should download the HTML and open it in a browser. The React wrapper uses the same standalone player, not the editor. Playback exports cannot be imported as editable projects.
 
@@ -105,7 +105,7 @@ No managed hosting service is included. A localhost URL only works on your compu
 
 Open **Options → Storage & backups** to see approximate browser usage and project media sizes, export editable backups, or delete an unneeded project after confirmation. The open project cannot be deleted until you return to Library. Extension and localhost storage are separate.
 
-Projects show whether a backup export is recorded for the current edits. This records a download being started, not proof that the file was kept. **Export project backup** creates the editable ZIP; HTML/embed downloads do not count as editable backups. Imported projects start with no local backup-export record.
+Projects show whether a backup export is recorded for the current edits. This records a download being started, not proof that the file was kept. **Download project** creates the editable ZIP; HTML/embed downloads do not count as editable backups. Imported projects start with no local backup-export record.
 
 If saving fails, keep the tab open: current edits remain available for **Export backup** and **Retry saving**. The previous saved copy is retained when a storage transaction fails. Export an editable backup before removing other projects to free space. Storage figures are estimates, not a guarantee of free disk space. This does not recover recordings lost in a browser crash.
 

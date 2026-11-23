@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'react';
+import { useEffect, type ComponentProps } from 'react';
 import { HomeIntro, UseCases } from './HomeIntro';
 import { ProjectLibrary } from './ProjectLibrary';
 import { Icon } from './Icon';
@@ -8,6 +8,22 @@ import './styles/home.css';
 type HomePageProps = ComponentProps<typeof ProjectLibrary> & { onRecord: () => void };
 
 export function HomePage({ onRecord, ...library }: HomePageProps) {
+  useEffect(() => {
+    const sections = document.querySelectorAll('.home-page .home-reveal');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('home-visible');
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.15 },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
   return (
     <main className="welcome home-page">
       <div className="home-heading">
@@ -16,7 +32,7 @@ export function HomePage({ onRecord, ...library }: HomePageProps) {
           <h1>Your walkthroughs</h1>
           <p>
             Turn what’s on your screen into a walkthrough. Capture websites, desktop apps, or an
-            entire screen, then edit and share.
+            entire screen. Turn a process into something your team can watch, follow, and reuse.
           </p>
         </div>
         <span className="local-badge">
@@ -52,41 +68,65 @@ export function HomePage({ onRecord, ...library }: HomePageProps) {
         <ProjectLibrary {...library} />
       </div>
       <HomeIntro />
-      <section className="home-sharing" aria-labelledby="sharing-title">
+      <section className="home-sharing home-reveal" aria-labelledby="sharing-title">
         <div className="home-section-heading">
           <span className="home-section-icon">
             <Icon name="share" />
           </span>
           <div>
-            <h2 id="sharing-title">Share the walkthrough. Keep the editable original.</h2>
-            <p>Choose the file that fits what you want to do.</p>
+            <h2 id="sharing-title">Made to share with your team.</h2>
+            <p>Help someone learn the workflow—or hand it over so they can make it their own.</p>
           </div>
         </div>
         <div className="sharing-grid">
           <article>
+            <span className="sharing-purpose">FOR VIEWERS</span>
             <h3>
-              <Icon name="share" /> Send or embed
+              <Icon name="share" /> Send a walkthrough
             </h3>
             <p>
-              Choose <strong>Share → Send a walkthrough → Download HTML</strong>. Your recipient
-              opens the downloaded file in a browser—no Frameway installation needed. Embed exports
-              are available in Share too.
+              Choose <strong>Share → Download HTML</strong> for a click-through guide that opens in
+              a browser, even offline. Your teammates don’t need Frameway installed.
+            </p>
+            <p className="sharing-detail">
+              Prefer a video? Expand <strong>Video</strong> in Share to export a watch-through
+              version.
             </p>
           </article>
           <article>
+            <span className="sharing-purpose">FOR COLLABORATORS</span>
             <h3>
-              <Icon name="download" /> Back up or move a project
+              <Icon name="edit" /> Hand off an editable copy
             </h3>
             <p>
-              Choose <strong>Export backup</strong> from a project’s menu. Restore its editable ZIP
-              through <strong>Options → Import project backup</strong>. Keep backups before removing
-              Frameway or clearing browser data.
+              Choose <strong>Share → Download project</strong> and send the{' '}
+              <strong>.frameway.zip</strong> file. Your teammate chooses{' '}
+              <strong>Options → Import projects</strong> in their Frameway.
+            </p>
+            <p className="sharing-detail">
+              They can update the steps, adapt the branding, and share a new version. Each person
+              keeps a separate copy; changes don’t sync automatically.
+            </p>
+          </article>
+          <article>
+            <span className="sharing-purpose">FOR YOUR TEAM’S RESOURCES</span>
+            <h3>
+              <Icon name="monitor" /> Add it to your training
+            </h3>
+            <p>
+              Choose <strong>Share → Export embed</strong> for player files and HTML/React examples
+              to place on a website or internal server you manage.
+            </p>
+            <p className="sharing-detail">
+              Use individual walkthroughs in onboarding, process documentation, or a larger training
+              module.
             </p>
           </article>
         </div>
         <p className="home-note">
-          <Icon name="shield" /> Recordings and edits stay in this browser until you export or share
-          them. A saved project is not a separate backup.
+          <Icon name="shield" /> Projects stay in this browser. Keep a downloaded project copy
+          before clearing browser data or removing Frameway. HTML and video exports are for viewing,
+          not restoring editable projects.
         </p>
       </section>
       <UseCases />
@@ -96,7 +136,7 @@ export function HomePage({ onRecord, ...library }: HomePageProps) {
           target="_blank"
           rel="noreferrer"
         >
-          Help & installation <Icon name="external" />
+          Getting started <Icon name="external" />
         </a>
         <a
           href="https://github.com/NicholasMicali/frameway/blob/main/PRIVACY.md"

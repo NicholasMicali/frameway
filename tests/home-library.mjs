@@ -16,9 +16,7 @@ try {
   assert.equal(await page.getByRole('button', { name: /sample/i }).count(), 0);
   assert.equal(await page.locator('.home-page details').count(), 0);
   assert.equal(
-    await page
-      .getByRole('heading', { name: 'Share the walkthrough. Keep the editable original.' })
-      .isVisible(),
+    await page.getByRole('heading', { name: 'Made to share with your team.' }).isVisible(),
     true,
   );
   assert.equal(
@@ -28,6 +26,21 @@ try {
   assert.equal(await page.getByText('Developer mode', { exact: true }).count(), 0);
   const emptyLibrary = await page.locator('.project-library').boundingBox();
   assert.ok(emptyLibrary.y < (await page.locator('.quick-guide').boundingBox()).y);
+  await page.locator('.home-sharing').scrollIntoViewIfNeeded();
+  await page.waitForFunction(() =>
+    document.querySelector('.home-sharing')?.classList.contains('home-visible'),
+  );
+  assert.equal(await page.locator('.sharing-grid article').count(), 3);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  assert.equal(
+    await page
+      .locator('.sharing-grid article')
+      .first()
+      .evaluate((e) => getComputedStyle(e).animationName),
+    'none',
+  );
+  await page.screenshot({ path: 'test-results/home-sharing.png', fullPage: true });
+  await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: 'test-results/home-first-run.png', fullPage: true });
   await page.evaluate(async () => {
     const { sampleProject } = await import('/src/sample.ts');
@@ -43,7 +56,7 @@ try {
   });
   await page.reload();
   await page.locator('.project-card').nth(2).waitFor();
-  assert.equal(await page.getByRole('heading', { name: 'Send it to someone' }).isVisible(), true);
+  assert.equal(await page.getByRole('heading', { name: 'Put it to work' }).isVisible(), true);
   assert.ok(
     (await page.locator('.project-library').boundingBox()).y <
       (await page.locator('.quick-guide').boundingBox()).y,
@@ -118,7 +131,7 @@ try {
   const bounds = await page.getByRole('menu', { name: 'Workspace options' }).boundingBox();
   assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= 390);
   assert.equal(
-    await page.getByRole('menuitem', { name: 'Import project backup', exact: true }).isVisible(),
+    await page.getByRole('menuitem', { name: 'Import projects', exact: true }).isVisible(),
     true,
   );
   await page.screenshot({ path: 'test-results/header-mobile.png', fullPage: true });

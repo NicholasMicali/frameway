@@ -120,7 +120,7 @@ try {
     const copied = await editor.evaluate(() => window.copiedInstructions);
     assert.ok(copied.startsWith(base + suffix));
     assert.ok(!copied.includes('127.0.0.1'));
-    if (name === 'Download project') assert.ok(copied.includes('Import project backup'));
+    if (name === 'Download project') assert.ok(copied.includes('Import projects'));
     await editor.evaluate(() => {
       navigator.clipboard.writeText = async () => {
         throw Error('Clipboard denied');
