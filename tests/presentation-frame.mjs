@@ -39,11 +39,15 @@ try {
     animations: 'disabled',
   });
   await open();
-  await page.getByRole('combobox', { name: 'Presentation frame', exact: true }).selectOption('gradient');
+  await page
+    .getByRole('combobox', { name: 'Presentation frame', exact: true })
+    .selectOption('gradient');
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   assert.equal(await frame.getAttribute('data-framed'), 'false');
   await open();
-  await page.getByRole('combobox', { name: 'Presentation frame', exact: true }).selectOption('gradient');
+  await page
+    .getByRole('combobox', { name: 'Presentation frame', exact: true })
+    .selectOption('gradient');
   await page.getByLabel('Frame spacing', { exact: true }).fill('6');
   await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
   await page.waitForFunction(
