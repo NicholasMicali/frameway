@@ -100,6 +100,36 @@ try {
     assert.equal(result.suggestedFilename(), base + suffix);
     await result.saveAs(path.join(directory, file));
     await editor.getByText('Download started — check your downloads', { exact: true }).waitFor();
+    const size = (await readFile(path.join(directory, file))).byteLength;
+    assert.ok((await editor.locator('.export-file-details').innerText()).includes(base + suffix));
+    assert.ok(
+      (await editor.locator('.export-file-details').innerText()).includes(size.toLocaleString()),
+    );
+    await editor.evaluate(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          writeText: async (text) => {
+            window.copiedInstructions = text;
+          },
+        },
+      });
+    });
+    await editor.getByRole('button', { name: 'Copy recipient instructions' }).click();
+    await editor.getByText('Instructions copied.', { exact: true }).waitFor();
+    const copied = await editor.evaluate(() => window.copiedInstructions);
+    assert.ok(copied.startsWith(base + suffix));
+    assert.ok(!copied.includes('127.0.0.1'));
+    if (name === 'Download project') assert.ok(copied.includes('Import project backup'));
+    await editor.evaluate(() => {
+      navigator.clipboard.writeText = async () => {
+        throw Error('Clipboard denied');
+      };
+    });
+    await editor.getByRole('button', { name: 'Copy recipient instructions' }).click();
+    await editor
+      .getByText('Could not copy. Select and copy the instructions above instead.')
+      .waitFor();
     await editor.getByRole('button', { name: 'Close export' }).click();
   }
   await download('Download HTML', 'portable.html');

@@ -2115,3 +2115,8 @@ h1 {
     background-image: none;
   }
 }
+
+.export-file-details {
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
