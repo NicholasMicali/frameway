@@ -1,3 +1,18 @@
+function suppliedLoop(name: string) {
+  return {
+    name,
+    title: name,
+    artist: '',
+    file: `${name.toLowerCase()}.ogg`,
+    mimeType: 'audio/ogg',
+    source:
+      'CC0 source license verified by the Frameway maintainer; original source URL not supplied.',
+    license: 'CC0 1.0',
+    licenseURL: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    processing:
+      'Supplied WAV loop encoded to Ogg Opus; playback may loop, adjust volume, and use fades in video exports.',
+  } as const;
+}
 export const bundledMusic = {
   'exploration-theme': {
     name: 'Exploration',
@@ -39,6 +54,13 @@ export const bundledMusic = {
     license: 'CC BY 4.0',
     licenseURL: 'https://creativecommons.org/licenses/by/4.0/',
   },
+  bloom: suppliedLoop('Bloom'),
+  cruise: suppliedLoop('Cruise'),
+  drive: suppliedLoop('Drive'),
+  focus: suppliedLoop('Focus'),
+  pulse: suppliedLoop('Pulse'),
+  spark: suppliedLoop('Spark'),
+  uplift: suppliedLoop('Uplift'),
 } as const;
 export type BundledTrack = keyof typeof bundledMusic;
 export function builtInTrack(music?: Music) {
@@ -95,7 +117,7 @@ export function musicExtension(music?: Music) {
 export function trackCredit(music?: Music) {
   if (music?.track === 'upload') return `Uploaded audio: ${music.name}`;
   const track = builtInTrack(music)!;
-  return `${track.title} — ${track.artist}\n${track.source}\n${track.license} · ${track.licenseURL}\nOriginal audio bundled unchanged; playback may loop, adjust volume, and use fades in video exports.`;
+  return `${track.title}${track.artist ? ` — ${track.artist}` : ''}\n${track.source}\n${track.license} · ${track.licenseURL}\n${'processing' in track ? track.processing : 'Original audio bundled unchanged; playback may loop, adjust volume, and use fades in video exports.'}`;
 }
 
 export const defaultMusic: Music = { track: 'exploration-theme', enabled: true, volume: 0.2 };
