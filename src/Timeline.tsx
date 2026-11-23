@@ -170,7 +170,11 @@ export function ClipTimeline({ step, duration, playhead, onPatch, onSeek, onBoun
             {ticks.map((time) => (
               <span
                 key={time}
-                style={{ position: 'absolute', left: `${(time / duration) * 100}%` }}
+                style={{
+                  position: 'absolute',
+                  left: `${(time / duration) * 100}%`,
+                  transform: time === 0 ? undefined : 'translateX(-100%)',
+                }}
               >
                 {time.toFixed(tickSize < 1 ? 2 : 1)}s
               </span>

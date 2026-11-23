@@ -17,6 +17,18 @@ const manifest = JSON.parse(new TextDecoder().decode(entries['manifest.json']));
 if (manifest.version !== pkg.version) throw Error('Build version mismatch; run npm run build');
 for (const name of [
   'index.html',
+  'audio/exploration-theme.ogg',
+  'audio/daylight.ogg',
+  'audio/lofi-focus.mp3',
+  'audio/sunrise.mp3',
+  'audio/bloom.ogg',
+  'audio/cruise.ogg',
+  'audio/drive.ogg',
+  'audio/focus.ogg',
+  'audio/pulse.ogg',
+  'audio/spark.ogg',
+  'audio/uplift.ogg',
+  'audio/LICENSE.txt',
   'ui-tokens.css',
   'LICENSE',
   'NOTICE',

@@ -1,3 +1,4 @@
+import { MusicControl } from './MusicControl';
 import { frameVars, presentationFrame } from './presentation-frame';
 import './presentation-frame.css';
 import { SlideElements, ElementTools } from './SlideElements';
@@ -1198,6 +1199,9 @@ function App() {
                 </div>
               </div>
               <div className="player-bar">
+                {preview && !exportOpen && project.music?.enabled && (
+                  <MusicControl key={project.id} project={project} />
+                )}
                 {preview && (
                   <ContentsMenu
                     steps={project.steps}

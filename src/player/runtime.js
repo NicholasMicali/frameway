@@ -372,5 +372,15 @@
       back.click();
     }
   });
+  if (project.music) {
+    const musicHost = element('span', 'music-control', nav);
+    const disposeMusic = createMusicPlayer(
+      musicHost,
+      project.music.src,
+      project.music.volume,
+      project.music.credit,
+    );
+    window.addEventListener('pagehide', disposeMusic, { once: true });
+  }
   render();
 })();

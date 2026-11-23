@@ -1,3 +1,4 @@
+import { validateMusic, type Music } from './music';
 import { validateElements, type SlideElement } from './slide-elements';
 import { validateAppearance, type Appearance } from './appearance';
 import { safeActionURL } from './formatted-text';
@@ -50,6 +51,8 @@ type ProjectBase = {
   localEditedAt?: number;
   localBackup?: { revision: string; exportedAt: number };
   appearance?: Appearance;
+  music?: Music;
+  musicAudio?: Blob;
   theme?: ThemeName;
   customColor?: string;
   logo?: string;
@@ -80,10 +83,10 @@ export function nextId(p: Project, s: Step) {
       : s.target;
 }
 export function migrateProject(
-  p: Project | LegacyProject | (Omit<Project, 'schemaVersion'> & { schemaVersion: 3 }),
+  p: Project | LegacyProject | (Omit<Project, 'schemaVersion'> & { schemaVersion: 3 | 4 }),
 ): Project {
   if (p.schemaVersion === 2) return p;
-  if (p.schemaVersion === 3) return { ...p, schemaVersion: 2 };
+  if (p.schemaVersion !== 1) return { ...p, schemaVersion: 2 };
   const steps: Step[] = [];
   for (let i = 0; i < p.steps.length; i++) {
     const { transition, ...s } = p.steps[i];
@@ -158,6 +161,7 @@ export function moveStep(p: Project, id: string, delta: number): Project {
 }
 export function validateManifest(v: any) {
   validateAppearance(v?.appearance);
+  validateMusic(v?.music);
   if (v?.theme !== undefined && v.theme !== 'custom' && !Object.hasOwn(themes, v.theme))
     throw Error('Invalid color theme');
   if (v?.customColor !== undefined && !isHexColor(v.customColor))
@@ -171,7 +175,7 @@ export function validateManifest(v: any) {
     throw Error('Invalid logo');
   if (
     !v ||
-    ![1, 2, 3].includes(v.schemaVersion) ||
+    ![1, 2, 3, 4].includes(v.schemaVersion) ||
     typeof v.title !== 'string' ||
     v.title.length > 200 ||
     !Number.isFinite(v.duration) ||

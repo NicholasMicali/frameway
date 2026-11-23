@@ -1,14 +1,17 @@
+import { maxMusicBytes } from './music';
 import { zipSync, unzipSync, strToU8, strFromU8 } from 'fflate';
 import { validateManifest, migrateProject, type Project } from './model';
 export async function exportProject(p: Project) {
   const manifest = {
     ...p,
-    // Older editors must reject element-bearing backups rather than drop annotations.
-    schemaVersion: p.steps.some((s) => s.elements?.length) ? 3 : 2,
+    // Older editors must reject unsupported annotations or uploaded audio instead of dropping them.
+    schemaVersion:
+      p.music?.track === 'upload' ? 4 : p.steps.some((s) => s.elements?.length) ? 3 : 2,
     localEditedAt: undefined,
     localRevision: undefined,
     localBackup: undefined,
     video: undefined,
+    musicAudio: undefined,
     markers: undefined,
     steps: p.steps.map(({ image, ...s }) => s),
     mimeType: p.video.type,
@@ -17,6 +20,11 @@ export async function exportProject(p: Project) {
     'project.json': strToU8(JSON.stringify(manifest)),
     'recording.webm': new Uint8Array(await p.video.arrayBuffer()),
   };
+  if (p.music?.track === 'upload') {
+    if (!p.musicAudio || !p.musicAudio.size || p.musicAudio.size > maxMusicBytes)
+      throw Error('Uploaded music is missing or too large.');
+    entries['audio/background'] = new Uint8Array(await p.musicAudio.arrayBuffer());
+  }
   for (let i = 0; i < p.steps.length; i++)
     entries[`stills/${i}.png`] = new Uint8Array(await p.steps[i].image.arrayBuffer());
   if (Object.values(entries).reduce((n, b) => n + b.byteLength, 0) > 149 * 1024 * 1024)
@@ -38,6 +46,7 @@ export async function importProject(file: Blob): Promise<Project> {
       if (
         e.name !== 'project.json' &&
         e.name !== 'recording.webm' &&
+        e.name !== 'audio/background' &&
         !/^stills\/\d+\.png$/.test(e.name)
       )
         throw Error('Unexpected archive entry');
@@ -54,6 +63,10 @@ export async function importProject(file: Blob): Promise<Project> {
   validateManifest(p);
   if (typeof p.mimeType !== 'string' || !/^video\/webm(?:;|$)/.test(p.mimeType))
     throw Error('Only WebM recordings are supported');
+  const audio = files['audio/background'];
+  if (p.music?.track === 'upload' && (!audio?.length || audio.length > maxMusicBytes))
+    throw Error('Missing or oversized uploaded music.');
+  if (p.music?.track !== 'upload' && audio) throw Error('Unexpected uploaded music.');
   const steps = p.steps.map((s: any, i: number) => {
     if (!files[`stills/${i}.png`]) throw Error('Missing still image');
     return { ...s, image: new Blob([files[`stills/${i}.png`] as BlobPart], { type: 'image/png' }) };
@@ -67,6 +80,7 @@ export async function importProject(file: Blob): Promise<Project> {
     createdAt: Date.now(),
     steps,
     markers: [],
+    musicAudio: audio ? new Blob([audio as BlobPart], { type: p.music.mimeType }) : undefined,
     video: new Blob([files['recording.webm'] as BlobPart], { type: p.mimeType }),
     status: 'needs-review',
     warning: 'Imported project. Preview the media and step boundaries.',

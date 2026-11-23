@@ -1,3 +1,11 @@
+import {
+  defaultMusic,
+  prepareMusic,
+  bundledMusic,
+  builtInTrack,
+  musicURL,
+  type BundledTrack,
+} from './music';
 import { frameVars, presentationFrame } from './presentation-frame';
 import { frameChoices } from './appearance';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
@@ -17,10 +25,24 @@ export function ProjectSettings({
   onChange: (p: Project, key?: string) => void;
 }) {
   const menu = useRef<HTMLDetailsElement>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [draft, setDraft] = useState(project);
   const [image, setImage] = useState('');
   const uploadVersion = useRef(0);
   const [uploading, setUploading] = useState(false);
+  const [musicUploading, setMusicUploading] = useState(false);
+  const [musicError, setMusicError] = useState('');
+  const musicInput = useRef<HTMLInputElement>(null);
+  const [musicPreview, setMusicPreview] = useState('');
+  useEffect(() => {
+    if (draft.music?.track !== 'upload' || !draft.musicAudio) {
+      setMusicPreview(musicURL(draft.music));
+      return;
+    }
+    const url = URL.createObjectURL(draft.musicAudio);
+    setMusicPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [draft.music?.track, draft.musicAudio]);
   const [logoError, setLogoError] = useState('');
   const intro =
     draft.steps.find((s) => s.kind === 'title') ??
@@ -35,6 +57,7 @@ export function ProjectSettings({
   }, [project]);
   const close = () => {
     uploadVersion.current++;
+    menu.current?.querySelector('audio')?.pause();
     menu.current?.removeAttribute('open');
     menu.current?.querySelector('summary')?.focus();
   };
@@ -42,6 +65,7 @@ export function ProjectSettings({
     const outside = (e: PointerEvent) => {
       if (!menu.current?.contains(e.target as Node)) {
         uploadVersion.current++;
+        menu.current?.querySelector('audio')?.pause();
         menu.current?.removeAttribute('open');
       }
     };
@@ -63,11 +87,13 @@ export function ProjectSettings({
     ],
     ['Button text', contrastRatio(palette['--accent-text'], palette['--accent'])],
   ] as const;
-  const snapshot = (p: Project) => JSON.stringify([p.theme, p.customColor, p.appearance, p.logo]);
+  const snapshot = (p: Project) =>
+    JSON.stringify([p.theme, p.customColor, p.appearance, p.logo, p.music]);
   return (
     <details
       className="project-settings"
       ref={menu}
+      onToggle={(e) => setSettingsOpen(e.currentTarget.open)}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
           e.stopPropagation();
@@ -78,9 +104,12 @@ export function ProjectSettings({
       <summary
         onClick={() => {
           uploadVersion.current++;
+          menu.current?.querySelector('audio')?.pause();
           if (!menu.current?.open) {
             setDraft(project);
             setUploading(false);
+            setMusicUploading(false);
+            setMusicError('');
             setLogoError('');
           }
         }}
@@ -109,10 +138,168 @@ export function ProjectSettings({
           </div>
         </div>
         <fieldset>
+          <legend>Background music</legend>
+          <label>
+            Enable music
+            <input
+              type="checkbox"
+              aria-label="Enable background music"
+              checked={draft.music?.enabled ?? false}
+              onChange={(e) =>
+                setDraft((current) => ({
+                  ...current,
+                  music: { ...(current.music ?? defaultMusic), enabled: e.target.checked },
+                }))
+              }
+            />
+          </label>
+          <label>
+            Soundtrack
+            <select
+              aria-label="Music track"
+              disabled={musicUploading}
+              value={draft.music?.track ?? 'exploration-theme'}
+              onChange={(e) => {
+                const track = e.target.value as BundledTrack;
+                setDraft((current) => ({
+                  ...current,
+                  music: {
+                    track,
+                    enabled: true,
+                    volume: current.music?.volume ?? defaultMusic.volume,
+                  },
+                  musicAudio: undefined,
+                }));
+              }}
+            >
+              {Object.entries(bundledMusic).map(([id, track]) => (
+                <option key={id} value={id}>
+                  {track.name}
+                </option>
+              ))}
+              {draft.music?.track === 'upload' && <option value="upload">Uploaded audio</option>}
+            </select>
+          </label>
+          <p>
+            {draft.music?.track === 'upload'
+              ? `${draft.music.name} · ${Math.floor(draft.music.duration / 60)}:${String(Math.floor(draft.music.duration % 60)).padStart(2, '0')}`
+              : `${builtInTrack(draft.music)!.title} · ${builtInTrack(draft.music)!.artist}`}
+          </p>
+          <input
+            ref={musicInput}
+            type="file"
+            aria-label="Upload background music"
+            accept=".mp3,.wav,.ogg"
+            hidden
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              e.target.value = '';
+              if (!file) return;
+              const version = ++uploadVersion.current;
+              setMusicUploading(true);
+              setMusicError('');
+              try {
+                const result = await prepareMusic(file);
+                if (version === uploadVersion.current && menu.current?.open)
+                  setDraft((current) => ({
+                    ...current,
+                    music: {
+                      ...result.music,
+                      volume: current.music?.volume ?? defaultMusic.volume,
+                    },
+                    musicAudio: result.audio,
+                  }));
+              } catch (error) {
+                if (version === uploadVersion.current)
+                  setMusicError(
+                    error instanceof Error ? error.message : 'Could not read this audio file.',
+                  );
+              } finally {
+                if (version === uploadVersion.current) setMusicUploading(false);
+              }
+            }}
+          />
+          <div className="music-upload-actions">
+            <button
+              disabled={musicUploading || uploading}
+              onClick={() => musicInput.current?.click()}
+            >
+              <Icon name="upload" />
+              {musicUploading
+                ? 'Reading audio…'
+                : draft.music?.track === 'upload'
+                  ? 'Replace audio'
+                  : 'Upload audio'}
+            </button>
+            {draft.music?.track === 'upload' && (
+              <button
+                disabled={musicUploading}
+                aria-label="Remove uploaded music"
+                title="Remove uploaded music"
+                onClick={() =>
+                  setDraft((current) => ({
+                    ...current,
+                    music: {
+                      ...defaultMusic,
+                      enabled: false,
+                      volume: current.music?.volume ?? defaultMusic.volume,
+                    },
+                    musicAudio: undefined,
+                  }))
+                }
+              >
+                <Icon name="trash" />
+              </button>
+            )}
+          </div>
+          {builtInTrack(draft.music)?.license === 'CC BY 4.0' && (
+            <p>Artist credits are included in the player and at the end of video exports.</p>
+          )}
+          {musicError && <p role="alert">{musicError}</p>}
+          {settingsOpen && musicPreview && (
+            <audio
+              aria-label={
+                draft.music?.track === 'upload' ? 'Uploaded music preview' : 'Music preview'
+              }
+              controls
+              preload="metadata"
+              src={musicPreview}
+              style={{ width: '100%' }}
+            />
+          )}
+          <p>
+            MP3, WAV, or OGG · Up to 20 MB and 10 minutes. Stored on this device and included when
+            you share. Use audio you have permission to share.
+          </p>
+          {draft.music?.enabled && (
+            <label>
+              Volume · {Math.round(draft.music.volume * 100)}%
+              <input
+                aria-label="Music volume"
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                value={Math.round(draft.music.volume * 100)}
+                onChange={(e) =>
+                  setDraft((current) => ({
+                    ...current,
+                    music: {
+                      ...(current.music ?? defaultMusic),
+                      volume: Number(e.target.value) / 100,
+                    },
+                  }))
+                }
+              />
+            </label>
+          )}
+          <p>Viewers can mute music. Sound may start after their first click.</p>
+        </fieldset>
+        <fieldset>
           <legend>Brand logo</legend>
           <LogoUpload
             logo={draft.logo}
-            disabled={uploading}
+            disabled={uploading || musicUploading}
             onRemove={() => setDraft((current) => ({ ...current, logo: undefined }))}
             onUpload={async (file) => {
               const version = ++uploadVersion.current;
@@ -338,12 +525,14 @@ export function ProjectSettings({
           <button onClick={close}>Cancel</button>
           <button
             className="primary"
-            disabled={uploading}
+            disabled={uploading || musicUploading}
             onClick={() => {
               if (snapshot(draft) !== snapshot(project))
                 onChange({
                   ...project,
                   logo: draft.logo,
+                  music: draft.music,
+                  musicAudio: draft.musicAudio,
                   appearance: draft.appearance,
                   theme: draft.theme,
                   customColor: draft.customColor,

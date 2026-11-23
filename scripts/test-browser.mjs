@@ -28,6 +28,9 @@ for (const test of [
   'callout-formatting',
   'project-copy',
   'video-export',
+  'music',
+  'music-upload',
+  'music-library',
 ]) {
   await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [`tests/${test}.mjs`], {

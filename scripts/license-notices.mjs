@@ -16,6 +16,7 @@ for (const [folder, entry] of Object.entries(lock.packages)) {
   if (!texts.length) throw Error(`Missing license notice for ${pkg.name}@${pkg.version}`);
   sections.push(`${pkg.name}@${pkg.version} (${pkg.license})\n\n${texts.join('\n\n')}`);
 }
+sections.push(await readFile('public/audio/LICENSE.txt', 'utf8'));
 await writeFile(
   'dist/THIRD_PARTY_NOTICES.txt',
   sections.join('\n\n----------------------------------------\n\n'),

@@ -26,7 +26,7 @@ export function VideoExport({
     duration = 0,
     validation = '';
   try {
-    extension = videoFormat().extension.toUpperCase();
+    extension = videoFormat(!!project.music?.enabled).extension.toUpperCase();
     duration = videoPlan(project, { seconds, durations, width }).reduce(
       (sum, entry) => sum + entry.seconds,
       0,
@@ -71,7 +71,10 @@ export function VideoExport({
   }
   return (
     <section className="video-export">
-      <p className="video-export-note">Silent · Slides in order · Cards expanded</p>
+      <p className="video-export-note">
+        {project.music?.enabled ? 'With background music' : 'Silent'} · Slides in order · Cards
+        expanded
+      </p>
       <fieldset disabled={running}>
         <div className="video-export-options">
           <label>
