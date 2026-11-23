@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Frameway \u00b7 Walkthrough recorder",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "minimum_chrome_version": "116",
   "description": "Turn websites, apps, and screen recordings into local interactive walkthroughs. Edit, share, and embed without an account.",
   "permissions": ["activeTab", "scripting", "tabCapture", "offscreen", "storage"],
