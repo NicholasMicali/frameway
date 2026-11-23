@@ -554,3 +554,18 @@ the avoidance of doubt, this paragraph does not form part of the
 public licenses.
 
 Creative Commons may be contacted at creativecommons.org.
+
+Additional CC0 loop collection — supplied by Nicholas Micali, 2026-11-23.
+Tracks: Bloom, Cruise, Drive, Focus, Pulse, Spark, Uplift.
+Maintainer confirms downloaded from public sources and verified CC0 1.0.
+Original source URLs and creator names were not supplied; no independent source verification is claimed.
+License: https://creativecommons.org/publicdomain/zero/1.0/
+Supplied WAV loops encoded to Ogg Opus at 128 kbps, original 48 kHz stereo.
+No trimming or normalization applied. Looping, volume changes and video fades may apply.
+Bloom: source WAV SHA-256 521312a52d9702d70a8733d5bdf82767da60aa910fd48c890c811f08bc8ef04a; bundled OGG SHA-256 aecad07367a4fc8d6e67c1bd3865a4effb28c5ed2c940d75c88065f86dda3ecc
+Cruise: source WAV SHA-256 5090ba5fd44801bb907453a612f39463925175d5c360b2141316d2ba24602400; bundled OGG SHA-256 8cc1341d6dec4089602b80ce6244235b3f8da17f86f3ef6207839b7f572ebae2
+Drive: source WAV SHA-256 384bd14e9457769edfa91687222d5783e1a05a0bfdea2930777e5342f99527c8; bundled OGG SHA-256 7087280564ec696d09862b9c3412f98952263af6cc285dd5ee018bcbf33c3ea2
+Focus: source WAV SHA-256 10d6b986a0e49e3358f89b0df1e5fe1e24807056394a965baec8dc6425cdf5ee; bundled OGG SHA-256 535613836b9fcf08c408d8a4355e9db58df009adcf7810c4b3f34cac9834ff00
+Pulse: source WAV SHA-256 0f012b7b9da013a780a451b5a9aa147172b778037bc2638c12efc4bc8b99666c; bundled OGG SHA-256 07f102dc8314a7e3c5ba64018b222df19ed2161863e39370eb12e2b89a7704f2
+Spark: source WAV SHA-256 aa8403c9fcc79b2a37e5be18365ddc9fada5c91ac53857bc1d3600ce13391254; bundled OGG SHA-256 6b10d59adafe796ca690e700bfe453f2dcf4ad83695d5b2bbb72a4ecb0baee5b
+Uplift: source WAV SHA-256 6dbb63324d2c3a3b589d75266b7e56ddf61f216296c9ccf7a76ffc34c5f1b4d2; bundled OGG SHA-256 ed6d6aca1546563880d5178b458237eadb483bdf08e0d46cd0dd276927fd5ff4

@@ -20,6 +20,8 @@ Audio never leaves the device except in exports the user chooses to share. HTML 
 
 ## Built-in selection and attribution
 
-The Soundtrack dropdown selects among four bundled files without network access. Project settings previews each selection before Apply. Only the chosen song is included in playback exports. Choosing a built-in track replaces any uploaded audio in the draft; Cancel and undo retain the original.
+The Soundtrack dropdown selects among eleven bundled files without network access. Project settings previews each selection before Apply. Only the chosen song is included in playback exports. Choosing a built-in track replaces any uploaded audio in the draft; Cancel and undo retain the original.
 
-All bundled files retain their original bytes and source/license notices in `public/audio/LICENSE.txt` and extension third-party notices. Interactive players expose Music credits beside the mute control, with source and license links. CC BY songs automatically show a compact original-title/artist/source/license credit overlay in the final five seconds of video output (or throughout videos shorter than five seconds), including the looping/fade modifications. Uploaded audio is not assigned a built-in license.
+The original four bundled files retain their original bytes. All files have license notices in `public/audio/LICENSE.txt` and extension third-party notices. Interactive players expose Music credits beside the mute control, with source and license links. CC BY songs automatically show a compact original-title/artist/source/license credit overlay in the final five seconds of video output (or throughout videos shorter than five seconds), including the looping/fade modifications. Uploaded audio is not assigned a built-in license.
+
+The CC0 collection also includes Bloom, Cruise, Drive, Focus, Pulse, Spark, and Uplift. These use compressed Ogg Opus versions of the supplied WAV loops. The maintainer verified CC0 1.0; original source URLs and creator names were not supplied. Provenance, processing details, and source/output hashes are recorded in `public/audio/LICENSE.txt`. Only the selected track is included in exports.

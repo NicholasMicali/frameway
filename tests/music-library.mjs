@@ -20,16 +20,39 @@ try {
   await page.getByText('Project settings', { exact: true }).click();
   assert.deepEqual(
     await page.getByLabel('Music track', { exact: true }).locator('option').allTextContents(),
-    ['Exploration', 'Daylight', 'Lo-fi Focus', 'Sunrise'],
+    [
+      'Exploration',
+      'Daylight',
+      'Lo-fi Focus',
+      'Sunrise',
+      'Bloom',
+      'Cruise',
+      'Drive',
+      'Focus',
+      'Pulse',
+      'Spark',
+      'Uplift',
+    ],
   );
-  for (const id of ['daylight', 'lofi-focus', 'sunrise']) {
+  for (const id of [
+    'daylight',
+    'lofi-focus',
+    'bloom',
+    'cruise',
+    'drive',
+    'focus',
+    'pulse',
+    'spark',
+    'uplift',
+    'sunrise',
+  ]) {
     await page.getByLabel('Music track', { exact: true }).selectOption(id);
     await page.getByLabel('Music preview', { exact: true }).evaluate(async (a) => {
       await a.play();
     });
     await page.waitForFunction(() => {
       const a = document.querySelector('audio[aria-label="Music preview"]');
-      return a && a.currentTime > 0 && a.duration > 60;
+      return a && a.currentTime > 0 && a.duration > 20;
     });
   }
   await page.screenshot({ path: 'test-results/music-library/settings.png' });
@@ -110,7 +133,7 @@ try {
     return { html, tracks, drawn, audioDuration: decoded.duration };
   });
   for (const track of output.tracks) {
-    assert.ok(track.duration > 60);
+    assert.ok(track.duration > 20);
     assert.equal(track.keys.filter((k) => k.startsWith('media/music.')).length, 1);
     assert.match(track.credits, /https:\/\/creativecommons.org\//);
     if (['sunrise', 'daylight'].includes(track.track)) assert.match(track.credits, /CC BY 4.0/);
