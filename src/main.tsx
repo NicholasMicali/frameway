@@ -306,7 +306,9 @@ function App() {
     }
   }
   async function backup(p: Project) {
-    await task('Exporting editable backup…', () => downloadBackup(p));
+    await task('Exporting editable backup…', async () => {
+      await downloadBackup(p);
+    });
   }
   async function downloadBackup(p: Project) {
     const blob = await exportProject(p);
@@ -323,6 +325,7 @@ function App() {
         );
       }
     }
+    return { name: `${exportName(p.title)}.frameway.zip`, size: blob.size };
   }
   useEffect(() => {
     if (!project) return;

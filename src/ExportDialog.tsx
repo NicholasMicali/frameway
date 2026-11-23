@@ -19,7 +19,7 @@ export function ExportDialog({
   onClose,
 }: {
   project: Project;
-  onBackup: (project: Project) => Promise<void>;
+  onBackup: (project: Project) => Promise<{ name: string; size: number }>;
   onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -29,6 +29,8 @@ export function ExportDialog({
   const [pending, setPending] = useState<Format>();
   const [completed, setCompleted] = useState<Format>();
   const [error, setError] = useState('');
+  const [file, setFile] = useState<{ name: string; size: number }>();
+  const [copyStatus, setCopyStatus] = useState('');
   useEffect(() => {
     const element = dialog.current;
     const trigger = document.activeElement;
@@ -47,13 +49,16 @@ export function ExportDialog({
     setPending(format);
     setCompleted(undefined);
     setError('');
+    setFile(undefined);
+    setCopyStatus('');
     try {
-      if (format === 'backup') await onBackup(project);
-      else
-        download(
-          await exportInteractive(project, format),
-          `${exportName(project.title)}.${format === 'html' ? 'html' : 'zip'}`,
-        );
+      if (format === 'backup') setFile(await onBackup(project));
+      else {
+        const blob = await exportInteractive(project, format);
+        const name = `${exportName(project.title)}.${format === 'html' ? 'html' : 'zip'}`;
+        download(blob, name);
+        setFile({ name, size: blob.size });
+      }
       setCompleted(format);
     } catch (cause) {
       setError(
@@ -177,7 +182,30 @@ export function ExportDialog({
           {completed && (
             <div className="export-result">
               <strong>Download started — check your downloads</strong>
+              {file && (
+                <p className="export-file-details">
+                  {file.name} · {file.size.toLocaleString()} bytes
+                  {file.size >= 1024 * 1024 && ` (${(file.size / 1024 / 1024).toFixed(1)} MB)`}
+                </p>
+              )}
               <p>{instructions[completed]}</p>
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(
+                      `${file?.name || project.title}\n${instructions[completed]}`,
+                    );
+                    setCopyStatus('Instructions copied.');
+                  } catch {
+                    setCopyStatus(
+                      'Could not copy. Select and copy the instructions above instead.',
+                    );
+                  }
+                }}
+              >
+                <Icon name="copy" /> Copy recipient instructions
+              </button>
+              {copyStatus && <p>{copyStatus}</p>}
             </div>
           )}
         </div>
