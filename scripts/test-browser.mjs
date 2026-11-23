@@ -21,6 +21,7 @@ for (const test of [
   'shortcuts',
   'chapters',
   'appearance',
+  'bundled-fonts',
   'presentation-frame',
   'walkthrough-motion',
   'slide-elements',

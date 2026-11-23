@@ -17,6 +17,9 @@ for (const [folder, entry] of Object.entries(lock.packages)) {
   sections.push(`${pkg.name}@${pkg.version} (${pkg.license})\n\n${texts.join('\n\n')}`);
 }
 sections.push(await readFile('public/audio/LICENSE.txt', 'utf8'));
+for (const font of ['manrope', 'sourcesans3', 'lora', 'robotomono']) {
+  sections.push(await readFile(`public/fonts/${font}-OFL.txt`, 'utf8'));
+}
 await writeFile(
   'dist/THIRD_PARTY_NOTICES.txt',
   sections.join('\n\n----------------------------------------\n\n'),

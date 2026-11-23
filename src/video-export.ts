@@ -1,3 +1,4 @@
+import { ensureFont } from './fonts';
 import { walkthroughStyle } from './appearance';
 import { loadMusic, builtInTrack } from './music';
 import { presentationFrame } from './presentation-frame';
@@ -83,6 +84,7 @@ export async function exportVideo(
   progress: (value: { fraction: number; slide: number; total: number }) => void,
 ) {
   validateManifest(project);
+  await ensureFont(project.appearance?.font);
   const plan = videoPlan(project, options),
     format = videoFormat(!!project.music?.enabled);
   const total = plan.reduce((sum, item) => sum + item.seconds, 0);

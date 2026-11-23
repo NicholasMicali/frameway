@@ -1,3 +1,4 @@
+import './fonts.css';
 import { MusicControl } from './MusicControl';
 import { frameVars, presentationFrame } from './presentation-frame';
 import './presentation-frame.css';

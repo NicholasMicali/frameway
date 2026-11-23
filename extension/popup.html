@@ -16,27 +16,29 @@
       </div>
     </header>
     <main>
-      <button id="record" disabled>
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
-          <circle class="record-dot" cx="12" cy="12" r="7" fill="currentColor" />
-          <rect
-            class="record-stop"
-            x="5"
-            y="5"
-            width="14"
-            height="14"
-            rx="2"
-            fill="currentColor"
-          /></svg
-        ><span id="record-label">Loading…</span>
-      </button>
-      <button id="pause" hidden disabled>
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path class="pause-bars" d="M6 4h4v16H6zm8 0h4v16h-4z" />
-          <path class="resume-play" d="m7 4 13 8-13 8z" /></svg
-        ><span id="pause-label">Pause recording</span>
-      </button>
       <p id="status" role="status">Checking recording status…</p>
+      <div class="capture-actions">
+        <button id="record" disabled>
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
+            <circle class="record-dot" cx="12" cy="12" r="7" fill="currentColor" />
+            <rect
+              class="record-stop"
+              x="5"
+              y="5"
+              width="14"
+              height="14"
+              rx="2"
+              fill="currentColor"
+            /></svg
+          ><span id="record-label">Loading…</span>
+        </button>
+        <button id="pause" hidden disabled>
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path class="pause-bars" d="M6 4h4v16H6zm8 0h4v16h-4z" />
+            <path class="resume-play" d="m7 4 13 8-13 8z" /></svg
+          ><span id="pause-label">Pause recording</span>
+        </button>
+      </div>
       <button id="open">
         <svg
           aria-hidden="true"
@@ -53,7 +55,7 @@
       </button>
       <p id="error" role="alert" hidden></p>
       <p class="screen-tip">
-        Need a desktop app or whole screen? Choose <strong>Record my screen</strong> in the library.
+        For apps or your whole screen, choose <strong>Record my screen</strong> in the library.
       </p>
     </main>
     <footer>

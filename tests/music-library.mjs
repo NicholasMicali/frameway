@@ -21,16 +21,16 @@ try {
   assert.deepEqual(
     await page.getByLabel('Music track', { exact: true }).locator('option').allTextContents(),
     [
-      'Exploration',
-      'Daylight',
-      'Lo-fi Focus',
-      'Sunrise',
       'Bloom',
       'Cruise',
+      'Daylight',
       'Drive',
+      'Exploration',
       'Focus',
+      'Lo-fi Focus',
       'Pulse',
       'Spark',
+      'Sunrise',
       'Uplift',
     ],
   );

@@ -24,15 +24,15 @@ async function refresh() {
   document.body.dataset.capture = capture?.state ?? 'idle';
   pauseButton.dataset.paused = String(paused);
   document.querySelector('#pause-label')!.textContent = paused
-    ? 'Resume recording'
+    ? 'Resume'
     : capture?.state === 'pausing'
       ? 'Pausing…'
       : capture?.state === 'resuming'
         ? 'Resuming…'
-        : 'Pause recording';
+        : 'Pause';
   const supported = !!tab?.url && /^https?:\/\//.test(tab.url);
   label.textContent = recording
-    ? 'Finish recording'
+    ? 'Finish'
     : transitioning
       ? capture.state === 'starting'
         ? 'Starting…'
@@ -40,13 +40,15 @@ async function refresh() {
           ? 'Finishing…'
           : 'Please wait…'
       : 'Record this tab';
+  record.setAttribute('aria-label', recording ? 'Finish recording' : label.textContent!);
+  pauseButton.setAttribute('aria-label', paused ? 'Resume recording' : 'Pause recording');
   record.dataset.recording = String(recording);
   record.disabled = busy || !!transitioning || (!capture && !supported);
   status.textContent = capture
     ? recording
       ? paused
-        ? 'Paused. Video and clicks are not being added. Resume when ready, or finish to open the editor.'
-        : 'Recording video and clicks. Pause to prepare your next step.'
+        ? 'Paused · Nothing is being captured.'
+        : 'Recording · Video and clicks'
       : capture?.state === 'stopping'
         ? 'Finishing your recording. The editor will open when it is ready.'
         : 'Please wait while your recording is prepared.'

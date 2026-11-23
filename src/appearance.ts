@@ -1,3 +1,4 @@
+import { bundledFonts, type BundledFont } from './fonts';
 import { isHexColor } from './themes';
 
 export type Appearance = {
@@ -15,7 +16,7 @@ export type Appearance = {
   logoSize?: number;
   logoAlignment?: 'left' | 'center' | 'right';
   typography?: 'compact' | 'comfortable' | 'large';
-  font?: 'system' | 'serif' | 'rounded';
+  font?: 'system' | 'serif' | 'rounded' | BundledFont;
   buttonShape?: 'rounded' | 'square' | 'pill';
 };
 export const appearanceChoices = {
@@ -23,7 +24,12 @@ export const appearanceChoices = {
   titleLayout: { split: 'Split with recording', centered: 'Centered introduction' },
   logoAlignment: { left: 'Left', center: 'Center', right: 'Right' },
   typography: { compact: 'Compact', comfortable: 'Comfortable', large: 'Large' },
-  font: { system: 'System sans serif', serif: 'Serif', rounded: 'Rounded system' },
+  font: {
+    system: 'System sans serif',
+    serif: 'Serif',
+    rounded: 'Rounded system',
+    ...Object.fromEntries(Object.entries(bundledFonts).map(([id, f]) => [id, f.label])),
+  },
   buttonShape: { rounded: 'Rounded', square: 'Square', pill: 'Pill' },
 } as const;
 export const frameChoices = {
@@ -76,6 +82,10 @@ export function walkthroughStyle(a: Appearance = {}) {
       system: 'system-ui, sans-serif',
       serif: 'Georgia, serif',
       rounded: 'ui-rounded, system-ui, sans-serif',
+      manrope: '"Manrope", sans-serif',
+      sourcesans3: '"Source Sans 3", sans-serif',
+      lora: '"Lora", serif',
+      robotomono: '"Roboto Mono", monospace',
     }[a.font ?? 'system'],
     buttonRadius: { rounded: 10, square: 3, pill: 999 }[a.buttonShape ?? 'rounded'],
     cardText: a.cardText ?? '#111111',

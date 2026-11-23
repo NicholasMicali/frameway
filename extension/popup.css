@@ -7,15 +7,15 @@
   box-sizing: border-box;
 }
 body {
-  width: 340px;
+  width: 312px;
   margin: 0;
-  padding: 20px;
+  padding: 16px;
 }
 header {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
 }
 h1 {
   font-size: 20px;
@@ -31,14 +31,14 @@ p {
 button {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   border: 1px solid var(--ui-border);
   border-radius: 10px;
   background: var(--ui-surface);
   color: var(--ui-text);
-  padding: 14px;
-  font: 600 14px system-ui;
+  padding: 10px 12px;
+  font: 600 13px system-ui;
   text-align: left;
   cursor: pointer;
 }
@@ -81,7 +81,7 @@ button:disabled {
   display: block;
 }
 #pause {
-  margin-top: 8px;
+  margin-top: 0;
 }
 body[data-capture='paused'] #pause {
   color: var(--ui-warning);
@@ -97,10 +97,12 @@ small {
   line-height: 1.5;
 }
 #status {
-  margin: 10px 2px 18px;
+  margin: 0 0 12px;
 }
 #open {
-  background: var(--ui-surface-muted);
+  background: transparent;
+  border-color: transparent;
+  margin-top: 8px;
 }
 #error {
   color: var(--ui-danger);
@@ -139,4 +141,26 @@ footer a:hover {
 }
 [hidden] {
   display: none !important;
+}
+
+.capture-actions {
+  display: flex;
+  gap: 8px;
+}
+.capture-actions button {
+  justify-content: center;
+  min-height: 40px;
+}
+.capture-actions button svg {
+  width: 16px;
+  height: 16px;
+}
+.capture-actions #pause {
+  order: -1;
+}
+body[data-capture='recording'] #status {
+  color: var(--ui-danger);
+}
+body[data-capture='paused'] #status {
+  color: var(--ui-warning);
 }
