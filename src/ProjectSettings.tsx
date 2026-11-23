@@ -134,7 +134,7 @@ export function ProjectSettings({
           aria-label="Appearance preview"
         >
           <div className="appearance-title">
-            <TitleSlide step={intro} src={image} logo={draft.logo} appearance={a} />
+            <TitleSlide step={intro} src={image} logo={draft.logo} appearance={a} thumbnail />
           </div>
           <div className="appearance-card">
             <h3>A clear next step</h3>
@@ -142,8 +142,227 @@ export function ProjectSettings({
             <span className="appearance-button">Continue →</span>
           </div>
         </div>
-        <fieldset>
-          <legend>Background music</legend>
+        <section className="appearance-section" aria-labelledby="settings-brand-logo">
+          <h3 id="settings-brand-logo">Brand logo</h3>
+          <LogoUpload
+            logo={draft.logo}
+            disabled={uploading || musicUploading}
+            onRemove={() => setDraft((current) => ({ ...current, logo: undefined }))}
+            onUpload={async (file) => {
+              const version = ++uploadVersion.current;
+              setUploading(true);
+              setLogoError('');
+              try {
+                const logo = await prepareLogo(file);
+                if (version === uploadVersion.current && menu.current?.open)
+                  setDraft((current) => ({ ...current, logo }));
+              } catch (error) {
+                if (version === uploadVersion.current)
+                  setLogoError(
+                    error instanceof Error ? error.message : 'Could not read this logo.',
+                  );
+              } finally {
+                if (version === uploadVersion.current) setUploading(false);
+              }
+            }}
+          />
+          {uploading && <p role="status">Preparing logo…</p>}
+          {logoError && <p role="alert">{logoError}</p>}
+        </section>
+        <section className="appearance-section" aria-labelledby="settings-colors">
+          <h3 id="settings-colors">Colors</h3>
+          <label className="theme-picker">
+            <span>Accent theme</span>
+            <select
+              aria-label="Color theme"
+              value={draft.theme ?? 'violet'}
+              onChange={(e) => {
+                const theme = e.target.value as ThemeName;
+                setDraft((current) => ({ ...current, theme }));
+              }}
+            >
+              {Object.entries(themes).map(([id, theme]) => (
+                <option key={id} value={id}>
+                  {theme.label}
+                </option>
+              ))}
+              <option value="custom">Custom color…</option>
+            </select>
+          </label>
+          {draft.theme === 'custom' && (
+            <label className="appearance-color">
+              Accent
+              <input
+                aria-label="Custom theme color"
+                type="color"
+                value={draft.customColor ?? '#2264c5'}
+                onChange={(e) => {
+                  const customColor = e.target.value;
+                  setDraft((current) => ({ ...current, customColor }));
+                }}
+              />
+              <span>{draft.customColor ?? '#2264c5'}</span>
+            </label>
+          )}
+          {(
+            [
+              ['cardBackground', 'Card background', '#ffffff'],
+              ['cardText', 'Card text', '#111111'],
+              ['titleBackground', 'Title background', '#ffffff'],
+              ['titleText', 'Title text', '#334155'],
+            ] as const
+          ).map(([key, label, fallback]) => (
+            <label className="appearance-color" key={key}>
+              {label}
+              <input
+                aria-label={label}
+                type="color"
+                value={a[key] ?? fallback}
+                onChange={(e) => set({ [key]: e.target.value })}
+              />
+              <button
+                type="button"
+                aria-label={`Reset ${label.toLowerCase()}`}
+                disabled={a[key] === undefined}
+                onClick={() => set({ [key]: undefined })}
+              >
+                Reset
+              </button>
+            </label>
+          ))}
+          <div className="contrast-feedback" role="status">
+            {ratios.map(([label, ratio]) => (
+              <p key={label} className={ratio < 4.5 ? 'contrast-warning' : ''}>
+                {label}: {ratio.toFixed(1)}:1{' '}
+                {ratio < 4.5
+                  ? '— low contrast; consider changing these colors.'
+                  : '— good text contrast.'}
+              </p>
+            ))}
+            <p>Color feedback only; preview readability at your intended viewing size.</p>
+          </div>
+        </section>
+        <section className="appearance-section" aria-labelledby="settings-presentation-frame">
+          <h3 id="settings-presentation-frame">Presentation frame</h3>
+          <label>
+            Style
+            <select
+              aria-label="Presentation frame"
+              value={a.frameStyle ?? 'none'}
+              onChange={(e) => set({ frameStyle: e.target.value as Appearance['frameStyle'] })}
+            >
+              {Object.entries(frameChoices.frameStyle).map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+          {presentationFrame(a).enabled && (
+            <>
+              <div
+                className="frame-settings-preview presentation-frame"
+                data-framed="true"
+                style={frameVars(a, draft.height / draft.width) as CSSProperties}
+              >
+                <img
+                  className="frame-sample-media"
+                  src={image}
+                  alt="Recording with presentation frame"
+                />
+              </div>
+              <label>
+                Spacing · {a.framePadding ?? 4}%
+                <input
+                  aria-label="Frame spacing"
+                  type="range"
+                  min="2"
+                  max="8"
+                  step="1"
+                  value={a.framePadding ?? 4}
+                  onChange={(e) => set({ framePadding: Number(e.target.value) })}
+                />
+              </label>
+              {(['frameCorners', 'frameShadow'] as const).map((key) => (
+                <label key={key}>
+                  {key === 'frameCorners' ? 'Corners' : 'Shadow'}
+                  <select
+                    aria-label={key === 'frameCorners' ? 'Frame corners' : 'Frame shadow'}
+                    value={a[key] ?? (key === 'frameCorners' ? 'rounded' : 'soft')}
+                    onChange={(e) => set({ [key]: e.target.value })}
+                  >
+                    {Object.entries(frameChoices[key]).map(([id, name]) => (
+                      <option key={id} value={id}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+              <p>
+                Frames screenshots and video. Title and closing slides keep their full-slide layout.
+              </p>
+            </>
+          )}
+        </section>
+        <section className="appearance-section" aria-labelledby="settings-layout-and-type">
+          <h3 id="settings-layout-and-type">Layout and type</h3>
+          {Object.entries(appearanceChoices)
+            .filter(([key]) => key !== 'motion')
+            .map(([key, choices]) => (
+              <label key={key}>
+                {
+                  {
+                    motion: 'Overlay animations',
+                    titleLayout: 'Title layout',
+                    logoAlignment: 'Logo alignment',
+                    typography: 'Card typography',
+                    font: 'Font family',
+                    buttonShape: 'Button shape',
+                  }[key as keyof typeof appearanceChoices]
+                }
+                <select
+                  aria-label={
+                    {
+                      motion: 'Overlay animations',
+                      titleLayout: 'Title layout',
+                      logoAlignment: 'Logo alignment',
+                      typography: 'Card typography',
+                      font: 'Font family',
+                      buttonShape: 'Button shape',
+                    }[key as keyof typeof appearanceChoices]
+                  }
+                  value={a[key as keyof typeof appearanceChoices] ?? ''}
+                  onChange={(e) => set({ [key]: e.target.value || undefined })}
+                >
+                  <option value="">Original styling</option>
+                  {Object.entries(choices).map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+          <label>
+            Title logo size · {a.logoSize ?? 5}
+            <input
+              aria-label="Title logo size"
+              type="range"
+              min="3"
+              max="10"
+              step="0.5"
+              value={a.logoSize ?? 5}
+              onChange={(e) => set({ logoSize: Number(e.target.value) })}
+            />
+          </label>
+          <p>
+            Logo size and alignment apply to title slides only. Named fonts are bundled for offline
+            playback and exports. System choices use the viewer’s installed fonts.
+          </p>
+        </section>
+        <section className="appearance-section" aria-labelledby="settings-background-music">
+          <h3 id="settings-background-music">Background music</h3>
           <label>
             Enable music
             <input
@@ -177,18 +396,22 @@ export function ProjectSettings({
                 }));
               }}
             >
-              {Object.entries(bundledMusic).map(([id, track]) => (
-                <option key={id} value={id}>
-                  {track.name}
-                </option>
-              ))}
               {draft.music?.track === 'upload' && <option value="upload">Uploaded audio</option>}
+              {Object.entries(bundledMusic)
+                .sort(([, a], [, b]) => a.name.localeCompare(b.name, 'en'))
+                .map(([id, track]) => (
+                  <option key={id} value={id}>
+                    {track.name}
+                  </option>
+                ))}
             </select>
           </label>
           <p>
             {draft.music?.track === 'upload'
               ? `${draft.music.name} · ${Math.floor(draft.music.duration / 60)}:${String(Math.floor(draft.music.duration % 60)).padStart(2, '0')}`
-              : `${builtInTrack(draft.music)!.title} · ${builtInTrack(draft.music)!.artist}`}
+              : [builtInTrack(draft.music)!.title, builtInTrack(draft.music)!.artist]
+                  .filter(Boolean)
+                  .join(' · ')}
           </p>
           <input
             ref={musicInput}
@@ -300,226 +523,7 @@ export function ProjectSettings({
             </label>
           )}
           <p>Viewers can mute music. Sound may start after their first click.</p>
-        </fieldset>
-        <fieldset>
-          <legend>Brand logo</legend>
-          <LogoUpload
-            logo={draft.logo}
-            disabled={uploading || musicUploading}
-            onRemove={() => setDraft((current) => ({ ...current, logo: undefined }))}
-            onUpload={async (file) => {
-              const version = ++uploadVersion.current;
-              setUploading(true);
-              setLogoError('');
-              try {
-                const logo = await prepareLogo(file);
-                if (version === uploadVersion.current && menu.current?.open)
-                  setDraft((current) => ({ ...current, logo }));
-              } catch (error) {
-                if (version === uploadVersion.current)
-                  setLogoError(
-                    error instanceof Error ? error.message : 'Could not read this logo.',
-                  );
-              } finally {
-                if (version === uploadVersion.current) setUploading(false);
-              }
-            }}
-          />
-          {uploading && <p role="status">Preparing logo…</p>}
-          {logoError && <p role="alert">{logoError}</p>}
-        </fieldset>
-        <fieldset>
-          <legend>Colors</legend>
-          <label className="theme-picker">
-            <span>Accent theme</span>
-            <select
-              aria-label="Color theme"
-              value={draft.theme ?? 'violet'}
-              onChange={(e) => {
-                const theme = e.target.value as ThemeName;
-                setDraft((current) => ({ ...current, theme }));
-              }}
-            >
-              {Object.entries(themes).map(([id, theme]) => (
-                <option key={id} value={id}>
-                  {theme.label}
-                </option>
-              ))}
-              <option value="custom">Custom color…</option>
-            </select>
-          </label>
-          {draft.theme === 'custom' && (
-            <label className="appearance-color">
-              Accent
-              <input
-                aria-label="Custom theme color"
-                type="color"
-                value={draft.customColor ?? '#2264c5'}
-                onChange={(e) => {
-                  const customColor = e.target.value;
-                  setDraft((current) => ({ ...current, customColor }));
-                }}
-              />
-              <span>{draft.customColor ?? '#2264c5'}</span>
-            </label>
-          )}
-          {(
-            [
-              ['cardBackground', 'Card background', '#ffffff'],
-              ['cardText', 'Card text', '#111111'],
-              ['titleBackground', 'Title background', '#ffffff'],
-              ['titleText', 'Title text', '#334155'],
-            ] as const
-          ).map(([key, label, fallback]) => (
-            <label className="appearance-color" key={key}>
-              {label}
-              <input
-                aria-label={label}
-                type="color"
-                value={a[key] ?? fallback}
-                onChange={(e) => set({ [key]: e.target.value })}
-              />
-              <button
-                type="button"
-                aria-label={`Reset ${label.toLowerCase()}`}
-                disabled={a[key] === undefined}
-                onClick={() => set({ [key]: undefined })}
-              >
-                Reset
-              </button>
-            </label>
-          ))}
-          <div className="contrast-feedback" role="status">
-            {ratios.map(([label, ratio]) => (
-              <p key={label} className={ratio < 4.5 ? 'contrast-warning' : ''}>
-                {label}: {ratio.toFixed(1)}:1{' '}
-                {ratio < 4.5
-                  ? '— low contrast; consider changing these colors.'
-                  : '— good text contrast.'}
-              </p>
-            ))}
-            <p>Color feedback only; preview readability at your intended viewing size.</p>
-          </div>
-        </fieldset>
-        <fieldset>
-          <legend>Presentation frame</legend>
-          <label>
-            Style
-            <select
-              aria-label="Presentation frame"
-              value={a.frameStyle ?? 'none'}
-              onChange={(e) => set({ frameStyle: e.target.value as Appearance['frameStyle'] })}
-            >
-              {Object.entries(frameChoices.frameStyle).map(([id, name]) => (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </label>
-          {presentationFrame(a).enabled && (
-            <>
-              <div
-                className="frame-settings-preview presentation-frame"
-                data-framed="true"
-                style={frameVars(a, draft.height / draft.width) as CSSProperties}
-              >
-                <img
-                  className="frame-sample-media"
-                  src={image}
-                  alt="Recording with presentation frame"
-                />
-              </div>
-              <label>
-                Spacing · {a.framePadding ?? 4}%
-                <input
-                  aria-label="Frame spacing"
-                  type="range"
-                  min="2"
-                  max="8"
-                  step="1"
-                  value={a.framePadding ?? 4}
-                  onChange={(e) => set({ framePadding: Number(e.target.value) })}
-                />
-              </label>
-              {(['frameCorners', 'frameShadow'] as const).map((key) => (
-                <label key={key}>
-                  {key === 'frameCorners' ? 'Corners' : 'Shadow'}
-                  <select
-                    aria-label={key === 'frameCorners' ? 'Frame corners' : 'Frame shadow'}
-                    value={a[key] ?? (key === 'frameCorners' ? 'rounded' : 'soft')}
-                    onChange={(e) => set({ [key]: e.target.value })}
-                  >
-                    {Object.entries(frameChoices[key]).map(([id, name]) => (
-                      <option key={id} value={id}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ))}
-              <p>
-                Frames screenshots and video. Title and closing slides keep their full-slide layout.
-              </p>
-            </>
-          )}
-        </fieldset>
-        <fieldset>
-          <legend>Layout and type</legend>
-          {Object.entries(appearanceChoices)
-            .filter(([key]) => key !== 'motion')
-            .map(([key, choices]) => (
-              <label key={key}>
-                {
-                  {
-                    motion: 'Overlay animations',
-                    titleLayout: 'Title layout',
-                    logoAlignment: 'Logo alignment',
-                    typography: 'Card typography',
-                    font: 'Font family',
-                    buttonShape: 'Button shape',
-                  }[key as keyof typeof appearanceChoices]
-                }
-                <select
-                  aria-label={
-                    {
-                      motion: 'Overlay animations',
-                      titleLayout: 'Title layout',
-                      logoAlignment: 'Logo alignment',
-                      typography: 'Card typography',
-                      font: 'Font family',
-                      buttonShape: 'Button shape',
-                    }[key as keyof typeof appearanceChoices]
-                  }
-                  value={a[key as keyof typeof appearanceChoices] ?? ''}
-                  onChange={(e) => set({ [key]: e.target.value || undefined })}
-                >
-                  <option value="">Original styling</option>
-                  {Object.entries(choices).map(([id, name]) => (
-                    <option key={id} value={id}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ))}
-          <label>
-            Title logo size · {a.logoSize ?? 5}
-            <input
-              aria-label="Title logo size"
-              type="range"
-              min="3"
-              max="10"
-              step="0.5"
-              value={a.logoSize ?? 5}
-              onChange={(e) => set({ logoSize: Number(e.target.value) })}
-            />
-          </label>
-          <p>
-            Logo size and alignment apply to title slides only. Fonts use this device’s installed
-            system fonts.
-          </p>
-        </fieldset>
+        </section>
         <div className="appearance-actions">
           <button
             onClick={() =>

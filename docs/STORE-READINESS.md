@@ -55,7 +55,7 @@ Declare the locally processed content/activity accurately under the applicable d
 
 **First Store installation:** open the Store link above, add to Chrome, pin Frameway, and choose Open library or Record this tab. An unlisted item can be installed by anyone with its link; it still undergoes normal Store review.
 
-**Unpacked → Store:** in the old extension, open each important project and use Share → Export project backup. Save the `.frameway.zip` files outside the extension folder. Install the Store version, open its Library, choose Options → Import project backup, and verify the projects. Only then remove the old installation. HTML exports cannot restore editable projects. Different extension identities do not automatically share a library.
+**Unpacked → Store:** in the old extension, open each important project and use Share → Download project. Save the `.frameway.zip` files outside the extension folder. Install the Store version, open its Library, choose Options → Import projects, and verify the projects. Only then remove the old installation. HTML exports cannot restore editable projects. Different extension identities do not automatically share a library.
 
 **Normal Store update:** Chrome manages updates for the same installed extension identity. Reopen the editor after an update; no manual folder replacement is needed. Browser storage normally remains, but backups are still essential.
 

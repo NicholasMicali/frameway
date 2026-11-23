@@ -180,8 +180,8 @@ export function ProjectLibrary({
           <h3>Your next walkthrough starts here</h3>
           <p>
             Record a Chrome tab for automatic click-by-click steps, or use Record my screen for a
-            window or your whole screen. Already have an editable backup? Restore it through Options
-            → Import project backup.
+            window or your whole screen. Have a project from a teammate or a saved backup? Choose
+            Options → Import projects to open its .frameway.zip file.
           </p>
         </div>
       ) : (

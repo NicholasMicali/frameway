@@ -11,7 +11,7 @@ const instructions: Record<Format, string> = {
   html: 'Send this HTML file. Recipients download it and open it in their browser, even offline.',
   zip: 'Extract the ZIP on your website or internal server. HTML and React embed examples are included.',
   backup:
-    'Send the .frameway.zip file. The recipient opens Options → Import project backup in their Frameway to edit a separate copy. You can also keep it as a backup.',
+    'Send the .frameway.zip file. The recipient opens Options → Import projects in their Frameway to edit a separate copy. You can also keep it as a backup.',
 };
 export function ExportDialog({
   project,

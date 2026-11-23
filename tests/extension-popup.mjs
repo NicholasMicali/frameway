@@ -57,7 +57,7 @@ try {
   await page.locator('#record').click();
   assert.equal((await page.evaluate(() => window.calls))[0].type, 'start-capture');
   await scenario('recording', 'chrome://extensions');
-  assert.equal(await page.locator('#record-label').textContent(), 'Finish recording');
+  assert.equal(await page.locator('#record-label').textContent(), 'Finish');
   await page.locator('#record').click();
   assert.equal((await page.evaluate(() => window.calls))[0].type, 'stop-capture');
   await scenario('recording');
@@ -66,7 +66,7 @@ try {
   assert.equal((await page.evaluate(() => window.calls))[0].type, 'pause-capture');
   await scenario('paused');
   await page.screenshot({ path: 'test-results/pause/paused.png' });
-  assert.equal(await page.locator('#record-label').textContent(), 'Finish recording');
+  assert.equal(await page.locator('#record-label').textContent(), 'Finish');
   await page.getByRole('button', { name: 'Resume recording', exact: true }).click();
   assert.equal((await page.evaluate(() => window.calls))[0].type, 'resume-capture');
   await scenario('paused');

@@ -410,7 +410,7 @@
 }
 .sharing-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 .sharing-grid article {
@@ -601,5 +601,99 @@
   }
   .home-workspace {
     animation-delay: 100ms;
+  }
+}
+
+.sharing-purpose {
+  display: block;
+  color: #3973a9;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  margin-bottom: 12px;
+}
+.sharing-grid .sharing-detail {
+  margin-top: 14px;
+  font-size: 13px;
+}
+.sharing-grid article {
+  background: linear-gradient(145deg, #fff, #f6faff);
+}
+.home-sharing {
+  scroll-margin-top: 24px;
+}
+@keyframes home-icon-settle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  45% {
+    transform: translateY(-3px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-visible .sharing-grid article {
+    animation: home-arrive 500ms ease-out both;
+  }
+  .home-visible .sharing-grid article:nth-child(2) {
+    animation-delay: 80ms;
+  }
+  .home-visible .sharing-grid article:nth-child(3) {
+    animation-delay: 160ms;
+  }
+  .home-visible .home-section-icon {
+    animation: home-icon-settle 2.8s ease-in-out 2;
+  }
+  .home-page .home-resources a {
+    transition: color 160ms ease;
+  }
+}
+@media (max-width: 1000px) {
+  .sharing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Explain the possibilities first for a new library; keep saved work first on return. */
+.home-heading + .use-cases {
+  margin: 0 auto 36px;
+}
+.home-page .use-case-grid article {
+  --use-case-accent: #337ab7;
+  --use-case-tint: #eaf4ff;
+  border-top: 3px solid var(--use-case-accent);
+  background: linear-gradient(150deg, #fff 25%, var(--use-case-tint));
+}
+.home-page .use-case-grid article:nth-child(2) {
+  --use-case-accent: #277e72;
+  --use-case-tint: #eaf7f2;
+}
+.home-page .use-case-grid article:nth-child(3) {
+  --use-case-accent: #aa702a;
+  --use-case-tint: #fff6e8;
+}
+.home-page .use-case-grid article > svg {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--use-case-tint);
+  color: var(--use-case-accent);
+}
+@media (hover: hover) {
+  .home-page .use-case-grid article:hover {
+    border-color: var(--use-case-accent);
+    box-shadow: 0 8px 22px #25354a0d;
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .home-page .use-case-grid article {
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+  .home-page .use-case-grid article:hover {
+    transform: translateY(-3px);
   }
 }

@@ -1,0 +1,25 @@
+Unmodified fonts from google/fonts, retrieved 2026-11-23. SIL Open Font License 1.1; see accompanying OFL files.
+
+manrope.ttf: https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/Manrope%5Bwght%5D.ttf
+SHA-256: 3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6
+
+manrope-OFL.txt: https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/OFL.txt
+SHA-256: 58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b
+
+sourcesans3-OFL.txt: https://raw.githubusercontent.com/google/fonts/main/ofl/sourcesans3/OFL.txt
+SHA-256: 09746787287a289323b0ec3cff4d1a4a801331b82b7207c1e186f5d26619a392
+
+sourcesans3.ttf: https://raw.githubusercontent.com/google/fonts/main/ofl/sourcesans3/SourceSans3%5Bwght%5D.ttf
+SHA-256: 042fe2cc0b933e328410d7acbd0aa6a1873dca5aef81875f4bc214b08825c7b9
+
+lora.ttf: https://raw.githubusercontent.com/google/fonts/main/ofl/lora/Lora%5Bwght%5D.ttf
+SHA-256: 822a6621ccbe8d97d20ac88c1c41f5615c9c2c202eaa75f272cd452aac6475a7
+
+lora-OFL.txt: https://raw.githubusercontent.com/google/fonts/main/ofl/lora/OFL.txt
+SHA-256: 1d9a970809ac804b582a6ce7f0ebc4e7fefcbfd7ff6299cad35ee656a21be716
+
+robotomono-OFL.txt: https://raw.githubusercontent.com/google/fonts/main/ofl/robotomono/OFL.txt
+SHA-256: 50ab8dd54680d3473f649c9db86fece88434d097c7834475c1c72d2f8c429215
+
+robotomono.ttf: https://raw.githubusercontent.com/google/fonts/main/ofl/robotomono/RobotoMono%5Bwght%5D.ttf
+SHA-256: 66a80e79d17e4c7cabd162e2916578a4cc08fd19eef6e2a643305eae9c567b2b

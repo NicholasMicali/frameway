@@ -1,3 +1,4 @@
+import { exportFont, fontRule } from './fonts';
 import { createMusicPlayer } from './music-player';
 import { loadMusic, trackCredit, musicExtension } from './music';
 import musicCSS from './music.css?raw';
@@ -27,7 +28,14 @@ const escapeHTML = (value: string) =>
     /[&<>"']/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
   );
-function playerDocument(p: Project, video: string, images: string[], music?: string) {
+function playerDocument(
+  p: Project,
+  video: string,
+  images: string[],
+  music?: string,
+  fontCSS = '',
+  fontLicense = '',
+) {
   const data = {
     theme: { ...themeVars(p.theme, p.customColor), ...appearanceVars(p.appearance) },
     frame: {
@@ -60,7 +68,8 @@ ${zoomCSS}
 ${motionCSS}
 ${elementsCSS}
 ${frameCSS}
-${musicCSS}</style></head><body><main id="player"></main><noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const renderElements = ${renderElements.toString()};
+${musicCSS}
+${fontCSS}</style></head><body><main id="player"></main>${fontLicense ? `<script type="text/plain" id="font-license">${escapeHTML(fontLicense)}</script>` : ''}<noscript>This walkthrough requires JavaScript.</noscript><script id="walkthrough-data" type="application/json">${jsonForHTML(data)}</script><script>const renderElements = ${renderElements.toString()};
 const createMusicPlayer = ${createMusicPlayer.toString()};
 const zoomOut = ${zoomOut.toString()};\n${runtime}</script></body></html>`;
 }
@@ -74,9 +83,11 @@ function dataURL(blob: Blob) {
 }
 export async function exportInteractive(p: Project, format: 'html' | 'zip') {
   validateManifest(p);
+  const font = await exportFont(p.appearance?.font);
   const music = p.music?.enabled ? await loadMusic(p) : undefined;
   const bytes =
     (music?.size ?? 0) +
+    (font?.blob.size ?? 0) +
     (p.logo?.length ?? 0) +
     p.video.size +
     p.steps.reduce((n, s) => n + s.image.size, 0);
@@ -86,11 +97,27 @@ export async function exportInteractive(p: Project, format: 'html' | 'zip') {
     const video = await dataURL(p.video),
       images = [];
     for (const s of p.steps) images.push(await dataURL(s.image));
-    return new Blob([playerDocument(p, video, images, music ? await dataURL(music) : undefined)], {
-      type: 'text/html;charset=utf-8',
-    });
+    return new Blob(
+      [
+        playerDocument(
+          p,
+          video,
+          images,
+          music ? await dataURL(music) : undefined,
+          font ? fontRule(font.id, await dataURL(font.blob)) : '',
+          font?.license,
+        ),
+      ],
+      {
+        type: 'text/html;charset=utf-8',
+      },
+    );
   }
   const entries: Record<string, Uint8Array> = {};
+  if (font) {
+    entries[`media/${font.id}.ttf`] = new Uint8Array(await font.blob.arrayBuffer());
+    entries['FONT-LICENSE.txt'] = strToU8(font.license);
+  }
   entries['media/recording.webm'] = new Uint8Array(await p.video.arrayBuffer());
   const images = [];
   for (let i = 0; i < p.steps.length; i++) {
@@ -108,6 +135,8 @@ export async function exportInteractive(p: Project, format: 'html' | 'zip') {
       'media/recording.webm',
       images,
       music ? `media/music.${musicExtension(p.music)}` : undefined,
+      font ? fontRule(font.id, `media/${font.id}.ttf`) : '',
+      font?.license,
     ),
   );
   entries['embed.html'] = strToU8(

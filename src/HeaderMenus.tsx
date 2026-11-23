@@ -167,11 +167,11 @@ export function WorkspaceOptions({
             <small>Review space and manage saved work</small>
           </span>
         </MenuItem>
-        <MenuItem label="Import project backup" disabled={busy} onSelect={onImport}>
+        <MenuItem label="Import projects" disabled={busy} onSelect={onImport}>
           <Icon name="upload" />
           <span>
-            <strong>Import project backup</strong>
-            <small>Restore an editable project ZIP</small>
+            <strong>Import projects</strong>
+            <small>Open a teammate’s project or restore your own</small>
           </span>
         </MenuItem>
         <MenuItem label="Keyboard shortcuts" onSelect={onShortcuts}>
