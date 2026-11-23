@@ -60,8 +60,12 @@ try {
   await page.mouse.down();
   await page.mouse.move(before.x + 120, before.y + 70, { steps: 5 });
   await page.mouse.up();
-  const after = await heading.boundingBox();
-  assert.ok(after.x > before.x + 50);
+  // The renderer replaces the heading after each drag update. Wait for the
+  // committed position rather than measuring a node during replacement.
+  await page.waitForFunction((previousX) => {
+    const node = document.querySelector('.extra-heading');
+    return node && node.getBoundingClientRect().x > previousX + 50;
+  }, before.x);
   await page.getByLabel('Element title').blur();
   await page.keyboard.press('Delete');
   await page.locator('.extra-panel').waitFor({ state: 'detached' });
