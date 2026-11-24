@@ -1,0 +1,401 @@
+@font-face {
+  font-family: Manrope;
+  src: url('../../../public/fonts/manrope.ttf') format('truetype');
+  font-weight: 200 800;
+}
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('../../../public/fonts/sourcesans3.ttf') format('truetype');
+  font-weight: 200 900;
+}
+:root {
+  --blue: #167bd1;
+  --ink: #172638;
+  --muted: #58697b;
+  --teal: #087f8c;
+  --amber: #c48a20;
+  --paper: #f6f9fc;
+  --line: #d6e3ef;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #dae4ed;
+  color: var(--ink);
+  font-family: 'Source Sans 3', sans-serif;
+}
+#gallery {
+  display: grid;
+  gap: 40px;
+  padding: 40px;
+  justify-items: center;
+}
+.single #gallery {
+  display: block;
+  padding: 0;
+}
+.artboard {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper);
+  flex-shrink: 0;
+}
+.artboard::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 6px;
+  background: var(--blue);
+}
+.brand {
+  position: absolute;
+  top: 38px;
+  left: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font:
+    800 27px Manrope,
+    sans-serif;
+  letter-spacing: -1px;
+}
+.brand img {
+  width: 42px;
+  height: 42px;
+}
+h1,
+h2,
+h3,
+p,
+figure {
+  margin: 0;
+}
+h1,
+h2,
+h3 {
+  font-family: Manrope, sans-serif;
+}
+h1 {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -2.2px;
+}
+h2 {
+  font-size: 36px;
+  line-height: 1.17;
+  letter-spacing: -1.3px;
+}
+h3 {
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -0.6px;
+}
+.eyebrow {
+  color: var(--blue);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  margin-bottom: 15px;
+}
+.lead {
+  color: var(--muted);
+  font-size: 25px;
+  line-height: 1.35;
+  margin-top: 18px;
+}
+footer {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.top-copy {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  top: 112px;
+}
+.top-copy .eyebrow {
+  margin-bottom: 8px;
+}
+.top-copy .lead {
+  margin-top: 6px;
+}
+h1,
+h2 {
+  padding-bottom: 8px;
+}
+.capture {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+}
+.capture img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+.finished-hero {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  top: 246px;
+  height: 470px;
+}
+.finished-hero .capture {
+  width: 100%;
+  height: 100%;
+}
+.hero-crop img {
+  object-fit: cover;
+  object-position: center 45%;
+}
+.capture-layout {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  top: 275px;
+  bottom: 86px;
+  display: grid;
+  grid-template-columns: 1fr 230px;
+  gap: 52px;
+}
+.recording-story .capture {
+  width: 790px;
+  height: 300px;
+  border: 0;
+  background: none;
+}
+.recording-story h2 {
+  font-size: 34px;
+  margin-top: 12px;
+  line-height: 1.25;
+}
+.recording-story > p {
+  font-size: 24px;
+  color: var(--muted);
+  line-height: 1.35;
+  margin-top: 6px;
+}
+.sequence-shot {
+  height: 100%;
+}
+.sequence-shot img {
+  object-fit: contain;
+  object-position: top;
+}
+.editor-layout {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  top: 264px;
+  bottom: 88px;
+  display: grid;
+  grid-template-columns: 1fr 292px;
+  gap: 32px;
+}
+.editor-scene {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.stage-shot {
+  height: 390px;
+}
+.stage-shot img {
+  object-fit: cover;
+  object-position: center 44%;
+}
+.editor-scene > p {
+  font-size: 22px;
+  color: var(--muted);
+  padding-top: 16px;
+}
+.inspector-shot {
+  height: 100%;
+  border-top: 4px solid var(--teal);
+}
+.inspector-shot img {
+  object-fit: cover;
+  object-position: top;
+}
+.share-layout {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  top: 224px;
+  bottom: 88px;
+  display: grid;
+  grid-template-columns: 810px 1fr;
+  gap: 40px;
+  align-items: center;
+}
+.share-shot {
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
+.output-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.output-list h3 {
+  font-size: 25px;
+  margin: 5px 0;
+  line-height: 1.4;
+}
+.output-list p {
+  font-size: 21px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.output-index {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teal);
+}
+.output-list > div {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 19px;
+}
+.local-layout {
+  position: absolute;
+  top: 266px;
+  bottom: 88px;
+  left: 56px;
+  right: 56px;
+  display: grid;
+  grid-template-columns: 570px 1fr;
+  gap: 72px;
+  align-items: center;
+}
+.library-shot {
+  height: 100%;
+  padding: 16px;
+}
+.library-shot img {
+  object-fit: contain;
+  object-position: left;
+}
+.local-copy h2 {
+  font-size: 46px;
+}
+.local-copy p {
+  font-size: 25px;
+  line-height: 1.35;
+  color: var(--muted);
+  margin-top: 22px;
+}
+.line-marker {
+  display: block;
+  width: 44px;
+  height: 5px;
+  background: var(--teal);
+  margin-bottom: 24px;
+}
+.asset-6 {
+  background: #edf5ff;
+}
+.asset-6 .brand {
+  top: 29px;
+  left: 28px;
+  font-size: 22px;
+  gap: 9px;
+}
+.asset-6 .brand img {
+  width: 32px;
+  height: 32px;
+}
+.asset-6 h1 {
+  position: absolute;
+  top: 100px;
+  left: 28px;
+  font-size: 33px;
+  letter-spacing: -1.3px;
+  line-height: 1.2;
+  z-index: 1;
+}
+.asset-6 h1 span,
+.marquee-copy h1 span {
+  color: var(--blue);
+}
+.promo-motif {
+  width: 130px;
+  height: 130px;
+  position: absolute;
+  right: -72px;
+  bottom: 40px;
+  transform: rotate(45deg);
+  border: 18px solid #b7d9f4;
+}
+.marquee-copy {
+  position: absolute;
+  top: 135px;
+  left: 56px;
+  width: 520px;
+}
+.marquee-copy h1 {
+  font-size: 49px;
+  line-height: 1.18;
+}
+.marquee-copy .lead {
+  font-size: 22px;
+}
+.marquee-example {
+  position: absolute;
+  left: 620px;
+  right: 56px;
+  top: 106px;
+  bottom: 85px;
+}
+.marquee-example .capture {
+  height: 100%;
+}
+.social-copy {
+  position: absolute;
+  top: 166px;
+  left: 56px;
+}
+.social-copy h1 {
+  font-size: 59px;
+}
+.social-copy .lead {
+  font-size: 25px;
+}
+.social-note {
+  font-size: 19px;
+  color: var(--muted);
+  margin-top: 26px;
+}
+.social-example {
+  position: absolute;
+  top: 110px;
+  bottom: 95px;
+  left: 572px;
+  right: 56px;
+}
+.social-example .capture {
+  height: 100%;
+  border-bottom: 5px solid var(--teal);
+}
+.social-crop img {
+  object-fit: cover;
+  object-position: 58% 45%;
+}
