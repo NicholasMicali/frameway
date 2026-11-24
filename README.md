@@ -2,9 +2,9 @@
 
 Record a workflow, edit screenshot and video steps, and send or embed an interactive walkthrough. Frameway is a local-first Chrome extension and editor built with original code. It does not require a Frameway account or backend.
 
-![Frameway demo: edit a callout, preview a highlighted step, and export an interactive walkthrough](docs/assets/frameway-demo.gif)
+![Frameway 0.5: an interactive CRM walkthrough with a welcome callout](docs/assets/launch-0.5/renders/01-walkthrough.png)
 
-_Recorded in Frameway using generated demo content. The GIF shows editing, preview, and export; the downloadable HTML remains interactive._
+_Create product demos, training and onboarding guides, or support handoffs. This example shows an actual Frameway walkthrough; exported HTML lets viewers follow the steps at their own pace._
 
 ## Install Frameway
 
@@ -17,7 +17,7 @@ _Recorded in Frameway using generated demo content. The GIF shows editing, previ
 
 Choose **Open library** from the extension menu to return to existing projects without recording. Use **Record my screen** in the Library to capture desktop apps or a whole screen and add screenshot steps manually.
 
-The Store version receives updates through Chrome. We keep it aligned with the latest release after Store review. The published release is **v0.4.0 beta**. Source on this branch prepares **v0.5.0**; see [GitHub Releases](https://github.com/NicholasMicali/frameway/releases) for release notes and alternative packaged downloads.
+The Store version receives updates through Chrome after Store review and may temporarily lag GitHub releases. See [GitHub Releases](https://github.com/NicholasMicali/frameway/releases) for published versions, release notes, and alternative packaged downloads. Source is currently **v0.5.0**.
 
 ### Sharing, backups, and moving to the Store version
 
@@ -27,7 +27,7 @@ Projects stay in your browser profile. Before switching from an unpacked extensi
 
 ### Alternative: install a release ZIP
 
-For manual testing, download the extension ZIP from [Releases](https://github.com/NicholasMicali/frameway/releases/latest), extract it to a permanent folder, and use **Load unpacked** in `chrome://extensions` with **Developer mode** enabled. Select the folder containing `manifest.json`. This installation does not receive Store updates; back up projects before replacing its files or removing it.
+For manual testing, download the extension ZIP from [Releases](https://github.com/NicholasMicali/frameway/releases), extract it to a permanent folder, and use **Load unpacked** in `chrome://extensions` with **Developer mode** enabled. Select the folder containing `manifest.json`. This installation does not receive Store updates; back up projects before replacing its files or removing it.
 
 ## Project direction and contributions
 
