@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "chromium": "156.0.8078.4",
+  "externalRequests": 0,
+  "assets": [
+    {
+      "id": "01-walkthrough",
+      "width": 1280,
+      "height": 800,
+      "textOutside": [],
+      "fontsLoaded": true,
+      "imagesLoaded": true,
+      "hasDraftLabels": false,
+      "currentCapturesOnly": true,
+      "pngColorType": 2
+    },
+    {
+      "id": "02-capture",
+      "width": 1280,
+      "height": 800,
+      "textOutside": [],
+      "fontsLoaded": true,
+      "imagesLoaded": true,
+      "hasDraftLabels": false,
+      "currentCapturesOnly": true,
+      "pngColorType": 2
+    },
+    {
+      "id": "03-edit",
+      "width": 1280,
+      "height": 800,
+      "textOutside": [],
+      "fontsLoaded": true,
+      "imagesLoaded": true,
+      "hasDraftLabels": false,
+      "currentCapturesOnly": true,
+      "pngColorType": 2
+    },
+    {
+      "id": "04-share",
+      "width": 1280,
+      "height": 800,
+      "textOutside": [],
+      "fontsLoaded": true,
+      "imagesLoaded": true,
+      "hasDraftLabels": false,
+      "currentCapturesOnly": true,
+      "pngColorType": 2
+    },
+    {
+      "id": "05-local",
+      "width": 1280,
+      "height": 800,
+      "textOutside": [],
+      "fontsLoaded": true,
+      "imagesLoaded": true,
+      "hasDraftLabels": false,
+      "currentCapturesOnly": true,
+      "pngColorType": 2
+    },
+    {
+      "id": "06-promo",
+      "width": 440,
+      "height": 280,
+      "textOutside": [],
+      "fontsLoaded": true,
+      "imagesLoaded": true,
+      "hasDraftLabels": false,
+      "currentCapturesOnly": true,
+      "pngColorType": 2
+    },
+    {
+      "id": "07-marquee",
+      "width": 1400,
+      "height": 560,
+      "textOutside": [],
+      "fontsLoaded": true,
+      "imagesLoaded": true,
+      "hasDraftLabels": false,
+      "currentCapturesOnly": true,
+      "pngColorType": 2
+    },
+    {
+      "id": "08-social",
+      "width": 1200,
+      "height": 630,
+      "textOutside": [],
+      "fontsLoaded": true,
+      "imagesLoaded": true,
+      "hasDraftLabels": false,
+      "currentCapturesOnly": true,
+      "pngColorType": 2
+    }
+  ]
+}

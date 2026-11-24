@@ -1,0 +1,81 @@
+{
+  "project": "CRM Training",
+  "sourceSha256": "d31c4733094c7ef5a1f1388734d065e89b643aa090b52f3931c0274259593b9a",
+  "version": "0.5.0",
+  "chromium": "156.0.8078.4",
+  "deviceScaleFactor": 2,
+  "externalRequests": 0,
+  "method": "Actual packaged extension in a disposable local Chromium profile; backup imported through standard UI; no content edits.",
+  "captures": [
+    {
+      "file": "editor-controls.png",
+      "description": "Unmodified image-step inspector for Welcome to your pipeline",
+      "cropCssPixels": {
+        "x": 1160,
+        "y": 175,
+        "width": 280,
+        "height": 470
+      }
+    },
+    {
+      "file": "editor-stage.png",
+      "description": "Welcome to your pipeline, in Edit mode",
+      "cropCssPixels": {
+        "x": 275,
+        "y": 318,
+        "width": 818,
+        "height": 531.96875
+      }
+    },
+    {
+      "file": "sequence.png",
+      "description": "Actual first three steps from CRM Training",
+      "cropCssPixels": {
+        "x": 0,
+        "y": 175,
+        "width": 208,
+        "height": 525
+      }
+    },
+    {
+      "file": "walkthrough.png",
+      "description": "Finished Welcome to your pipeline step, in Preview mode",
+      "cropCssPixels": {
+        "x": 251,
+        "y": 285,
+        "width": 938,
+        "height": 610.015625
+      }
+    },
+    {
+      "file": "share.png",
+      "description": "Full current Share dialog, tightly cropped; no download or export initiated",
+      "cropCssPixels": {
+        "x": 340,
+        "y": 200.5625,
+        "width": 760,
+        "height": 558.875
+      }
+    },
+    {
+      "file": "library.png",
+      "description": "Left crop of the actual isolated Library, with the supplied CRM Training example",
+      "cropCssPixels": {
+        "x": 69,
+        "y": 548.5625,
+        "width": 380,
+        "height": 551.25
+      }
+    },
+    {
+      "file": "recording-guide.png",
+      "description": "Current Library guidance for Chrome-tab capture; no recording simulated or started",
+      "cropCssPixels": {
+        "x": 36,
+        "y": 273.96875,
+        "width": 464.15625,
+        "height": 193.59375
+      }
+    }
+  ]
+}
